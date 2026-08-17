@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16202B">
+<title>CNC nustatymai</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16202B; --ink-soft:#4A5A6A; --line:#D3DAE0;
+  --bg:#E9EDF0; --card:#FFFFFF;
+  --slot:#E8B004; --alert:#C42B1C; --alert-bg:#FDECEA;
+  --r:10px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);
+  font-family:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:17px;line-height:1.45;padding-bottom:env(safe-area-inset-bottom)}
+header{position:sticky;top:0;z-index:20;background:var(--ink);
+  padding:calc(12px + env(safe-area-inset-top,0)) 14px 12px 14px}
+.brand{display:flex;align-items:baseline;gap:9px;margin-bottom:10px}
+.brand b{font-weight:800;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:#fff}
+.brand span{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8FA3B5}
+.iconbtn{margin-left:auto;border:0;background:#2B3B4C;color:#fff;border-radius:9px;
+  width:42px;height:38px;font-size:19px;line-height:1;cursor:pointer}
+.iconbtn:active{background:#3B4E62}
+.iconbtn:focus-visible{outline:3px solid var(--slot);outline-offset:2px}
+.menu{display:flex;flex-direction:column;gap:2px;margin-bottom:10px;
+  background:#2B3B4C;border-radius:var(--r);overflow:hidden}
+.menu[hidden]{display:none}
+.menu button{border:0;background:transparent;color:#fff;text-align:left;
+  padding:14px 15px;font:600 16px 'Archivo',sans-serif;cursor:pointer}
+.menu button:active{background:#3B4E62}
+.menu button.on{background:var(--slot);color:var(--ink)}
+
+/* --- gamybos langas --- */
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:14px 14px 16px;margin-bottom:14px}
+.fld{margin-bottom:12px}
+.fld label{display:block;font-size:11px;font-weight:800;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink-soft);margin-bottom:5px}
+.fld input,.fld select,.fld textarea{width:100%;border:1px solid var(--line);border-radius:9px;
+  padding:12px;font:600 17px 'Archivo',sans-serif;color:var(--ink);background:#fff}
+.fld textarea{font-weight:500;font-size:15.5px;line-height:1.4;resize:vertical;min-height:78px;font-family:'Archivo',sans-serif}
+.fld input:focus,.fld select:focus,.fld textarea:focus{outline:3px solid var(--slot);outline-offset:1px}
+.qty{display:flex;gap:8px;align-items:stretch}
+.qty button{flex:0 0 58px;border:1px solid var(--line);background:#F1F4F6;border-radius:9px;
+  font:700 24px 'Archivo',sans-serif;color:var(--ink);cursor:pointer}
+.qty button:active{background:#E2E8ED}
+.qty input{flex:1;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700}
+.save{width:100%;border:0;border-radius:9px;background:var(--ink);color:#fff;
+  padding:15px;font:700 17px 'Archivo',sans-serif;cursor:pointer;margin-top:4px}
+.save:active{background:#2B3B4C}
+.save:disabled{background:#B4C0CA;cursor:default}
+.today{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink-soft);
+  text-align:center;padding:2px 0 12px}
+.today b{color:var(--ink);font-size:15px}
+.daylab{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-soft);margin:16px 2px 8px;display:flex;gap:8px;align-items:baseline}
+.daylab span{font-family:'IBM Plex Mono',monospace;letter-spacing:0;font-weight:600;text-transform:none}
+.entry{display:flex;align-items:center;gap:11px;background:var(--card);
+  border:1px solid var(--line);border-radius:var(--r);padding:11px 12px;margin-bottom:7px}
+.entry .qbadge{flex:0 0 auto;min-width:52px;height:40px;padding:0 8px;border-radius:9px;
+  background:var(--slot);color:var(--ink);display:grid;place-items:center;
+  font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:17px}
+.entry .en{flex:1;min-width:0}
+.entry .enm{font-weight:600;line-height:1.25}
+.entry .esub{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft)}
+.entry .del{flex:0 0 auto;border:0;background:transparent;color:#B4C0CA;font-size:21px;
+  width:38px;height:38px;border-radius:9px;cursor:pointer}
+.entry .del:active{background:#F2F5F7;color:var(--alert)}
+.expbtn{width:100%;border:1px solid var(--line);background:#fff;border-radius:9px;
+  padding:12px;font:600 15px 'Archivo',sans-serif;color:var(--ink-soft);cursor:pointer;margin-top:10px}
+.expbtn:active{background:#F2F5F7}
+.sfilter{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.sfilter button{flex:1 1 auto;min-width:78px;border:1px solid var(--line);background:#fff;border-radius:9px;
+  padding:10px 6px;font:700 13.5px 'Archivo',sans-serif;color:var(--ink-soft);cursor:pointer}
+.sfilter button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.sfilter button:active{background:#F2F5F7}
+.chk{display:flex;align-items:center;gap:9px;padding:11px 12px;border:1px solid var(--line);
+  border-radius:9px;background:#fff;cursor:pointer;margin-bottom:12px;font:600 15px 'Archivo',sans-serif;color:var(--ink)}
+.chk input{width:19px;height:19px;accent-color:var(--alert);flex:0 0 auto;cursor:pointer}
+.chk:has(input:checked){background:var(--alert-bg);border-color:#E3A79E}
+.ubadge{color:var(--alert)}
+.ocard .ubadge{margin-right:1px}
+.ocard{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--r);padding:13px 14px 14px;margin-bottom:9px;cursor:pointer;
+  font-family:'Archivo',sans-serif;color:var(--ink)}
+.ocard:active{background:#F7F9FA}
+.ocard:focus-visible{outline:3px solid var(--slot);outline-offset:2px}
+.ocard.done{background:#F4FAF6;border-color:#BFE0CC}
+.onm{font-weight:700;font-size:18px;letter-spacing:-.01em}
+.osub{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft);margin:2px 0 10px}
+.obig{font-weight:800;font-size:22px;letter-spacing:-.015em;line-height:1.15}
+.bar{height:11px;background:#E4EAEF;border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--slot);border-radius:999px;
+  transition:width .35s ease}
+.bar.full i{background:#2E7D53}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+.barlab{display:flex;justify-content:space-between;align-items:baseline;margin-top:6px;
+  font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink-soft)}
+.barlab b{font-size:15px;color:var(--ink)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.stats div{background:#F1F4F6;border:1px solid var(--line);border-radius:9px;padding:8px 4px 10px;text-align:center}
+.stats span{display:block;font-size:10.5px;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-soft);margin-bottom:2px}
+.stats b{display:block;font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700}
+.searchwrap{position:relative}
+#q{width:100%;border:0;border-radius:var(--r);padding:14px 42px 14px 14px;
+  font:600 17px 'Archivo',sans-serif;color:var(--ink);background:#fff}
+#q:focus{outline:3px solid var(--slot);outline-offset:2px}
+#clear{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  font-size:22px;line-height:1;color:var(--ink-soft);width:34px;height:34px;border-radius:8px;cursor:pointer;display:none}
+#clear.on{display:block}
+.filters{display:flex;gap:8px;margin-top:8px}
+.filters select{
+  flex:1;min-width:0;border:0;border-radius:8px;background:#2B3B4C;color:#fff;
+  font:600 14px 'Archivo',sans-serif;padding:10px 10px;appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,#8FA3B5 50%),linear-gradient(135deg,#8FA3B5 50%,transparent 50%);
+  background-position:calc(100% - 16px) 18px,calc(100% - 11px) 18px;background-size:5px 5px;background-repeat:no-repeat;
+  padding-right:28px}
+.filters select:focus{outline:3px solid var(--slot);outline-offset:2px}
+.filters select.on{background-color:var(--slot);color:var(--ink)}
+main{padding:12px 12px 96px 12px;max-width:720px;margin:0 auto}
+
+.row{display:flex;align-items:center;gap:10px;width:100%;text-align:left;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:14px;margin-bottom:8px;cursor:pointer;font:600 17px 'Archivo',sans-serif;color:var(--ink)}
+.row:active{background:#F2F5F7}
+.row:focus-visible{outline:3px solid var(--slot);outline-offset:2px}
+.row .nm{flex:1;min-width:0}
+.row .pr{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--ink-soft);white-space:nowrap}
+.row .bang{color:var(--alert);font-size:18px;font-weight:800}
+.rowwrap{position:relative;margin-bottom:8px}
+.rowwrap .row{margin-bottom:0;padding-right:54px}
+.starbtn{position:absolute;right:5px;top:50%;transform:translateY(-50%);
+  width:44px;height:44px;border:0;background:transparent;color:#B4C0CA;
+  font-size:22px;line-height:1;cursor:pointer;border-radius:10px}
+.starbtn.on{color:var(--slot)}
+.starbtn:active{background:#EEF2F5}
+.starbtn:focus-visible{outline:3px solid var(--slot);outline-offset:2px}
+.section-lab{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-soft);margin:16px 2px 8px}
+.section-lab:first-child{margin-top:2px}
+.pinrow{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:2px}
+.pinchip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 14px;
+  font:600 14px 'Archivo',sans-serif;color:var(--ink);cursor:pointer}
+.pinchip:active{background:#F2F5F7}
+.pinchip:focus-visible{outline:3px solid var(--slot);outline-offset:2px}
+.xref{margin-top:7px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.xref .xlab{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8494A2}
+.xchip{border:1px solid var(--line);background:#F5F8FA;border-radius:999px;padding:4px 10px;
+  font:600 12.5px 'Archivo',sans-serif;color:var(--ink-soft);cursor:pointer}
+.xchip:active{background:#E6ECF0}
+.cardstar{margin-left:auto;flex:0 0 auto;border:0;background:transparent;
+  font-size:25px;line-height:1;color:#B4C0CA;cursor:pointer;padding:2px 0}
+.cardstar.on{color:var(--slot)}
+.empty{text-align:center;color:var(--ink-soft);padding:48px 20px;font-size:16px}
+
+.toprow{display:flex;gap:8px;align-items:stretch}
+.toprow .searchwrap{flex:1;min-width:0}
+.back{position:fixed;z-index:40;
+  right:max(14px, calc(50% - 366px));
+  bottom:calc(18px + env(safe-area-inset-bottom,0px));
+  width:58px;height:58px;border:0;border-radius:50%;cursor:pointer;
+  background:var(--ink);color:#fff;font-size:24px;line-height:1;font-family:'Archivo',sans-serif;
+  box-shadow:0 5px 16px rgba(22,32,43,.32)}
+.back:active{background:#2B3B4C}
+.back:focus-visible{outline:3px solid var(--slot);outline-offset:3px}
+.back[hidden]{display:none}
+.version-btn{position:fixed;z-index:41;
+  left:max(14px, calc(50% - 346px));
+  bottom:calc(18px + env(safe-area-inset-bottom,0px));
+  border:1px solid rgba(22,32,43,.16);border-radius:999px;
+  background:rgba(255,255,255,.92);color:var(--ink-soft);
+  box-shadow:0 4px 14px rgba(22,32,43,.12);
+  padding:7px 10px;font:600 11px 'IBM Plex Mono',monospace;cursor:pointer}
+.version-btn b{color:var(--ink);font-weight:700}
+.version-btn:active{background:#F1F4F6}
+.version-btn:focus-visible{outline:3px solid var(--slot);outline-offset:3px}
+.version-modal{position:fixed;z-index:100;inset:0;display:grid;place-items:end center;
+  padding:20px;background:rgba(22,32,43,.42)}
+.version-modal[hidden]{display:none}
+.version-panel{width:min(100%,560px);max-height:min(78vh,620px);overflow:auto;
+  background:var(--card);border:1px solid var(--line);border-radius:16px;
+  box-shadow:0 20px 55px rgba(0,0,0,.28);padding:20px}
+.version-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  padding-bottom:14px;border-bottom:1px solid var(--line)}
+.version-head h2{margin:0;color:var(--ink);font-size:20px;letter-spacing:-.01em;text-transform:none}
+.version-head p{margin:4px 0 0;color:var(--ink-soft);font:600 12px 'IBM Plex Mono',monospace}
+.version-close{flex:0 0 auto;width:36px;height:36px;border:0;border-radius:9px;
+  background:#F1F4F6;color:var(--ink-soft);font-size:24px;line-height:1;cursor:pointer}
+.version-close:active{background:#E2E8ED}
+.version-close:focus-visible{outline:3px solid var(--slot);outline-offset:2px}
+.release{padding:15px 0;border-bottom:1px solid var(--line)}
+.release:last-child{border-bottom:0;padding-bottom:0}
+.release-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.release b{font:700 15px 'IBM Plex Mono',monospace;color:var(--ink)}
+.release time{font:600 11px 'IBM Plex Mono',monospace;color:var(--ink-soft);white-space:nowrap}
+.release ul{margin:8px 0 0;padding-left:18px;color:var(--ink-soft);font-size:14.5px}
+.release li+li{margin-top:4px}
+@media (max-width:480px){
+  .version-btn{left:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));font-size:10px}
+  .version-modal{padding:12px;place-items:end stretch}
+  .version-panel{width:100%;max-height:82vh;padding:17px;border-radius:14px}
+  .release-top{align-items:flex-start;flex-direction:column;gap:3px}
+}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.card h1{display:flex;align-items:flex-start;gap:10px;margin:0;padding:16px 16px 6px;font-size:25px;font-weight:800;letter-spacing:-.015em;line-height:1.15}
+.meta{padding:0 16px 16px;display:flex;flex-wrap:wrap;gap:6px 16px;
+  font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink-soft)}
+.meta b{color:var(--ink);font-weight:600}
+.tbl{display:flex;align-items:center;gap:6px;padding:0 16px 15px;margin-top:-6px}
+.sq{width:27px;height:27px;border-radius:7px;border:2px solid var(--ink);background:#fff;
+  display:grid;place-items:center;font-family:'IBM Plex Mono',monospace;
+  font-size:13px;font-weight:700;color:var(--ink)}
+.sq.on{background:var(--ink);color:#fff}
+.tlab{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink-soft);margin-left:3px}
+.mini{display:inline-flex;gap:3px;margin-right:7px;vertical-align:-1px}
+.mini i{width:13px;height:13px;border-radius:3px;border:2px solid var(--ink-soft);display:inline-block}
+.mini i.on{background:var(--ink-soft)}
+section{border-top:1px solid var(--line);padding:14px 16px}
+h2{margin:0 0 10px;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+
+.tool{display:flex;align-items:flex-start;gap:12px;padding:9px 0;border-bottom:1px dotted var(--line)}
+.tool:last-child{border-bottom:0}
+.badge{flex:0 0 auto;min-width:44px;height:38px;padding:0 6px;border-radius:19px;display:grid;place-items:center;
+  font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:15px;border:2px solid transparent}
+.b-mag{background:var(--slot);color:var(--ink)}
+.b-rankiniu{background:#FFF4DF;color:#5A3A00;border-color:#D9AF63}
+.tool .tn{flex:1;min-width:0}
+.tool .tname{font-weight:600}
+.tool .tsub{font-size:13.5px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace}
+.h{display:inline-block;background:var(--ink);color:#fff;border-radius:5px;padding:1px 7px;
+  font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600}
+
+.offset{margin-bottom:14px}
+.offset:last-child{margin-bottom:0}
+.ostep{font-size:14px;font-weight:600;color:var(--ink-soft);margin-bottom:6px}
+.oxyz{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ocell{background:#F1F4F6;border:1px solid var(--line);border-radius:9px;padding:8px 4px 10px;text-align:center}
+.ocell .lab{display:block;font-family:'Archivo',sans-serif;font-size:11px;font-weight:800;
+  letter-spacing:.18em;color:var(--ink-soft);margin-bottom:2px}
+.ocell .val{display:block;font-family:'IBM Plex Mono',monospace;font-weight:700;
+  font-size:23px;letter-spacing:-.02em;line-height:1.15;color:var(--ink)}
+.ocell.zero .val{color:#9AA8B4}
+.ocell.empty{background:#FFFDF4;border-style:dashed;border-color:#E3CE86}
+.ocell.empty .val{color:#C4B27A}
+.tnote{font-size:13px;color:var(--ink-soft);padding-top:4px}
+
+/* kai offset'e yra atskiros K ir D stalo reik\u0161m\u0117s (pvz. "K>-255" / "D>+1200"),
+   rodoma dviem stulpeliais \u2014 vienas stalui K, vienas stalui D \u2014 vietoj sugrusto teksto viename langelyje */
+.oxyz-kd{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.okdcol{background:#F1F4F6;border:1px solid var(--line);border-radius:9px;padding:8px 4px 10px}
+.okdcol .okdhead{text-align:center;font-family:'Archivo',sans-serif;font-size:11px;font-weight:800;
+  letter-spacing:.14em;color:var(--ink-soft);margin-bottom:6px}
+.okdcol .oxyz{grid-template-columns:repeat(3,1fr);gap:4px}
+.okdcol .ocell{background:#fff;padding:6px 2px 8px}
+.okdcol .ocell .val{font-size:19px}
+@media (max-width:480px){
+  .oxyz-kd{grid-template-columns:1fr}
+  .okdcol .oxyz{grid-template-columns:repeat(3,1fr)}
+  .okdcol .ocell{padding:8px 2px 10px}
+  .okdcol .ocell .val{font-size:17px}
+}
+
+.alert{background:var(--alert-bg);border-left:5px solid var(--alert);border-radius:0 8px 8px 0;
+  padding:11px 13px;margin-bottom:8px;font-weight:600;color:#8A1E12}
+.alert:last-child{margin-bottom:0}
+.note{padding:6px 0;color:var(--ink-soft);font-size:15.5px}
+
+h2.times-h2{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.tglbtn{border:1px solid var(--line);background:#F5F8FA;border-radius:999px;padding:6px 12px;
+  font:700 12px 'Archivo',sans-serif;letter-spacing:.04em;color:var(--ink);cursor:pointer;
+  display:inline-flex;align-items:center;gap:5px;text-transform:none}
+.tglbtn:active{background:#E6ECF0}
+.tglbtn .car{font-size:10px}
+.times-body{margin-top:12px}
+.times-body[hidden]{display:none}
+.times-grp{margin-bottom:14px}
+.times-grp:last-child{margin-bottom:0}
+.times-grp-lab{font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-bottom:7px}
+.times-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.tcell{background:#F1F4F6;border:1px solid var(--line);border-radius:9px;padding:9px 10px;
+  display:flex;flex-direction:column;gap:3px}
+.tcell .lab{font-size:11.5px;color:var(--ink-soft);font-weight:600;line-height:1.25}
+.tcell .val{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:18px;color:var(--ink)}
+.tcell.empty{background:#FFFDF4;border-style:dashed;border-color:#E3CE86}
+.tcell.empty .val{color:#C4B27A;font-size:15px}
+.times-total{display:flex;justify-content:space-between;align-items:baseline;
+  background:var(--ink);color:#fff;border-radius:9px;padding:11px 14px;margin-top:10px}
+.times-total .lab{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#8FA3B5}
+.times-total .val{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:20px;color:#fff}
+.times-loading,.times-error{color:var(--ink-soft);font-size:14.5px;padding:6px 0}
+.times-retry{margin-top:8px;border:1px solid var(--line);background:#F5F8FA;border-radius:8px;
+  padding:8px 12px;font:700 13px 'Archivo',sans-serif;cursor:pointer;color:var(--ink)}
+.times-refresh{margin-top:12px;border:0;background:transparent;color:var(--ink-soft);
+  font:600 12.5px 'Archivo',sans-serif;cursor:pointer;padding:4px 0;text-decoration:underline}
+@media (prefers-reduced-motion:no-preference){
+  .card,.row{animation:in .18s ease-out both}
+  @keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+}
+
+/* ===================== STALAI (padukų dėlionė) — izoliuota nuo likusio puslapio ===================== */
+#tablesView{
+  --bg:#0f1620; --panel:#182430; --line:#2a3a4a; --ink:#e9eef3; --dim:#93a3b3;
+  --board:#8a5a3a; --board2:#7a4e33; --grid:#6b4228; --gridM:#b07a4e;
+  --port:#d7c4a6; --port-open:#ffcf3f; --part:#39c07a; --part-fill:rgba(57,192,122,.10);
+  --ok:#35d07f; --bad:#ff5a52; --accent:#4aa8ff; --sole:rgba(255,255,255,.16);
+  background:var(--bg); color:var(--ink); padding:10px 10px 40px; min-height:100vh;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+#tablesView[hidden]{display:none}
+#tablesView .wrap{max-width:660px;margin:0 auto}
+#tablesView h1{font-size:16px;margin:4px 2px 2px;letter-spacing:.2px;color:var(--ink)}
+#tablesView .sub{color:var(--dim);font-size:12px;margin:0 2px 10px}
+#tablesView .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px;margin-bottom:10px}
+#tablesView .card h2{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--dim);margin:2px 2px 8px}
+#tablesView svg{width:100%;height:auto;display:block;background:#0b1219;border-radius:8px;touch-action:manipulation}
+#tablesView svg line,#tablesView svg polygon,#tablesView svg circle,#tablesView svg path{vector-effect:non-scaling-stroke}
+#tablesView .toolrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+#tablesView button{font:inherit;color:var(--ink);background:#22303d;border:1px solid var(--line);
+  border-radius:10px;padding:11px 12px;min-width:44px;min-height:44px;cursor:pointer}
+#tablesView button:active{background:#2c3d4d}
+#tablesView button.primary{background:var(--accent);border-color:var(--accent);color:#04121f;font-weight:600}
+#tablesView button.danger{background:#3a2222;border-color:#5a3030}
+#tablesView .pad{display:grid;grid-template-columns:repeat(3,54px);grid-template-rows:repeat(3,54px);gap:6px}
+#tablesView .pad button{padding:0;font-size:22px}
+#tablesView .pad .sp{visibility:hidden}
+#tablesView .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#tablesView .field{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--dim)}
+#tablesView .field input,#tablesView .field select{flex:1;min-width:0;background:#0b1219;color:var(--ink);border:1px solid var(--line);
+  border-radius:8px;padding:9px;font:inherit}
+#tablesView .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--dim);margin-top:8px}
+#tablesView .dot{display:inline-block;width:11px;height:11px;border-radius:3px;vertical-align:middle;margin-right:5px}
+#tablesView .read{font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;font-size:13px}
+#tablesView .read .line{padding:7px 8px;border-bottom:1px solid var(--line)}
+#tablesView .read .line:last-child{border-bottom:0}
+#tablesView .badge{font-size:11px;padding:2px 7px;border-radius:999px;font-weight:600}
+#tablesView .badge.ok{background:rgba(53,208,127,.15);color:var(--ok)}
+#tablesView .badge.bad{background:rgba(255,90,82,.15);color:var(--bad)}
+#tablesView .hint{font-size:12px;color:var(--dim);margin:2px 2px 0;line-height:1.45}
+#tablesView .prov{color:#ffcf3f}
+#tablesView .selname{color:var(--accent);font-weight:600}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <b id="title">CNC nustatymai</b><span id="count"></span>
+    <button id="menuBtn" class="iconbtn" aria-label="Meniu" aria-expanded="false">&#9776;</button>
+  </div>
+  <div id="menu" class="menu" hidden>
+    <button data-view="setup">Nustatymai</button>
+    <button data-view="prod">Gamyba</button>
+    <button data-view="tables">Stalai</button>
+  </div>
+  <div id="setupbar">
+  <div class="toprow">
+    <button id="back" class="back" hidden aria-label="Grįžti į gaminių sąrašą">&larr;</button>
+    <div class="searchwrap">
+      <input id="q" type="search" placeholder="Gaminys, programa, T numeris…" autocomplete="off" autocorrect="off" spellcheck="false">
+      <button id="clear" aria-label="Isvalyti paieska">&times;</button>
+    </div>
+  </div>
+  <div class="filters">
+    <select id="fTool" aria-label="Filtruoti pagal magazino vieta"></select>
+    <select id="fType" aria-label="Filtruoti pagal frezos tipa"></select>
+  </div>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<button id="versionBtn" class="version-btn" type="button" aria-haspopup="dialog" aria-controls="versionModal">
+  <b>v1.5.1</b> · 2026-08-10
+</button>
+<div id="versionModal" class="version-modal" role="dialog" aria-modal="true" aria-labelledby="versionTitle" hidden>
+  <div class="version-panel">
+    <div class="version-head">
+      <div>
+        <h2 id="versionTitle">Pakeitimų istorija</h2>
+        <p id="versionCurrent">v1.5.1 · 2026-08-10 21:14</p>
+      </div>
+      <button id="versionClose" class="version-close" type="button" aria-label="Uždaryti pakeitimų istoriją">&times;</button>
+    </div>
+    <div class="release">
+      <div class="release-top"><b>v1.5.1</b><time datetime="2026-08-10T21:14">2026-08-10 21:14</time></div>
+      <ul><li>Pašalinta žingsnių stalo logika: gaminiui naudojamas vienas bendras „Stalas“ laukas.</li></ul>
+    </div>
+    <div class="release">
+      <div class="release-top"><b>v1.5.0</b><time datetime="2026-08-09T14:37">2026-08-09 14:37</time></div>
+      <ul><li>Prie kiekvieno ofseto žingsnio rodoma darbo vieta, pavyzdžiui, „Ant padukų“ arba „Ant šablono“.</li></ul>
+    </div>
+    <div class="release">
+      <div class="release-top"><b>v1.4.3</b><time datetime="2026-08-09T09:07">2026-08-09 09:07</time></div>
+      <ul><li>Pataisytas viešos svetainės ryšys su duomenų API: ofsetai iš „Gaminiai“ lapo vėl rodomi.</li></ul>
+    </div>
+    <div class="release">
+      <div class="release-top"><b>v1.4.2</b><time datetime="2026-08-08T23:25">2026-08-08 23:25</time></div>
+      <ul><li>„Gaminiai“ lapo antraštės pervadintos į aiškius lietuviškus pavadinimus.</li></ul>
+    </div>
+    <div class="release">
+      <div class="release-top"><b>v1.4.1</b><time datetime="2026-08-08T23:05">2026-08-08 23:05</time></div>
+      <ul><li>Supaprastinti įrankių duomenys: pašalinti pertekliniai įrankių tipų stulpeliai.</li><li>T1 ir T3 automatiškai laikomi rankiniais, o kiti įrankiai – magazino.</li></ul>
+    </div>
+    <div class="release">
+      <div class="release-top"><b>v1.4.0</b><time datetime="2026-08-08T21:59">2026-08-08 21:59</time></div>
+      <ul><li>Pridėta versijos žyma ir pakeitimų istorijos langas.</li></ul>
+    </div>
+    <div class="release">
+      <div class="release-top"><b>v1.3.0</b><time datetime="2026-08-08">2026-08-08</time></div>
+      <ul><li>Įrankio vieta rodoma T3, ne TT3.</li><li>„Bumerangai baro“ palikta „12mm grubi“ ir 105 mm.</li><li>Pašalinta klaidinga programos pastaba.</li></ul>
+    </div>
+    <div class="release">
+      <div class="release-top"><b>v1.2.0</b><time datetime="2026-08-08">2026-08-08</time></div>
+      <ul><li>Laikai iš lentelės rodomi tikru m:ss formatu, pvz. 1,3 → 1:30.</li></ul>
+    </div>
+    <div class="release">
+      <div class="release-top"><b>v1.1.0</b><time datetime="2026-08-08">2026-08-08</time></div>
+      <ul><li>Gaminiai ir CNC nustatymai kraunami iš „Google Sheets“ lapo „Gaminiai“.</li></ul>
+    </div>
+  </div>
+</div>
+
+<div id="tablesView" hidden>
+<div class="wrap">
+  <p class="sub">Stalas 120×120&nbsp;cm · varžtai 8×8 (kas 15&nbsp;cm) · poslinkis 3&nbsp;cm · padukas „batas“ 15×15 / viršus 15×7&nbsp;cm.</p>
+
+  <div class="card">
+    <svg id="board" viewBox="-70 -70 2740 1340" role="img" aria-label="Stalo schema"></svg>
+    <p class="hint" style="margin-top:6px">Bakstelėk ant stalo — perkelsi pažymėtą paduką ten. Bakstelėk paduką — jį pažymėsi.</p>
+  </div>
+
+  <div class="card">
+    <h2>Padukai — stūmimas</h2>
+    <div class="toolrow">
+      <button class="primary" id="add">+ Pridėti</button>
+      <button id="rot">⟳ Pasukti 90°</button>
+      <button class="danger" id="del">🗑 Šalinti</button>
+      <span class="hint">Pažymėta: <span class="selname" id="selname">—</span></span>
+    </div>
+    <div class="toolrow" style="margin-top:10px">
+      <div class="pad">
+        <span class="sp"></span><button data-nx="0" data-ny="-1">↑</button><span class="sp"></span>
+        <button data-nx="-1" data-ny="0">←</button><span class="sp"></span><button data-nx="1" data-ny="0">→</button>
+        <span class="sp"></span><button data-nx="0" data-ny="1">↓</button><span class="sp"></span>
+      </div>
+      <div class="hint" style="max-width:200px"><b>Tikslus stūmimas — rodyklėmis</b> ↑↓←→ (po vieną 3&nbsp;cm langelį). Pirštu ant stalo — apytikslis perkėlimas.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Gaminys — išsaugojimas</h2>
+    <div class="toolrow">
+      <input id="pname" placeholder="Gaminio pavadinimas" style="flex:1;min-width:130px;background:#0b1219;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit">
+      <button class="primary" id="save">💾 Išsaugoti</button>
+    </div>
+    <div class="toolrow" style="margin-top:8px">
+      <select id="plist" style="flex:1;min-width:130px;background:#0b1219;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit"><option value="">— pasirinkti išsaugotą —</option></select>
+      <button class="danger" id="pdel">🗑</button>
+    </div>
+    <p class="hint" id="pstatus" style="margin-top:6px">Pasirink iš sąrašo — atsistato stalas, ruošinys ir padukai.</p>
+    <details style="margin-top:6px">
+      <summary class="hint" style="cursor:pointer">Atsarginė kopija (eksportas / importas)</summary>
+      <textarea id="pjson" placeholder="Čia atsiras visų gaminių tekstas — jį gali išsaugoti ar perkelti į kitą įrenginį" style="width:100%;height:80px;margin-top:6px;background:#0b1219;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px;font:12px ui-monospace,monospace"></textarea>
+      <div class="toolrow"><button id="pexport">Rodyti visus</button><button id="pimport">Įkelti iš teksto</button></div>
+    </details>
+  </div>
+
+  <div class="card">
+    <h2>Ruošinys</h2>
+    <div class="grid2">
+      <div class="field"><label>Forma</label>
+        <select id="shape">
+          <option value="rect">Stačiakampis</option>
+          <option value="round">Suapvalinti kampai</option>
+          <option value="circle">Apskritimas</option>
+          <option value="ellipse">Elipsė</option>
+          <option value="arch" selected>Arka viršuje</option>
+        </select></div>
+      <div class="field"><label>Kampų R</label><input id="rad" type="number" value="80" step="10"></div>
+      <div class="field"><label>Plotis</label><input id="pw" type="number" value="1000" step="10"></div>
+      <div class="field"><label>Aukštis</label><input id="ph" type="number" value="600" step="10"></div>
+      <div class="field"><label>Arkos petys</label><input id="sh" type="number" value="250" step="10"></div>
+      <div class="field"><label>Frezos Ø</label><input id="tool" type="number" value="20" step="1"></div>
+    </div>
+    <p class="hint" style="margin-top:6px">Ruošinys visada dedamas nuo apatinio kairio kampo, ilgąja puse horizontaliai (link antrojo stalo).</p>
+  </div>
+
+  <div class="card">
+    <h2>Stalas</h2>
+    <div class="grid2">
+      <div class="field"><label>Plotis</label><input id="tw" type="number" value="1200" step="10"></div>
+      <div class="field"><label>Gylis</label><input id="td" type="number" value="1200" step="10"></div>
+      <div class="field"><label>Tarpas</label><input id="gap" type="number" value="200" step="10"></div>
+      <div class="field"><label>Varžtų žingsnis</label><input id="pitch" type="number" value="150" step="10"></div>
+    </div>
+    <p class="hint" style="margin-top:6px">Du vienodi stalai greta. Pakeitus skaičius — dėlionė ir varžtų tinklelis persibraižo.</p>
+  </div>
+
+  <div class="card">
+    <h2>Ką daryti</h2>
+    <div class="read" id="readout"></div>
+    <p class="hint" style="margin-top:6px">Koordinatė (X,Y): X — kelintas varžtas iš kairės, Y — kelintas nuo apačios.</p>
+  </div>
+
+  <div class="card">
+    <h2>Legenda</h2>
+    <div class="legend" style="margin-top:0">
+      <span><span class="dot" style="background:var(--part)"></span>Ruošinys</span>
+      <span><span class="dot" style="background:var(--ok)"></span>Gerai</span>
+      <span><span class="dot" style="background:var(--bad)"></span>Blogai</span>
+      <span><span class="dot" style="background:var(--sole)"></span>„Padas“ (žemiau frezos)</span>
+      <span><span class="dot" style="background:var(--accent)"></span>Pažymėtas padukas (mėlynas punktyras)</span>
+      <span><span class="dot" style="background:var(--port-open)"></span>Atsuktas varžtas</span>
+    </div>
+  </div>
+
+  <p class="hint">Padukas „gerai“, kai visas siurbimo viršus po ruošiniu ir bent <b id="marg">25</b>&nbsp;mm nuo pjūvio linijos, o po pagrindu yra varžtas. „Padas“ yra žemiau — frezos nesiekia.</p>
+</div>
+</div>
+
+<script>
+const M='magazinas', R='rankiniu';
+
+/* Gaminiai duomenys dabar ateina tiesiai i\u0161 Google Sheets ("Gaminiai" lapas) CSV eksporto.
+   Puslapis TIK skaito \u2014 nieko nera\u0161o atgal. Redaguoji lentel\u0117je, puslapis atsinaujina. */
+let DATA = [];
+let dataLoading = true;
+let dataError = false;
+
+const LT={'\u0105':'a','\u010D':'c','\u0119':'e','\u0117':'e','\u012F':'i','\u0161':'s','\u0173':'u','\u016B':'u','\u017E':'z'};
+const norm = s => (s||'').toLowerCase().replace(/[\u0105\u010D\u0119\u0117\u012F\u0161\u0173\u016B\u017E]/g, c => LT[c]);
+
+const BADGE = {
+  [M]:{cls:'b-mag', label:'Magazinas'},
+  [R]:{cls:'b-rankiniu', label:''}
+};
+/* Irankio vieta lenteleje gali buti irasoma kaip "T3" arba kaip "3".
+   Pridedame T tik antruoju atveju, kad korteleje niekada neatsirastu "TT3". */
+const tag = t => {
+  const nr = String(t.nr||'').trim();
+  return /^T\d+$/i.test(nr) ? nr.toUpperCase() : 'T'+nr;
+};
+
+const STALAI = {
+  'K'  :{L:'on',R:'',  l:'', r:'', txt:'Kairysis stalas'},
+  'D'  :{L:'',  R:'on',l:'', r:'', txt:'De\u0161inysis stalas'},
+  'KD' :{L:'on',R:'on',l:'', r:'', txt:'Abu stalai kartu'},
+  'K>D':{L:'on',R:'',  l:'1',r:'2',txt:'Kairysis, po to de\u0161inysis'},
+  'D>K':{L:'',  R:'on',l:'2',r:'1',txt:'De\u0161inysis, po to kairysis'},
+  'K+KD':{L:'on',R:'on',l:'1',r:'2',txt:'Gr\u0119\u017Eimas ant kairiojo, po to abu paeiliui'}
+};
+const ST_MINI = {K:['on',''], D:['','on'], KD:['on','on'], 'K>D':['on',''], 'D>K':['','on'], 'K+KD':['on','on']};
+function miniHTML(v){
+  const o = ST_MINI[v]; if(!o) return '';
+  return `<span class="mini" aria-hidden="true"><i class="${o[0]}"></i><i class="${o[1]}"></i></span>`;
+}
+function stalasHTML(v){
+  const o = STALAI[v]; if(!o) return '';
+  return `<div class="tbl">
+    <span class="sq ${o.L}">${o.l}</span><span class="sq ${o.R}">${o.r}</span>
+    <span class="tlab">${o.txt}</span></div>`;
+}
+
+const TYPES = [
+  ['grubi','Grubi'],['svelni','\u0160velni'],['graztas','Gr\u0105\u017Etas'],
+  ['deimantine','Deimantin\u0117'],['kairine','Kairin\u0117'],['apvali','Apvali / ball'],
+  ['ball','Apvali / ball'],['pjuklas','Pj\u016Bklas'],['spiraline','Spiralin\u0117'],
+  ['skliautine','Skliautin\u0117'],['radiusine','Radiusin\u0117']
+];
+function typesOf(name){
+  const nm = norm(name);
+  const out = new Set();
+  TYPES.forEach(([k,lab]) => { if(nm.includes(k)) out.add(lab); });
+  return [...out];
+}
+
+const app=document.getElementById('app'), q=document.getElementById('q');
+const clearBtn=document.getElementById('clear'), countEl=document.getElementById('count');
+const fTool=document.getElementById('fTool'), fType=document.getElementById('fType');
+const backBtn=document.getElementById('back');
+const versionBtn=document.getElementById('versionBtn');
+const versionModal=document.getElementById('versionModal');
+const versionClose=document.getElementById('versionClose');
+function openVersion(){
+  versionModal.hidden=false;
+  versionClose.focus();
+}
+function closeVersion(){
+  versionModal.hidden=true;
+  versionBtn.focus();
+}
+versionBtn.addEventListener('click', openVersion);
+versionClose.addEventListener('click', closeVersion);
+versionModal.addEventListener('click', e => { if(e.target===versionModal) closeVersion(); });
+document.addEventListener('keydown', e => {
+  if(e.key==='Escape' && !versionModal.hidden) closeVersion();
+});
+backBtn.addEventListener('click', () => {
+  if(view==='prod'){ pview='orders'; renderProd(); } else list();
+  window.scrollTo(0,0);
+});
+
+/* Praturtina DATA (i\u0161 Google Sheets CSV) paie\u0161kos/filtr\u0173 laukais ir perkuria \u012Frank\u0173/tip\u0173 filtr\u0173 s\u0105ra\u0161us.
+   Kvie\u010Diama pirm\u0105 kart\u0105 su tu\u0161\u010Dia DATA (kol duomenys dar kraunasi), tada dar kart\u0105 kai jie ateina. */
+function enrichData(){
+  DATA.forEach(d => {
+    d._tags = new Set();
+    d._types = new Set();
+    (d.tools||[]).forEach(t => { d._tags.add(tag(t)); typesOf(t.name).forEach(x => d._types.add(x)); });
+    d._idx = norm([d.n, d.p, d.baz, d.sab, d.kompl, d.steps, (STALAI[d.stalas]||{}).txt,
+      (d.tools||[]).map(t => tag(t)+' '+t.nr+' vieta '+t.name+' '+(t.sub||'')+' '+(BADGE[t.t]||{}).label).join(' '),
+      (d.notes||[]).join(' '), (d.alerts||[]).join(' ')].join(' '));
+  });
+
+  const allTags = [...new Set(DATA.flatMap(d => [...d._tags]))]
+    .sort((a,b) => (parseInt(a.slice(1))||99) - (parseInt(b.slice(1))||99));
+  fTool.innerHTML = '<option value="">Visi \u012Frankiai</option>' + allTags.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');
+  const allTypes = [...new Set(DATA.flatMap(d => [...d._types]))].sort();
+  fType.innerHTML = '<option value="">Visi tipai</option>' + allTypes.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');
+}
+enrichData();
+
+/* Gaminiai iš Google Sheets — tik skaitymui, joks rašymas atgal nevyksta.
+   CSV atkeliauja "žaliu" pavidalu (eilutės/stulpeliai), todėl čia jį
+   paverčiame į tą pačią struktūrą, kokią anksčiau grąžindavo server.js. */
+
+/* Įrankio vieta nusako jo paėmimo būdą: T1 ir T3 keičiami rankiniu būdu,
+   visi kiti įrankiai paimami iš magazino. */
+function toolTypeFromSlot(vieta){
+  const raw = String(vieta || '').trim().toUpperCase();
+  const slot = /^\d+$/.test(raw) ? `T${raw}` : raw;
+  return slot === 'T1' || slot === 'T3' ? 'rankiniu' : 'magazinas';
+}
+
+function rowsToGaminiai(rows){
+  if(!rows.length) return [];
+  const header = rows[0];
+  const idx = {};
+  header.forEach((h,i) => { idx[h.trim()] = i; });
+  const get = (r,name) => { const i = idx[name]; return i===undefined ? '' : (r[i]||'').trim(); };
+  const getAny = (r, ...names) => {
+    for(const name of names){ const v = get(r,name); if(v) return v; }
+    return '';
+  };
+
+  const out = [];
+  for(let ri=1; ri<rows.length; ri++){
+    const r = rows[ri];
+    const n = get(r,'Pavadinimas');
+    if(!n) continue;
+
+    const d = { n };
+    const p = get(r,'Programa'); if(p) d.p = p;
+    const baz = get(r,'Bazė'); if(baz) d.baz = baz;
+    const sab = get(r,'Šablonai'); if(sab) d.sab = sab;
+    const kompl = get(r,'Komplektas'); if(kompl) d.kompl = kompl;
+    const stalas = get(r,'Stalas'); if(stalas) d.stalas = stalas;
+    const kategorija = get(r,'Kategorija'); if(kategorija) d.kategorija = kategorija;
+
+    const notes = get(r,'Pastabos').split('\n').map(s=>s.trim()).filter(Boolean);
+    if(notes.length) d.notes = notes;
+    const alerts = get(r,'Įspėjimai').split('\n').map(s=>s.trim()).filter(Boolean);
+    if(alerts.length) d.alerts = alerts;
+
+    const off = [];
+    for(let s=1; s<=4; s++){
+      const x = getAny(r, `${s} žingsnis X`, `Step${s}_X`);
+      const y = getAny(r, `${s} žingsnis Y`, `Step${s}_Y`);
+      const z = getAny(r, `${s} žingsnis Z`, `Step${s}_Z`);
+      const pastaba = getAny(r, `${s} žingsnio pavadinimas`, `Step${s}_Pastaba`);
+      const st = getAny(r, `${s} žingsnio stalas`, `Step${s}_Stalas`);
+      if(!x && !y && !z && !pastaba && !st) continue;
+      let sLabel = pastaba, note = '';
+      if(pastaba.includes(' | ')){ const parts = pastaba.split(' | '); sLabel = parts[0]; note = parts.slice(1).join(' | '); }
+      const o = {};
+      if(st) o.st = st;
+      if(sLabel) o.s = sLabel;
+      if(x) o.x = x; if(y) o.y = y; if(z) o.z = z;
+      if(note) o.note = note;
+      off.push(o);
+    }
+    if(off.length) d.off = off;
+
+    const tools = [];
+    for(let t=1; t<=6; t++){
+      const vieta = getAny(r, `${t} įrankio T nr.`, `Irankis${t}_Vieta`);
+      const aprasymas = getAny(r, `${t} įrankio aprašymas`, `Irankis${t}_Aprasymas`);
+      const aukstis = getAny(r, `${t} įrankio ilgis mm`, `Irankis${t}_Aukstis`);
+      if(!vieta && !aprasymas && !aukstis) continue;
+      let name = aprasymas, sub = '';
+      if(aprasymas.includes(' — ')){ const parts = aprasymas.split(' — '); name = parts[0]; sub = parts.slice(1).join(' — '); }
+      const tool = { t: toolTypeFromSlot(vieta), nr: vieta, name };
+      if(aukstis) tool.h = aukstis;
+      if(sub) tool.sub = sub;
+      tools.push(tool);
+    }
+    if(tools.length) d.tools = tools;
+
+    out.push(d);
+  }
+  return out;
+}
+
+async function loadGaminiai(){
+  dataLoading = true; dataError = false;
+  if(view==='setup') list();
+  try{
+    const r = await fetch(GAMINIAI_CSV_URL, {cache:'no-store'});
+    if(!r.ok) throw new Error('http '+r.status);
+    const text = await r.text();
+    const rows = parseCSV(text);
+    DATA = rowsToGaminiai(rows);
+    dataLoading = false;
+    enrichData();
+  }catch(e){
+    console.error('Nepavyko užkrauti gaminių:', e);
+    dataLoading = false;
+    dataError = true;
+  }
+  if(view==='setup') list();
+}
+
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* --- laikai (rankiniu budu pildoma g-sheets lentele, tik skaitymui) --- */
+/* Duomenys imami TIESIOGIAI iš Google Sheets CSV eksporto — jokio
+   backend'o/serverio nereikia. Sheet turi likti "Anyone with the link –
+   Viewer" (peržiūrai), kad šis eksportas veiktų. Jei pakeisi lentelę
+   (naują lapą, kitą ID), atnaujink šiuos du URL. */
+const SHEET_ID = '1FOstpyQYfAShdJLFqAOPmGFGUsrpwGlspYWVD4-Rj2c';
+const TIMES_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+const GAMINIAI_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=464032603`;
+const TIME_GROUPS = [
+  {lab:'Pasiruo\u0161imas', items:[
+    {k:'\u012Eranki\u0173 keitimas', l:'\u012Eranki\u0173 keitimas'},
+    {k:'\u0160ablono u\u017Ed\u0117jimas', l:'\u0160ablono u\u017Ed\u0117jimas'},
+    {k:'Programos parinkimas', l:'Programos parinkimas'}
+  ]},
+  {lab:'CNC ciklas', items:[
+    {k:'1 step', l:'1 step'},
+    {k:'2 step', l:'2 step'},
+    {k:'3 step', l:'3 step'},
+    {k:'Serijos keitimas', l:'Serijos keitimas'}
+  ]}
+];
+let timesMap = null, timesPromise = null;
+
+function parseCSV(text){
+  const rows=[]; let row=[]; let field=''; let inQ=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(inQ){
+      if(c==='"'){ if(text[i+1]==='"'){ field+='"'; i++; } else inQ=false; }
+      else field+=c;
+    } else {
+      if(c==='"') inQ=true;
+      else if(c===','){ row.push(field); field=''; }
+      else if(c==='\r'){ /* ignoruojama */ }
+      else if(c==='\n'){ row.push(field); rows.push(row); row=[]; field=''; }
+      else field+=c;
+    }
+  }
+  if(field!=='' || row.length){ row.push(field); rows.push(row); }
+  return rows.filter(r => r.some(v => v!==''));
+}
+/* Google Sheets antrasciu langeliuose kartais yra vidiniai eilutes luziai/keli tarpai
+   (pvz. "\u012Erankiu \n keitimas"). Sutraukiame juos i viena tarpa, kad raktai
+   sutaptu su TIME_GROUPS apibrezimais nepaisant to, kaip tekstas suskaidytas lenteleje. */
+const normHeader = h => (h||'').replace(/\s+/g, ' ').trim();
+
+function buildTimesMap(text){
+  const rows = parseCSV(text);
+  const map = {};
+  if(!rows.length) return map;
+  const header = rows[0].map(normHeader);
+  for(let i=1;i<rows.length;i++){
+    const r = rows[i]; if(!r[0] || !r[0].trim()) continue;
+    const obj = {};
+    header.forEach((h,idx) => obj[h] = (r[idx]||'').trim());
+    map[norm(r[0].trim())] = obj;
+  }
+  return map;
+}
+function ensureTimes(force){
+  if(timesMap && !force) return Promise.resolve(timesMap);
+  if(timesPromise && !force) return timesPromise;
+  timesPromise = fetch(TIMES_CSV_URL, {cache:'no-store'})
+    .then(r => { if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })
+    .then(text => { timesMap = buildTimesMap(text); timesPromise = null; return timesMap; })
+    .catch(err => { timesPromise = null; throw err; });
+  return timesPromise;
+}
+/* G-sheets lentelėje laikas įvedamas rankiniu būdu kaip "min,sek" trumpuoju formatu:
+   - iki kablelio: minutės (sveikasis skaičius, gali būti tuščias, t.y. 0)
+   - po kablelio 1 skaitmuo: dešimtys sekundžių, pvz. ",3" = 30s
+   - po kablelio 2 skaitmenys: tikslios sekundės, pvz. ",03" = 3s, ",15" = 15s
+   Pvz.: "15" = 15:00, "0,15" = 0:15, "1,3" = 1:30, "1,03" = 1:03.
+   Rezultatas atvaizduojamas kaip m:ss. Reikšmės, kurių neatpažįstame kaip skaičiaus
+   (pvz. laisvas tekstas), rodomos tokios, kokios įrašytos lentelėje. */
+function formatTime(raw){
+  const s = String(raw).trim();
+  if(!s) return '';
+  const m = s.match(/^(\d+)(?:[.,](\d+))?$/);
+  if(!m) return s;
+  const mins = parseInt(m[1], 10) || 0;
+  let secs = 0;
+  if(m[2]){
+    secs = m[2].length === 1 ? parseInt(m[2], 10) * 10 : parseInt(m[2].slice(0, 2), 10);
+  }
+  const totalMin = mins + Math.floor(secs / 60);
+  const remSec = secs % 60;
+  return `${totalMin}:${String(remSec).padStart(2, '0')}`;
+}
+function timesBodyHTML(row){
+  const val = k => { const v = row ? row[normHeader(k)] : ''; return v ? esc(formatTime(v)) : ''; };
+  const groups = TIME_GROUPS.map(g => `
+    <div class="times-grp">
+      <div class="times-grp-lab">${g.lab}</div>
+      <div class="times-grid">
+        ${g.items.map(it => {
+          const v = val(it.k);
+          return `<div class="tcell${v?'':' empty'}"><span class="lab">${esc(it.l)}</span><span class="val">${v || '\u2013'}</span></div>`;
+        }).join('')}
+      </div>
+    </div>`).join('');
+  const missing = !row;
+  /* "Viso" stulpelį jau susumuoja pati Google Sheets lentelė (formulė),
+     čia jį tik atvaizduojame — nedubliuojame skaičiavimo logikos. */
+  const total = row ? (row[normHeader('Viso')] || '') : '';
+  const totalHTML = (total && total !== '00:00')
+    ? `<div class="times-total"><span class="lab">Viso ciklo laikas</span><span class="val">${esc(total)}</span></div>`
+    : '';
+  return `${groups}
+    ${totalHTML}
+    ${missing ? '<div class="tnote">\u0160iam gaminiui laik\u0173 lentel\u0117je n\u0117ra \u012Fra\u0161yta.</div>' : ''}
+    <button class="times-refresh" id="timesRefreshBtn" type="button">\u21BB Atnaujinti i\u0161 lentel\u0117s</button>`;
+}
+function renderTimesFor(name, body, force){
+  ensureTimes(force).then(map => {
+    const row = map[norm((name||'').trim())];
+    body.innerHTML = timesBodyHTML(row);
+    const rb = body.querySelector('#timesRefreshBtn');
+    if(rb) rb.addEventListener('click', () => {
+      body.innerHTML = '<div class="times-loading">Kraunama\u2026</div>';
+      renderTimesFor(name, body, true);
+    });
+  }).catch(() => {
+    body.innerHTML = '<div class="times-error">Nepavyko \u012Fkelti laik\u0173 i\u0161 lentel\u0117s. Patikrinkite interneto ry\u0161\u012F.<br>' +
+      '<button class="times-retry" id="timesRetryBtn" type="button">Bandyti i\u0161 naujo</button></div>';
+    const rt = body.querySelector('#timesRetryBtn');
+    if(rt) rt.addEventListener('click', () => {
+      body.innerHTML = '<div class="times-loading">Kraunama\u2026</div>';
+      renderTimesFor(name, body, true);
+    });
+  });
+}
+function toggleTimes(btn){
+  const name = btn.dataset.timesToggle;
+  const body = btn.closest('.times-sec').querySelector('.times-body');
+  const expanded = btn.getAttribute('aria-expanded') === 'true';
+  if(expanded){
+    btn.setAttribute('aria-expanded','false');
+    body.hidden = true;
+    btn.querySelector('.car').innerHTML = '&#9662;';
+    return;
+  }
+  btn.setAttribute('aria-expanded','true');
+  body.hidden = false;
+  btn.querySelector('.car').innerHTML = '&#9652;';
+  if(!body.dataset.loaded){
+    body.dataset.loaded = '1';
+    body.innerHTML = '<div class="times-loading">Kraunama\u2026</div>';
+    renderTimesFor(name, body, false);
+  }
+}
+
+/* --- prisegimas ir paskutiniai ziureti --- */
+const K_PIN='cnc_pin', K_REC='cnc_rec';
+const mem={};
+function load(k,def){
+  try{ const v=localStorage.getItem(k); return v?JSON.parse(v):def; }
+  catch(e){ return (k in mem)?mem[k]:def; }
+}
+function save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){ mem[k]=v; } }
+const known = n => DATA.some(d=>d.n===n);
+let pinned = new Set((load(K_PIN,[])||[]).filter(known));
+let recent = (load(K_REC,[])||[]).filter(known);
+
+function togglePin(n){
+  pinned.has(n) ? pinned.delete(n) : pinned.add(n);
+  save(K_PIN,[...pinned]);
+}
+function pushRecent(n){
+  recent = [n, ...recent.filter(x=>x!==n)].slice(0,5);
+  save(K_REC,recent);
+}
+
+const star = n => pinned.has(n) ? '\u2605' : '\u2606';
+
+/* nepilni duomenys: nera programos numerio arba truksta X/Y/Z */
+const incomplete = d => !d.p || !(d.off||[]).length ||
+  (d.off||[]).some(o => !o.x && !o.y && !o.z);
+
+const rowHTML = d => `
+  <div class="rowwrap">
+    <button class="row" data-n="${esc(d.n)}">
+      <span class="nm">${esc(d.n)}</span>
+      ${incomplete(d) ? '<span class="bang" aria-label="Truksta duomenu">!</span>' : ''}
+      ${d.p ? `<span class="pr">${esc(d.p)}</span>` : ''}
+    </button>
+    <button class="starbtn${pinned.has(d.n)?' on':''}" data-star="${esc(d.n)}"
+      aria-label="Prisegti ${esc(d.n)}">${star(d.n)}</button>
+  </div>`;
+
+function bind(){
+  app.querySelectorAll('.row, .pinchip, .xchip').forEach(b =>
+    b.addEventListener('click', () => open(b.dataset.n)));
+  app.querySelectorAll('.starbtn').forEach(b =>
+    b.addEventListener('click', e => { e.stopPropagation(); togglePin(b.dataset.star); list(); }));
+  app.querySelectorAll('.tglbtn[data-times-toggle]').forEach(b =>
+    b.addEventListener('click', () => toggleTimes(b)));
+  const cs = document.getElementById('cardstar');
+  if(cs) cs.addEventListener('click', () => {
+    togglePin(cs.dataset.star);
+    cs.classList.toggle('on', pinned.has(cs.dataset.star));
+    cs.textContent = star(cs.dataset.star);
+  });
+}
+
+function list(){
+  backBtn.hidden = true;
+  if(dataLoading){
+    countEl.textContent = '';
+    app.innerHTML = '<p class="empty">Kraunami gaminiai i\u0161 lentel\u0117s\u2026</p>';
+    return;
+  }
+  if(dataError){
+    countEl.textContent = '';
+    app.innerHTML = '<p class="empty">Nepavyko u\u017Ekrauti gamini\u0173 duomen\u0173.<br>Patikrink interneto ry\u0161\u012F ir band\u0117k <button id="retryLoad" class="pinchip" type="button">i\u0161 naujo</button>.</p>';
+    const rb = document.getElementById('retryLoad');
+    if(rb) rb.addEventListener('click', loadGaminiai);
+    return;
+  }
+  if(!DATA.length){
+    countEl.textContent = '0 gaminiai';
+    app.innerHTML = '<p class="empty">Lentel\u0117je ("Gaminiai" lapas) dar n\u0117ra nei vieno gaminio su u\u017Epildytu pavadinimu.</p>';
+    return;
+  }
+  const term = norm(q.value.trim()), ft = fTool.value, fy = fType.value;
+  fTool.classList.toggle('on', !!ft); fType.classList.toggle('on', !!fy);
+  const hits = DATA.filter(d =>
+    (!term || d._idx.includes(term)) && (!ft || d._tags.has(ft)) && (!fy || d._types.has(fy)));
+  const filtered = term || ft || fy;
+  countEl.textContent = filtered ? `${hits.length} i\u0161 ${DATA.length}` : `${DATA.length} gaminiai`;
+
+  if(!hits.length){
+    app.innerHTML = '<p class="empty">Pagal \u0161iuos kriterijus gamini\u0173 n\u0117ra.<br>I\u0161valykite paie\u0161k\u0105 arba pakeiskite filtr\u0105.</p>';
+    return;
+  }
+
+  let html = '';
+  if(filtered){
+    html = hits.map(rowHTML).join('');
+  } else {
+    const rec = recent.filter(n => !pinned.has(n));
+    if(rec.length){
+      html += '<div class="section-lab">Paskutiniai \u017Ei\u016Br\u0117ti</div><div class="pinrow">' +
+        rec.map(n => `<button class="pinchip" data-n="${esc(n)}">${esc(n)}</button>`).join('') + '</div>';
+    }
+    const pin = hits.filter(d => pinned.has(d.n));
+    if(pin.length){
+      html += '<div class="section-lab">Prisegti</div>' + pin.map(rowHTML).join('');
+      html += '<div class="section-lab">Visi gaminiai</div>';
+    }
+    html += hits.filter(d => !pinned.has(d.n)).map(rowHTML).join('');
+  }
+  app.innerHTML = html;
+  bind();
+}
+
+function open(name){
+  const d = DATA.find(x => x.n === name); if(!d) return;
+  pushRecent(name);
+
+  const meta = [
+    d.p ? `<span>Programa <b>${esc(d.p)}</b></span>` : '',
+    d.baz ? `<span>\u0160ablonas <b>${esc(d.baz)}</b></span>` : '',
+    d.sab ? `<span>\u0160ablonai <b>${esc(d.sab)}</b></span>` : '',
+    d.steps ? `<span>Step <b>${esc(d.steps)}</b></span>` : '',
+    d.kompl ? `<span>Komplektas <b>${esc(d.kompl)}</b></span>` : ''
+  ].join('');
+
+  const tools = (d.tools||[]).map(t => {
+    const b = BADGE[t.t] || BADGE[M];
+    const sub = [b.label, t.sub].filter(Boolean).join(' \u00B7 ');
+    const others = DATA.filter(x => x.n !== d.n && x._tags.has(tag(t))).map(x => x.n);
+    const xref = others.length ? `<div class="xref"><span class="xlab">${esc(tag(t))} taip pat:</span>` +
+      others.map(n => `<button class="xchip" data-n="${esc(n)}">${esc(n)}</button>`).join('') + '</div>' : '';
+    return `<div class="tool">
+      <div class="badge ${b.cls}">${esc(tag(t))}</div>
+      <div class="tn">
+        <div class="tname">${esc(t.name)} ${t.h ? `<span class="h">${esc(t.h)} mm</span>` : ''}</div>
+        <div class="tsub">${esc(sub)}</div>
+        ${xref}
+      </div></div>`;
+  }).join('');
+
+  const cell = (lab,v) => {
+    const empty = v === '' || v === undefined || v === null;
+    const cls = empty ? ' empty' : (String(v)==='0' ? ' zero' : '');
+    return `<div class="ocell${cls}"><span class="lab">${lab}</span><span class="val">${empty?'\u2013':esc(v)}</span></div>`;
+  };
+
+  /* Kai X/Y/Z reik\u0161m\u0117je yra atskiros K> ir D> \u017Eym\u0117s (abu stalai naudojami tam pa\u010Diam \u017Eingsniui),
+     i\u0161skaidome \u012F {k,d} objekt\u0105, kad b\u016Bt\u0173 galima rodyti dviem atskirais stulpeliais.
+     Pastaba: parsinama rankiniu b\u016Bdu (indexOf/slice), NE regex-u su persidengian\u010Diais kvantifikatoriais,
+     kad b\u016Bt\u0173 i\u0161vengta katastrofinio backtracking (ReDoS) rizikos ilgiems/nenuspejamiems \u012Fvedimams. */
+  const KD_HEAD_RE = /^\s*([KD])>/i;
+  const splitKD = v => {
+    if (v === undefined || v === null) return null;
+    const s = String(v);
+    const head = s.match(KD_HEAD_RE);
+    if (!head) return null;
+    const first = head[1].toUpperCase();
+    const second = first === 'K' ? 'D' : 'K';
+    const secondIdx = s.search(new RegExp(second + '>', 'i'));
+    if (secondIdx === -1) return null;
+    const firstVal = s.slice(head[0].length, secondIdx).trim();
+    const secondVal = s.slice(secondIdx + 2).trim();
+    return first === 'K' ? { k: firstVal, d: secondVal } : { k: secondVal, d: firstVal };
+  };
+
+  const off = (d.off||[]).map(o => {
+    const blank = !o.x && !o.y && !o.z;
+    const xkd = splitKD(o.x), ykd = splitKD(o.y), zkd = splitKD(o.z);
+    const isKD = xkd || ykd || zkd;
+    const xyzHTML = isKD
+      ? `<div class="oxyz-kd">
+          <div class="okdcol"><div class="okdhead">Kair\u0117 (K)</div>
+            <div class="oxyz">${cell('X',xkd?xkd.k:o.x)}${cell('Y',ykd?ykd.k:o.y)}${cell('Z',zkd?zkd.k:o.z)}</div></div>
+          <div class="okdcol"><div class="okdhead">De\u0161in\u0117 (D)</div>
+            <div class="oxyz">${cell('X',xkd?xkd.d:o.x)}${cell('Y',ykd?ykd.d:o.y)}${cell('Z',zkd?zkd.d:o.z)}</div></div>
+        </div>`
+      : `<div class="oxyz">${cell('X',o.x)}${cell('Y',o.y)}${cell('Z',o.z)}</div>`;
+    const mini = isKD ? miniHTML('KD') : '';
+    const stepName = esc(o.s||'');
+    return `<div class="offset">
+      ${(stepName||mini) ? `<div class="ostep">${mini}${stepName}</div>` : ''}
+      ${xyzHTML}
+      ${blank ? '<div class="tnote">U\u017Era\u0161uose nenurodyta</div>' : ''}
+      ${o.note ? `<div class="tnote">${esc(o.note)}</div>` : ''}
+    </div>`;
+  }).join('');
+  const offSection = off ? `<section><h2>Offsetai</h2>${off}</section>` : '';
+
+  const timesSection = `<section class="times-sec">
+    <h2 class="times-h2">Laikai
+      <button class="tglbtn" data-times-toggle="${esc(d.n)}" aria-expanded="false">Detaliau <span class="car">&#9662;</span></button>
+    </h2>
+    <div class="times-body" hidden></div>
+  </section>`;
+
+  app.innerHTML = `
+    <article class="card">
+      <h1><span>${esc(d.n)}</span>
+        <button class="cardstar${pinned.has(d.n)?' on':''}" id="cardstar" data-star="${esc(d.n)}"
+          aria-label="Prisegti">${star(d.n)}</button></h1>
+      <div class="meta">${meta}</div>
+      ${stalasHTML(d.stalas)}
+      ${d.alerts ? `<section><h2>B\u016Btina</h2>${d.alerts.map(a=>`<div class="alert">${esc(a)}</div>`).join('')}</section>` : ''}
+      ${tools ? `<section><h2>\u012Erankiai</h2>${tools}</section>` : ''}
+      ${offSection}
+      ${d.notes ? `<section><h2>Pastabos</h2>${d.notes.map(n=>`<div class="note">\u2022 ${esc(n)}</div>`).join('')}</section>` : ''}
+      ${timesSection}
+    </article>`;
+  bind();
+  backBtn.hidden = false;
+  window.scrollTo(0,0);
+}
+
+/* ===================== GAMYBA ===================== */
+const K_LOG='cnc_log', K_ORD='cnc_ord';
+let log    = (load(K_LOG,[])||[]).filter(e => e && e.n && e.q);
+let orders = (load(K_ORD,[])||[]).filter(o => o && o.id && o.n);
+
+const menuBtn=document.getElementById('menuBtn'), menu=document.getElementById('menu');
+const setupbar=document.getElementById('setupbar'), titleEl=document.getElementById('title');
+const tablesView=document.getElementById('tablesView');
+let view='setup';          /* setup | prod | tables */
+let pview='orders';        /* orders | order | new */
+let curId=null;
+let ofilter='all';          /* new | active | urgent | done | all */
+let draft={n:'', o:'', g:'', plan:'', info:''};
+
+const pad = x => String(x).padStart(2,'0');
+const dayKey = iso => iso.slice(0,10);
+const todayKey = () => { const d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); };
+const dayLabel = k => {
+  const t=new Date(); const y=new Date(Date.now()-864e5);
+  const f=d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+  if(k===f(t)) return '\u0160iandien';
+  if(k===f(y)) return 'Vakar';
+  const [Y,M,D]=k.split('-'); return `${D}.${M}.${Y}`;
+};
+const hhmm = iso => { const d=new Date(iso); return pad(d.getHours())+':'+pad(d.getMinutes()); };
+const uid = () => 'o' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+
+const doneOf = id => log.filter(e => e.oid===id).reduce((a,e) => a + Number(e.q), 0);
+const pct = o => { const p=Number(o.plan)||0; return p ? Math.min(100, Math.round(doneOf(o.id)/p*100)) : 0; };
+
+function bar(o){
+  const v=pct(o), full=v>=100;
+  return `<div class="bar${full?' full':''}"><i style="width:${v}%"></i></div>
+    <div class="barlab"><span>${doneOf(o.id)} / ${esc(o.plan)} vnt</span><b>${v}%</b></div>`;
+}
+
+/* ---------- naršymas ---------- */
+function setView(v){
+  view=v; menu.hidden=true; menuBtn.setAttribute('aria-expanded','false');
+  setupbar.hidden = (v!=='setup');
+  app.hidden = (v==='tables');
+  tablesView.hidden = (v!=='tables');
+  titleEl.textContent = v==='prod' ? 'Gamyba' : (v==='tables' ? 'Stalai' : 'CNC nustatymai');
+  backBtn.hidden = true;
+  menu.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.view===v));
+  if(v==='prod'){ pview='orders'; renderProd(); }
+  else if(v==='tables'){ countEl.textContent=''; if(window.StaluSkaiciavimas) window.StaluSkaiciavimas.refresh(); }
+  else list();
+  window.scrollTo(0,0);
+}
+menuBtn.addEventListener('click', () => {
+  menu.hidden = !menu.hidden;
+  menuBtn.setAttribute('aria-expanded', String(!menu.hidden));
+  menu.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.view===view));
+});
+menu.querySelectorAll('button').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+
+function renderProd(){
+  if(pview==='order' && orders.some(o=>o.id===curId)) return renderOrder();
+  if(pview==='new') return renderNew();
+  return renderOrders();
+}
+
+/* ---------- užsakymų sąrašas ---------- */
+function renderOrders(){
+  backBtn.hidden = true;
+  const today = log.filter(e => dayKey(e.t)===todayKey()).reduce((a,e)=>a+Number(e.q),0);
+  const isNew = o => doneOf(o.id)===0 && pct(o)<100;
+  const isActive = o => doneOf(o.id)>0 && pct(o)<100;
+  const news = orders.filter(isNew);
+  const act = orders.filter(isActive);
+  const urg = orders.filter(o => o.urgent && pct(o)<100);
+  const fin = orders.filter(o => pct(o) >= 100);
+  countEl.textContent = orders.length ? `${news.length+act.length} vykdomi` : '';
+
+  const FILTERS = [
+    ['all','Visi', orders.length],
+    ['new','Nauji', news.length],
+    ['active','Vykdomi', act.length],
+    ['urgent','Skub\u016Bs', urg.length],
+    ['done','\u012Evykdyti', fin.length]
+  ];
+  const filterBar = orders.length ? `<div class="sfilter">${FILTERS.map(([k,lab,n]) =>
+    `<button data-f="${k}"${ofilter===k?' class="on"':''}>${lab} (${n})</button>`).join('')}</div>` : '';
+
+  const shown = ofilter==='new' ? news : ofilter==='active' ? act :
+    ofilter==='urgent' ? urg : ofilter==='done' ? fin : orders;
+
+  const card = o => `
+    <button class="ocard${pct(o)>=100?' done':''}" data-id="${esc(o.id)}">
+      <div class="ohead"><span class="onm">${o.urgent?'<span class="ubadge" aria-label="Skubus">\u26A0</span> ':''}${esc(o.n)}</span></div>
+      <div class="osub">${[o.o?'U\u017Es. '+esc(o.o):'', o.g?'Graf. '+esc(o.g):''].filter(Boolean).join(' \u00B7 ') || '\u2014'}</div>
+      ${bar(o)}
+    </button>`;
+
+  app.innerHTML = `
+    <button class="save" id="newbtn">+ Naujas u\u017Esakymas</button>
+    <div class="today">\u0160iandien pagaminta <b>${today}</b> vnt</div>
+    ${filterBar}
+    ${shown.length ? shown.map(card).join('') :
+      orders.length ? `<p class="empty">Pagal \u0161\u012F filtr\u0105 u\u017Esakym\u0173 n\u0117ra.</p>` :
+      '<p class="empty">U\u017Esakym\u0173 dar n\u0117ra.<br>Prad\u0117kite nuo mygtuko vir\u0161uje.</p>'}
+    ${log.length ? '<button class="expbtn" id="exp">Eksportuoti CSV</button>' : ''}`;
+
+  document.getElementById('newbtn').addEventListener('click', () => {
+    draft={n:'', o:'', g:'', plan:'', info:'', urgent:false}; pview='new'; renderProd(); });
+  app.querySelectorAll('.sfilter button').forEach(b => b.addEventListener('click', () => {
+    ofilter=b.dataset.f; renderProd(); }));
+  app.querySelectorAll('.ocard').forEach(b => b.addEventListener('click', () => {
+    curId=b.dataset.id; pview='order'; renderProd(); window.scrollTo(0,0); }));
+  bindExport();
+}
+
+/* ---------- naujas užsakymas ---------- */
+function renderNew(){
+  backBtn.hidden = false;
+  countEl.textContent = '';
+  app.innerHTML = `
+    <div class="pcard">
+      <div class="fld"><label for="nn">Gaminys</label>
+        <select id="nn"><option value="">\u2014 pasirinkite \u2014</option>
+        ${DATA.map(d=>`<option value="${esc(d.n)}"${draft.n===d.n?' selected':''}>${esc(d.n)}</option>`).join('')}
+        </select></div>
+      <div class="fld"><label for="no">U\u017Esakymo nr.</label>
+        <input id="no" type="text" autocomplete="off" value="${esc(draft.o)}"></div>
+      <div class="fld"><label for="ng">Grafiko nr.</label>
+        <input id="ng" type="text" autocomplete="off" value="${esc(draft.g)}"></div>
+      <div class="fld"><label for="np">U\u017Esakyta vnt.</label>
+        <input id="np" type="number" inputmode="numeric" min="1" step="1" value="${esc(draft.plan)}"></div>
+      <div class="fld"><label for="ni">Papildoma informacija</label>
+        <textarea id="ni" placeholder="Pastabos, ypatumai, susitarimai\u2026">${esc(draft.info)}</textarea></div>
+      <label class="chk"><input type="checkbox" id="nu"${draft.urgent?' checked':''}><span>\u26A0 Skubus u\u017Esakymas</span></label>
+      <button class="save" id="ncreate">Sukurti u\u017Esakym\u0105</button>
+    </div>`;
+  const nn=document.getElementById('nn'), no=document.getElementById('no'),
+        ng=document.getElementById('ng'), np=document.getElementById('np'),
+        ni=document.getElementById('ni'), nu=document.getElementById('nu'), cr=document.getElementById('ncreate');
+  const sync = () => { draft={n:nn.value,o:no.value,g:ng.value,plan:np.value,info:ni.value,urgent:nu.checked};
+    cr.disabled = !draft.n || !(parseInt(draft.plan)>0); };
+  [nn,no,ng,np,ni,nu].forEach(el => el.addEventListener('input', sync));
+  sync();
+  cr.addEventListener('click', () => {
+    if(!draft.n || !(parseInt(draft.plan)>0)) return;
+    const o = {id:uid(), n:draft.n, o:draft.o.trim(), g:draft.g.trim(), info:draft.info.trim(),
+               plan:parseInt(draft.plan), created:new Date().toISOString(), urgent:!!draft.urgent};
+    orders.unshift(o); save(K_ORD, orders);
+    curId=o.id; pview='order'; renderProd(); window.scrollTo(0,0);
+  });
+}
+
+/* ---------- vieno užsakymo langas ---------- */
+function renderOrder(){
+  backBtn.hidden = false;
+  const o = orders.find(x => x.id===curId);
+  const done = doneOf(o.id), left = Math.max(0, Number(o.plan)-done);
+  const ent = log.filter(e => e.oid===o.id);
+  countEl.textContent = '';
+
+  app.innerHTML = `
+    <div class="pcard">
+      <div class="obig">${o.urgent?'<span class="ubadge" aria-label="Skubus">\u26A0</span> ':''}${esc(o.n)}</div>
+      <div class="osub" style="margin-bottom:12px">${[o.o?'U\u017Es. '+esc(o.o):'', o.g?'Graf. '+esc(o.g):''].filter(Boolean).join(' \u00B7 ') || '\u2014'}</div>
+      ${o.info ? `<div class="tnote" style="margin-bottom:12px;white-space:pre-wrap">${esc(o.info)}</div>` : ''}
+      ${bar(o)}
+      <div class="stats">
+        <div><span>Padaryta</span><b>${done}</b></div>
+        <div><span>U\u017Esakyta</span><b>${esc(o.plan)}</b></div>
+        <div><span>Liko</span><b>${left}</b></div>
+      </div>
+    </div>
+
+    <div class="pcard">
+      <div class="fld"><label for="pq">Prid\u0117ti pagamint\u0173</label>
+        <div class="qty">
+          <button id="qm" aria-label="Ma\u017Einti">&minus;</button>
+          <input id="pq" type="number" inputmode="numeric" min="1" step="1" value="1">
+          <button id="qp" aria-label="Didinti">+</button>
+        </div></div>
+      <button class="save" id="psave">\u012Era\u0161yti</button>
+    </div>
+
+    ${ent.length ? '<div class="section-lab">\u012Era\u0161ai</div>' + ent.map(e => `
+      <div class="entry">
+        <div class="qbadge">${esc(e.q)}</div>
+        <div class="en"><div class="enm">${dayLabel(dayKey(e.t))}</div>
+          <div class="esub">${hhmm(e.t)}</div></div>
+        <button class="del" data-id="${esc(e.t)}" aria-label="I\u0161trinti">&times;</button>
+      </div>`).join('') : '<p class="empty">\u012Era\u0161\u0173 dar n\u0117ra.</p>'}
+
+    <div class="pcard" style="margin-top:14px">
+      <div class="fld"><label for="ep">Keisti u\u017Esakyt\u0105 kiek\u012F</label>
+        <input id="ep" type="number" inputmode="numeric" min="1" step="1" value="${esc(o.plan)}"></div>
+      <div class="fld"><label for="ei">Papildoma informacija</label>
+        <textarea id="ei" placeholder="Pastabos, ypatumai, susitarimai\u2026">${esc(o.info||'')}</textarea></div>
+      <label class="chk"><input type="checkbox" id="eu"${o.urgent?' checked':''}><span>\u26A0 Skubus u\u017Esakymas</span></label>
+      <button class="expbtn" id="odel" style="color:var(--alert);border-color:#F0C8C3;margin-top:12px">I\u0161trinti u\u017Esakym\u0105</button>
+    </div>`;
+
+  const pq=document.getElementById('pq');
+  document.getElementById('qm').addEventListener('click', () => pq.value = Math.max(1,(parseInt(pq.value)||1)-1));
+  document.getElementById('qp').addEventListener('click', () => pq.value = (parseInt(pq.value)||0)+1);
+  document.getElementById('psave').addEventListener('click', () => {
+    const q = Math.max(1, parseInt(pq.value)||1);
+    log.unshift({t:new Date().toISOString(), oid:o.id, n:o.n, o:o.o, g:o.g, q});
+    save(K_LOG, log); renderProd();
+  });
+  document.getElementById('ep').addEventListener('change', ev => {
+    const v = parseInt(ev.target.value);
+    if(v>0){ o.plan=v; save(K_ORD, orders); renderProd(); }
+  });
+  document.getElementById('ei').addEventListener('change', ev => {
+    o.info = ev.target.value.trim(); save(K_ORD, orders); renderProd();
+  });
+  document.getElementById('eu').addEventListener('change', ev => {
+    o.urgent = ev.target.checked; save(K_ORD, orders); renderProd();
+  });
+  document.getElementById('odel').addEventListener('click', () => {
+    if(!confirm('I\u0161trinti u\u017Esakym\u0105 ir visus jo \u012Fra\u0161us?')) return;
+    orders = orders.filter(x => x.id!==o.id);
+    log = log.filter(e => e.oid!==o.id);
+    save(K_ORD, orders); save(K_LOG, log);
+    pview='orders'; renderProd();
+  });
+  app.querySelectorAll('.del').forEach(b => b.addEventListener('click', () => {
+    if(!confirm('I\u0161trinti \u0161\u012F \u012Fra\u0161\u0105?')) return;
+    log = log.filter(e => e.t !== b.dataset.id);
+    save(K_LOG, log); renderProd();
+  }));
+}
+
+/* ---------- CSV ---------- */
+function bindExport(){
+  const exp = document.getElementById('exp');
+  if(!exp) return;
+  exp.addEventListener('click', () => {
+    const rows = [['Data','Laikas','Gaminys','Uzsakymo nr','Grafiko nr','Papildoma informacija','Pagaminta','Uzsakyta']]
+      .concat(log.map(e => {
+        const o = orders.find(x => x.id===e.oid);
+        return [dayKey(e.t), hhmm(e.t), e.n, e.o||'', e.g||'', o?(o.info||''):'', e.q, o?o.plan:''];
+      }));
+    const csv = '\uFEFF' + rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(';')).join('\r\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+    a.download = 'gamyba_' + todayKey() + '.csv';
+    a.click(); URL.revokeObjectURL(a.href);
+  });
+}
+
+q.addEventListener('input', () => { clearBtn.classList.toggle('on', q.value.length>0); list(); });
+clearBtn.addEventListener('click', () => { q.value=''; clearBtn.classList.remove('on'); list(); q.focus(); });
+fTool.addEventListener('change', list);
+fType.addEventListener('change', list);
+setView('setup');
+loadGaminiai();
+</script>
+
+<script>
+/* ===================== STALAI (padukų dėlionė) — savarankiškas modulis ===================== */
+(function(){
+  "use strict";
+  var root=document.getElementById('tablesView');
+  if(!root) return;
+  var STEP=30;                  // poslinkis 3 cm
+  var PORT, INSETX, INSETY, TW, TH, GAP, TOTALW, tables, ports=[];
+  function val(id){var e=document.getElementById(id);return e?parseFloat(e.value):NaN;}
+  function insetFor(span,pitch){
+    var n=Math.max(1,Math.round(span/pitch));
+    while(n>1 && (n-1)*pitch > span-2*STEP) n--;
+    return {n:n, inset:Math.round(((span-(n-1)*pitch)/2)/STEP)*STEP};
+  }
+  function rebuild(){
+    TW=val('tw')||1200; TH=val('td')||1200; GAP=val('gap')||200; PORT=val('pitch')||150;
+    tables=[{x0:0,x1:TW},{x0:TW+GAP,x1:TW+GAP+TW}];
+    TOTALW=TW+GAP+TW;
+    var cx=insetFor(TW,PORT), cy=insetFor(TH,PORT);
+    INSETX=cx.inset; INSETY=cy.inset; ports=[];
+    tables.forEach(function(t,ti){
+      for(var ci=0;ci<cx.n;ci++){ var x=t.x0+INSETX+ci*PORT;
+        var col=ti*cx.n+ci+1;                 // kelintas iš kairės (per abu stalus)
+        for(var ri=0;ri<cy.n;ri++){ var y=INSETY+ri*PORT;
+          var row=cy.n-ri;                     // kelintas nuo apačios
+          ports.push({x:x,y:y,open:false,col:col,row:row,lab:col+","+row});
+        }
+      }
+    });
+    if(typeof svg!=='undefined' && svg) svg.setAttribute('viewBox', -70+' '+-70+' '+(TOTALW+140)+' '+(TH+140));
+  }
+
+  var part=[];
+  function buildPart(){
+    var shape=document.getElementById('shape').value;
+    var W=+document.getElementById('pw').value, H=+document.getElementById('ph').value;
+    var r=+document.getElementById('rad').value||0;
+    var X=0, Y=TH-H;   // ruošinys visada nuo apatinio kairio kampo
+    var p=[];
+    function ell(cx,cy,rx,ry,a0,a1){for(var a=a0;a<=a1+0.001;a+=8){var t=a*Math.PI/180; p.push([cx+rx*Math.cos(t), cy+ry*Math.sin(t)]);}}
+    function arc(cx,cy,rr,a0,a1){for(var a=a0;a<=a1+0.001;a+=12){var t=a*Math.PI/180; p.push([cx+rr*Math.cos(t), cy+rr*Math.sin(t)]);}}
+    if(shape==='rect'){
+      p=[[X,Y+H],[X+W,Y+H],[X+W,Y],[X,Y]];
+    } else if(shape==='round'){
+      r=Math.max(0,Math.min(r, Math.min(W,H)/2));
+      var x0=X,x1=X+W,y0=Y,y1=Y+H;
+      arc(x0+r,y0+r,r,180,270); arc(x1-r,y0+r,r,270,360);
+      arc(x1-r,y1-r,r,0,90);    arc(x0+r,y1-r,r,90,180);
+    } else if(shape==='circle'){
+      var d=Math.min(W,H); Y=TH-d; ell(X+d/2,Y+d/2,d/2,d/2,0,360);
+    } else if(shape==='ellipse'){
+      ell(X+W/2,Y+H/2,W/2,H/2,0,360);
+    } else { // arka: tiesios kraštinės apačioje + pusiau-elipsė viršuje
+      var straight=Math.max(0,Math.min(+document.getElementById('sh').value||0, H));
+      var ys=Y+H-straight, ry=H-straight, cx=X+W/2;   // ys = pečių linija
+      p.push([X,Y+H]); p.push([X+W,Y+H]); p.push([X+W,ys]);
+      for(var a=0;a<=180;a+=8){var t=a*Math.PI/180; p.push([cx+(W/2)*Math.cos(t), ys-ry*Math.sin(t)]);}
+      p.push([X,ys]);
+    }
+    part=p;
+  }
+
+  var pods=[]; var sel=-1; var uid=1;
+  pods.push({id:uid++,cx:210,cy:960,rot:0});
+  pods.push({id:uid++,cx:510,cy:960,rot:0});
+  pods.push({id:uid++,cx:810,cy:810,rot:0});
+  sel=0;
+
+  function margin(){ var d=+document.getElementById('tool').value||20; return d/2+15; }
+  function snap(v){ return Math.round(v/STEP)*STEP; }
+  function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+  var PHALF=75; // paduko pagrindo pusė (150/2)
+  function tableFor(cx){ return cx < (TW+GAP/2) ? tables[0] : tables[1]; }
+  function clampInTable(cx,cy,t){
+    var xmin=Math.ceil((t.x0+PHALF)/STEP)*STEP, xmax=Math.floor((t.x1-PHALF)/STEP)*STEP;
+    var ymin=Math.ceil(PHALF/STEP)*STEP, ymax=Math.floor((TH-PHALF)/STEP)*STEP;
+    return [clamp(cx,xmin,xmax), clamp(cy,ymin,ymax)];
+  }
+
+  function inPoly(x,y,poly){
+    var c=false,n=poly.length,j=n-1;
+    for(var i=0;i<n;i++){var xi=poly[i][0],yi=poly[i][1],xj=poly[j][0],yj=poly[j][1];
+      if(((yi>y)!==(yj>y)) && (x<(xj-xi)*(y-yi)/(yj-yi)+xi)) c=!c; j=i;}
+    return c;
+  }
+  function distSeg(px,py,ax,ay,bx,by){
+    var dx=bx-ax,dy=by-ay,l2=dx*dx+dy*dy;
+    var t=l2?((px-ax)*dx+(py-ay)*dy)/l2:0; t=Math.max(0,Math.min(1,t));
+    return Math.hypot(px-(ax+t*dx),py-(ay+t*dy));
+  }
+  function minEdge(x,y,poly){var m=1e9,n=poly.length;
+    for(var i=0;i<n;i++){var j=(i+1)%n; m=Math.min(m,distSeg(x,y,poly[i][0],poly[i][1],poly[j][0],poly[j][1]));}
+    return m;
+  }
+  // ANCHOR = pagrindo centras (ten, kur varžtas). Viršus (210x120) pastumtas į vieną pusę -> „batas“.
+  function podPolys(p){
+    var ang=p.rot*Math.PI/180,c=Math.cos(ang),s=Math.sin(ang);
+    function R(lx,ly){return [p.cx+lx*c-ly*s, p.cy+lx*s+ly*c];}
+    return {
+      base:[R(-75,-75),R(75,-75),R(75,75),R(-75,75)],         // 150x150
+      top: [R(-75,-75),R(75,-75),R(75,-5),R(-75,-5)],         // 150x70, prigludes prie -y krašto
+      sole:[R(-75,-5),R(75,-5),R(75,75),R(-75,75)]            // atviras „padas“ 150x80
+    };
+  }
+  function portUnderBase(basePoly,cx,cy){
+    var best=null,bd=1e9;
+    ports.forEach(function(pt){ if(inPoly(pt.x,pt.y,basePoly)){var d=Math.hypot(pt.x-cx,pt.y-cy); if(d<bd){bd=d;best=pt;}}});
+    return best;
+  }
+  function evalPod(p){
+    var g=podPolys(p), m=margin(), insideAll=true, topNear=false;
+    g.top.forEach(function(c){ if(!inPoly(c[0],c[1],part)) insideAll=false; if(minEdge(c[0],c[1],part)<m) topNear=true; });
+    var port=portUnderBase(g.base,p.cx,p.cy);
+    var good=insideAll && !topNear && !!port;
+    var why="";
+    if(!insideAll) why="viršus kyšo už ruošinio";
+    else if(topNear) why="viršus per arti pjūvio";
+    else if(!port) why="po paduku nėra varžto";
+    return {good:good,why:why,port:port,polys:g};
+  }
+  function syncPorts(){ ports.forEach(function(pt){pt.open=false;});
+    pods.forEach(function(p){var e=evalPod(p); if(e.port) e.port.open=true;});
+  }
+
+  var svg=document.getElementById('board'), NS="http://www.w3.org/2000/svg";
+  function el(n,a,txt){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;return e;}
+  function pstr(pts){return pts.map(function(c){return c[0].toFixed(1)+","+c[1].toFixed(1);}).join(" ");}
+  function bbox(pts){var xs=pts.map(function(c){return c[0];}),ys=pts.map(function(c){return c[1];});
+    return {x:Math.min.apply(0,xs),y:Math.min.apply(0,ys),w:Math.max.apply(0,xs)-Math.min.apply(0,xs),h:Math.max.apply(0,ys)-Math.min.apply(0,ys)};}
+
+  function draw(){
+    buildPart(); syncPorts();
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+    tables.forEach(function(t){
+      svg.appendChild(el('rect',{x:t.x0,y:0,width:t.x1-t.x0,height:TH,fill:'var(--board)',stroke:'var(--board2)','stroke-width':4,rx:6}));
+      for(var x=t.x0;x<=t.x1;x+=STEP){var mj=(((x-t.x0-INSETX)%PORT)+PORT)%PORT===0;
+        svg.appendChild(el('line',{x1:x,y1:0,x2:x,y2:TH,stroke:mj?'var(--gridM)':'var(--grid)','stroke-width':mj?2.2:1,opacity:mj?.9:.55}));}
+      for(var y=0;y<=TH;y+=STEP){var mjy=(((y-INSETY)%PORT)+PORT)%PORT===0;
+        svg.appendChild(el('line',{x1:t.x0,y1:y,x2:t.x1,y2:y,stroke:mjy?'var(--gridM)':'var(--grid)','stroke-width':mjy?2.2:1,opacity:mjy?.9:.55}));}
+    });
+    var kerf=+document.getElementById('tool').value||20;
+    svg.appendChild(el('polygon',{points:pstr(part),fill:'var(--part-fill)',stroke:'var(--part)','stroke-width':kerf,'stroke-linejoin':'round',style:'vector-effect:none'}));
+    ports.forEach(function(pt){
+      svg.appendChild(el('circle',{cx:pt.x,cy:pt.y,r:pt.open?16:9,
+        fill:pt.open?'var(--port-open)':'none',stroke:pt.open?'#8a6a10':'var(--port)','stroke-width':pt.open?3:4}));
+    });
+    pods.forEach(function(p,i){
+      var e=evalPod(p), col=e.good?'var(--ok)':'var(--bad)';
+      svg.appendChild(el('polygon',{points:pstr(e.polys.base),fill:'none',
+        stroke:i===sel?'var(--accent)':'rgba(255,255,255,.30)','stroke-width':i===sel?2.5:1.2,'stroke-dasharray':'8 6'}));
+      svg.appendChild(el('polygon',{points:pstr(e.polys.sole),fill:'var(--sole)',stroke:'none'}));
+      svg.appendChild(el('polygon',{points:pstr(e.polys.top),fill:col,'fill-opacity':.4,stroke:col,'stroke-width':2.5}));
+      var bb=bbox(e.polys.base);
+      svg.appendChild(el('rect',{x:bb.x,y:bb.y,width:bb.w,height:bb.h,fill:'transparent','data-pod':i}));
+      svg.appendChild(el('text',{x:p.cx,y:p.cy+12,fill:'#fff','font-size':34,'font-weight':700,'text-anchor':'middle','pointer-events':'none'},e.port?e.port.lab:'—'));
+    });
+    renderRead();
+    document.getElementById('marg').textContent=Math.round(margin());
+    document.getElementById('selname').textContent= sel>=0?("Padukas "+(sel+1)):"—";
+  }
+  function renderRead(){
+    var r=document.getElementById('readout'); r.innerHTML="";
+    if(!pods.length){r.innerHTML='<div class="line">Nėra padukų. Spausk „Pridėti“, tada bakstelėk ant stalo.</div>';return;}
+    pods.forEach(function(p,i){
+      var e=evalPod(p), d=document.createElement('div'); d.className='line';
+      var badge=e.good?'<span class="badge ok">GERAI</span>':'<span class="badge bad">'+e.why+'</span>';
+      d.innerHTML='Varžtas <b>'+(e.port?('('+e.port.lab+')'):'—')+'</b> &nbsp;'+badge;
+      r.appendChild(d);
+    });
+    var open=ports.filter(function(x){return x.open;}).map(function(x){return '('+x.lab+')';});
+    var s=document.createElement('div'); s.className='line';
+    s.innerHTML='<b>Atsukti varžtus:</b> '+(open.length?open.join(', '):'—');
+    r.appendChild(s);
+  }
+
+  function svgPoint(ev){
+    var pt=svg.createSVGPoint(); pt.x=ev.clientX; pt.y=ev.clientY;
+    return pt.matrixTransform(svg.getScreenCTM().inverse());
+  }
+  svg.addEventListener('click',function(ev){
+    var t=ev.target;
+    if(t.hasAttribute('data-pod')){ sel=+t.getAttribute('data-pod'); draw(); return; }
+    if(sel<0) return;
+    var q=svgPoint(ev);
+    var c=clampInTable(snap(q.x),snap(q.y),tableFor(snap(q.x)));
+    pods[sel].cx=c[0]; pods[sel].cy=c[1];
+    draw();
+  });
+  document.getElementById('add').addEventListener('click',function(){pods.push({id:uid++,cx:600,cy:600,rot:0});sel=pods.length-1;draw();});
+  document.getElementById('del').addEventListener('click',function(){if(sel<0)return;pods.splice(sel,1);sel=pods.length?Math.min(sel,pods.length-1):-1;draw();});
+  document.getElementById('rot').addEventListener('click',function(){if(sel<0)return;pods[sel].rot=(pods[sel].rot+90)%360;draw();});
+  Array.prototype.forEach.call(document.querySelectorAll('#tablesView .pad button'),function(b){
+    b.addEventListener('click',function(){if(sel<0)return;var p=pods[sel];
+      var c=clampInTable(p.cx+(+b.dataset.nx)*STEP, p.cy+(+b.dataset.ny)*STEP, tableFor(p.cx));
+      p.cx=c[0]; p.cy=c[1]; draw();});
+  });
+  ['shape','pw','ph','tool','rad','sh'].forEach(function(id){document.getElementById(id).addEventListener('input',draw);});
+  ['tw','td','gap','pitch'].forEach(function(id){var e=document.getElementById(id); if(e) e.addEventListener('input',function(){rebuild();draw();});});
+
+  // --- saugojimas: naudoja localStorage (arba atminties fallback) ---
+  var KEY='cnc_paduku_layouts';
+  var Store=(function(){
+    var mem={};
+    return {
+      get:function(k){ return Promise.resolve((function(){try{return localStorage.getItem(k);}catch(e){return mem[k]==null?null:mem[k];}})()); },
+      set:function(k,v){ return Promise.resolve((function(){try{localStorage.setItem(k,v);return true;}catch(e){mem[k]=v;return true;}})()); }
+    };
+  })();
+  function loadAll(){return Store.get(KEY).then(function(s){try{return s?JSON.parse(s):{};}catch(e){return {};}});}
+  function saveAll(o){return Store.set(KEY,JSON.stringify(o));}
+  function pstat(t){var e=document.getElementById('pstatus'); if(e) e.textContent=t;}
+  function refreshList(){return loadAll().then(function(o){
+    var s=document.getElementById('plist'), cur=s.value;
+    s.innerHTML='<option value="">— pasirinkti išsaugotą —</option>';
+    Object.keys(o).sort().forEach(function(n){var op=document.createElement('option');op.value=n;op.textContent=n;s.appendChild(op);});
+    s.value=cur;
+  });}
+  function curRecord(){return {
+    table:{tw:val('tw'),td:val('td'),gap:val('gap'),pitch:val('pitch')},
+    part:{shape:document.getElementById('shape').value,pw:val('pw'),ph:val('ph'),rad:val('rad'),sh:val('sh'),tool:val('tool')},
+    pods:pods.map(function(p){return {cx:p.cx,cy:p.cy,rot:p.rot};})
+  };}
+  function setV(id,v){var e=document.getElementById(id); if(e&&v!=null&&v!=='') e.value=v;}
+  function applyRecord(r){
+    if(r.table){setV('tw',r.table.tw);setV('td',r.table.td);setV('gap',r.table.gap);setV('pitch',r.table.pitch);}
+    if(r.part){setV('shape',r.part.shape);setV('pw',r.part.pw);setV('ph',r.part.ph);setV('rad',r.part.rad);setV('sh',r.part.sh);setV('tool',r.part.tool);}
+    pods.length=0; (r.pods||[]).forEach(function(p){pods.push({id:uid++,cx:p.cx,cy:p.cy,rot:p.rot});});
+    sel=pods.length?0:-1; rebuild(); draw();
+  }
+  document.getElementById('save').addEventListener('click',function(){
+    var n=(document.getElementById('pname').value||'').trim();
+    if(!n){pstat('Įveski gaminio pavadinimą.');return;}
+    loadAll().then(function(o){o[n]=curRecord();return saveAll(o);}).then(function(ok){
+      pstat(ok?('Išsaugota: '+n):'Nepavyko išsaugoti.');return refreshList();
+    }).then(function(){document.getElementById('plist').value=n;});
+  });
+  document.getElementById('plist').addEventListener('change',function(){
+    var n=this.value; if(!n)return;
+    loadAll().then(function(o){ if(o[n]){document.getElementById('pname').value=n; applyRecord(o[n]); pstat('Įkelta: '+n);} });
+  });
+  document.getElementById('pdel').addEventListener('click',function(){
+    var n=document.getElementById('plist').value||(document.getElementById('pname').value||'').trim();
+    if(!n){pstat('Pasirink gaminį iš sąrašo.');return;}
+    loadAll().then(function(o){delete o[n];return saveAll(o);}).then(function(){pstat('Ištrinta: '+n);return refreshList();});
+  });
+  document.getElementById('pexport').addEventListener('click',function(){
+    loadAll().then(function(o){var ta=document.getElementById('pjson');ta.value=JSON.stringify(o);ta.select();
+      try{document.execCommand('copy');pstat('Nukopijuota į iškarpinę.');}catch(e){pstat('Pažymėta — kopijuok ranka.');}});
+  });
+  document.getElementById('pimport').addEventListener('click',function(){
+    var ta=document.getElementById('pjson');
+    try{var o=JSON.parse(ta.value); saveAll(o).then(function(){pstat('Importuota.');return refreshList();});}
+    catch(e){pstat('Blogas tekstas (turi būti JSON).');}
+  });
+
+  rebuild();
+  draw();
+  refreshList();
+
+  window.StaluSkaiciavimas = { refresh: function(){ rebuild(); draw(); refreshList(); } };
+})();
+</script>
+</body>
+</html>
