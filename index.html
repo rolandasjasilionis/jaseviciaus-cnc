@@ -305,6 +305,32 @@ h2.times-h2{display:flex;align-items:center;justify-content:space-between;gap:10
   @keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 }
 
+/* ===================== SKAIČIUOKLĖ (stalviršių ir intarpų matmenys) ===================== */
+#calcView .fld2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#calcView .fld2 .fld{margin-bottom:12px}
+#calcView .chk{margin-bottom:8px}
+#calcView .chk input{accent-color:var(--ink)}
+#calcView .chk:has(input:checked){background:#FFF7DB;border-color:var(--slot)}
+#calcView .chk.talk span{color:var(--alert)}
+#calcView .chk[hidden]{display:none}
+.cres{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  padding:12px 2px;border-bottom:1px solid var(--line)}
+.cres:last-child{border-bottom:0}
+.cres .lab{font-weight:600}
+.cres .val{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:22px;white-space:nowrap}
+.cres.small .lab{font-weight:500;color:var(--ink-soft);font-size:15px}
+.cres.small .val{font-size:15px;color:var(--ink-soft);font-weight:600}
+.cres[data-f]{cursor:help;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;border-radius:6px}
+.cres[data-f]:hover,.cres[data-f].tip-on{background:#F4F7F9}
+.cres[data-f]:focus-visible{outline:3px solid var(--slot);outline-offset:1px}
+.ctip{position:fixed;z-index:60;max-width:min(92vw,340px);background:var(--ink);color:#fff;
+  border-radius:10px;padding:10px 12px;box-shadow:0 8px 24px rgba(22,32,43,.28);pointer-events:none;
+  font:500 14px/1.45 'Archivo',sans-serif}
+.ctip[hidden]{display:none}
+.ctip b{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8FA3B5;margin-bottom:3px}
+.ctip code{display:block;font:700 16px 'IBM Plex Mono',monospace;color:var(--slot);margin-top:3px;white-space:normal}
+.chint{font-size:12.5px;color:var(--ink-soft);margin:-4px 2px 14px}
+
 /* ===================== STALAI (padukų dėlionė) — izoliuota nuo likusio puslapio ===================== */
 #tablesView{
   --bg:#0f1620; --panel:#182430; --line:#2a3a4a; --ink:#e9eef3; --dim:#93a3b3;
@@ -358,6 +384,7 @@ h2.times-h2{display:flex;align-items:center;justify-content:space-between;gap:10
   <div id="menu" class="menu" hidden>
     <button data-view="setup">Nustatymai</button>
     <button data-view="prod">Gamyba</button>
+    <button data-view="calc">Stalų skaičiuoklė</button>
     <button data-view="tables">Stalai</button>
   </div>
   <div id="setupbar">
@@ -377,17 +404,74 @@ h2.times-h2{display:flex;align-items:center;justify-content:space-between;gap:10
 
 <main id="app"></main>
 
+<main id="calcView" hidden>
+  <div class="sfilter" id="cMode">
+    <button data-m="intarpas" class="on">Su intarpu</button>
+    <button data-m="be">Be intarpo</button>
+  </div>
+
+  <div class="pcard">
+    <div class="fld2">
+      <div class="fld"><label for="cIlgis">Stalo ilgis</label>
+        <input id="cIlgis" type="number" inputmode="numeric" step="1" value="1200"></div>
+      <div class="fld"><label for="cPlotis">Stalo plotis</label>
+        <input id="cPlotis" type="number" inputmode="numeric" step="1" value="1200"></div>
+      <div class="fld"><label for="cKantas">Kanto Nr</label>
+        <select id="cKantas">
+          <option value="2">Nr 2 (40)</option>
+          <option value="7">Nr 7 (32)</option>
+          <option value="8">Nr 8 (32)</option>
+          <option value="15">Nr 15 (16)</option>
+          <option value="18">Nr 18 (40)</option>
+          <option value="19" selected>Nr 19 (40)</option>
+          <option value="22">Nr 22 (40)</option>
+          <option value="24">Nr 24 (32)</option>
+          <option value="25">Nr 25 (40)</option>
+          <option value="30">Nr 30 (32)</option>
+        </select></div>
+      <div class="fld" id="cNomWrap"><label for="cNom">Intarpo nominalus</label>
+        <input id="cNom" type="number" inputmode="numeric" step="1" value="500"></div>
+    </div>
+    <label class="chk"><input type="checkbox" id="cSumba"><span>Sumba (kanto neatimam)</span></label>
+    <label class="chk" id="cTangaWrap" hidden><input type="checkbox" id="cTanga"><span>Tanga stalas (Nr 24 → 40 mm)</span></label>
+    <label class="chk talk" id="cStorisWrap" hidden><input type="checkbox" id="cStoris"><span>Storis 36 mm (Nr 30 → 40 mm)</span></label>
+  </div>
+
+  <div class="section-lab">Rezultatas</div>
+  <div class="pcard" id="cRes"></div>
+  <p class="chint">Kaip suskaičiuota: užvesk pelę ant eilutės (telefone — palaikyk pirštą).</p>
+  <div class="ctip" id="cTip" role="tooltip" hidden></div>
+
+  <div class="section-lab">Fiksuoti offsetai</div>
+  <div class="pcard">
+    <div class="oxyz">
+      <div class="ocell"><span class="lab">X</span><span class="val">+2</span></div>
+      <div class="ocell"><span class="lab">Y</span><span class="val">+6</span></div>
+      <div class="ocell"><span class="lab">Z</span><span class="val">+67</span></div>
+    </div>
+  </div>
+</main>
+
 <button id="versionBtn" class="version-btn" type="button" aria-haspopup="dialog" aria-controls="versionModal">
-  <b>v1.6.0</b> · 2026-08-18
+  <b>v1.7.0</b> · 2026-09-13
 </button>
 <div id="versionModal" class="version-modal" role="dialog" aria-modal="true" aria-labelledby="versionTitle" hidden>
   <div class="version-panel">
     <div class="version-head">
       <div>
         <h2 id="versionTitle">Pakeitimų istorija</h2>
-        <p id="versionCurrent">v1.6.0 · 2026-08-18 13:00</p>
+        <p id="versionCurrent">v1.7.0 · 2026-09-13 20:45</p>
       </div>
       <button id="versionClose" class="version-close" type="button" aria-label="Uždaryti pakeitimų istoriją">&times;</button>
+    </div>
+    <div class="release">
+      <div class="release-top"><b>v1.7.0</b><time datetime="2026-09-13T20:45">2026-09-13 20:45</time></div>
+      <ul>
+        <li>Naujas meniu punktas „Stalų skaičiuoklė“: stalviršio pusėlės ir intarpo matmenys pagal stalo dydį, kanto Nr ir intarpo nominalą.</li>
+        <li>Režimai „Su intarpu“ / „Be intarpo“, Sumba (kanto neatimam), Tanga stalams Nr 24 = 40 mm.</li>
+        <li>Užvedus pelę ant rezultato (telefone — palaikius pirštą) parodoma, kaip jis suskaičiuotas.</li>
+        <li>Rodomi fiksuoti offsetai X+2 Y+6 Z+67.</li>
+      </ul>
     </div>
     <div class="release">
       <div class="release-top"><b>v1.6.0</b><time datetime="2026-08-18T13:00">2026-08-18 13:00</time></div>
@@ -1102,7 +1186,8 @@ let orders = (load(K_ORD,[])||[]).filter(o => o && o.id && o.n);
 const menuBtn=document.getElementById('menuBtn'), menu=document.getElementById('menu');
 const setupbar=document.getElementById('setupbar'), titleEl=document.getElementById('title');
 const tablesView=document.getElementById('tablesView');
-let view='setup';          /* setup | prod | tables */
+const calcView=document.getElementById('calcView');
+let view='setup';          /* setup | prod | calc | tables */
 let pview='orders';        /* orders | order | new */
 let curId=null;
 let ofilter='all';          /* new | active | urgent | done | all */
@@ -1134,12 +1219,14 @@ function bar(o){
 function setView(v){
   view=v; menu.hidden=true; menuBtn.setAttribute('aria-expanded','false');
   setupbar.hidden = (v!=='setup');
-  app.hidden = (v==='tables');
+  app.hidden = (v==='tables' || v==='calc');
   tablesView.hidden = (v!=='tables');
-  titleEl.textContent = v==='prod' ? 'Gamyba' : (v==='tables' ? 'Stalai' : 'CNC nustatymai');
+  calcView.hidden = (v!=='calc');
+  titleEl.textContent = v==='prod' ? 'Gamyba' : v==='tables' ? 'Stalai' : v==='calc' ? 'Stalų skaičiuoklė' : 'CNC nustatymai';
   backBtn.hidden = true;
   menu.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.view===v));
   if(v==='prod'){ pview='orders'; renderProd(); }
+  else if(v==='calc'){ countEl.textContent=''; }
   else if(v==='tables'){ countEl.textContent=''; if(window.StaluSkaiciavimas) window.StaluSkaiciavimas.refresh(); }
   else list();
   window.scrollTo(0,0);
@@ -1348,6 +1435,114 @@ fTool.addEventListener('change', list);
 fType.addEventListener('change', list);
 setView('setup');
 loadGaminiai();
+</script>
+
+<script>
+/* ===================== SKAIČIUOKLĖ — stalviršio pusėlės ir intarpo matmenys ===================== */
+/* Formulės patikrintos su realiu užsakymu (Ø1200, kantas Nr 19 = 40, intarpas 500):
+   pusėlės ilgis 580, intarpo ilgis 1161, intarpo plotis 494.
+   Apvalaus stalo pusėlė sąmoningai rodoma vienu matmeniu. */
+(function(){
+  "use strict";
+  var KANTAI={2:40,7:32,8:32,15:16,18:40,19:40,22:40,24:32,25:40,30:32};
+  var mode='intarpas';
+  var $=function(id){return document.getElementById(id);};
+  if(!$('calcView')) return;
+
+  function kantas(nr){
+    if($('cSumba').checked) return 0;
+    var k=KANTAI[nr];
+    if(nr===24 && $('cTanga').checked) k=40;
+    if(nr===30 && $('cStoris').checked) k=40;
+    return k;
+  }
+  var n1=function(v){ return String(Math.round(v*10)/10); };
+  var mm=function(v){ return (Math.round(v*10)/10).toFixed(1)+' mm'; };
+  var escA=function(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); };
+  /* f = [formulė žodžiais, formulė su skaičiais] — rodoma iššokančiame langelyje */
+  function row(label,val,f,small){
+    var attr = f ? ' tabindex="0" data-t="'+escA(f[0])+'" data-f="'+escA(f[1])+'"' : '';
+    return '<div class="cres'+(small?' small':'')+'"'+attr+'><span class="lab">'+label+'</span><span class="val">'+val+'</span></div>';
+  }
+  function render(){
+    hideTip();
+    var nr=+$('cKantas').value, sumba=$('cSumba').checked;
+    $('cNomWrap').style.visibility = mode==='intarpas' ? '' : 'hidden';
+    $('cTangaWrap').hidden = (nr!==24 || sumba);
+    $('cStorisWrap').hidden = (nr!==30 || sumba);
+    var ilgis=+$('cIlgis').value||0, plotis=+$('cPlotis').value||0, k=kantas(nr), html='';
+    var kS = n1(k);
+    if(mode==='be'){
+      html += row('Ruošinio ilgis', mm(ilgis-k), ['stalo ilgis − kantas', n1(ilgis)+' − '+kS+' = '+n1(ilgis-k)]);
+      html += row('Ruošinio plotis', mm(plotis-k), ['stalo plotis − kantas', n1(plotis)+' − '+kS+' = '+n1(plotis-k)]);
+    } else {
+      var nom=+$('cNom').value||0;
+      html += row('Pusėlės ilgis', mm((ilgis-k)/2), ['(stalo ilgis − kantas) ÷ 2', '('+n1(ilgis)+' − '+kS+') ÷ 2 = '+n1((ilgis-k)/2)]);
+      html += row('Intarpo ilgis', mm((plotis-k)+1), ['(stalo plotis − kantas) + 1', '('+n1(plotis)+' − '+kS+') + 1 = '+n1((plotis-k)+1)]);
+      html += row('Intarpo plotis', mm(nom-6), ['intarpo nominalus − 6', n1(nom)+' − 6 = '+n1(nom-6)]);
+    }
+    var kf;
+    if(sumba) kf=['Sumba stalams kanto neatimam', 'kantas = 0'];
+    else if(nr===24 && k===40) kf=['Kanto Nr 24 Tanga stalams', '40 mm (vietoj 32)'];
+    else if(nr===30 && k===40) kf=['Kanto Nr 30, kai storis 36 mm', '40 mm (vietoj 32)'];
+    else kf=['Iš kantų lentelės', 'Nr '+nr+' → '+kS+' mm'];
+    html += row(sumba ? 'Sumba' : 'Kanto Nr '+nr+' plotis', sumba ? 'kanto neatimam' : k+' mm', kf, true);
+    $('cRes').innerHTML = html;
+  }
+
+  /* --- iššokantis skaičiavimo paaiškinimas: pelė — užvedus, telefonas — palaikius pirštą --- */
+  var tip=$('cTip'), tipRow=null, pressTimer=null;
+  function showTip(r){
+    if(!r || !r.dataset.f) return;
+    if(tipRow) tipRow.classList.remove('tip-on');
+    tipRow=r; r.classList.add('tip-on');
+    tip.innerHTML='<b></b><code></code>';
+    tip.firstChild.textContent=r.dataset.t; tip.lastChild.textContent=r.dataset.f;
+    tip.hidden=false;
+    var b=r.getBoundingClientRect(), w=tip.offsetWidth, h=tip.offsetHeight;
+    var left=Math.max(8, Math.min(window.innerWidth-w-8, b.left+b.width-w));
+    var top=b.top-h-8; if(top<8) top=b.bottom+8;
+    tip.style.left=left+'px'; tip.style.top=top+'px';
+  }
+  function hideTip(){
+    if(tipRow) tipRow.classList.remove('tip-on');
+    tipRow=null; if(tip) tip.hidden=true;
+    clearTimeout(pressTimer);
+  }
+  var res=$('cRes');
+  res.addEventListener('pointerover', function(e){
+    if(e.pointerType==='mouse') showTip(e.target.closest('.cres'));
+  });
+  res.addEventListener('pointerleave', function(e){ if(e.pointerType==='mouse') hideTip(); });
+  res.addEventListener('pointerdown', function(e){
+    if(e.pointerType==='mouse') return;
+    var r=e.target.closest('.cres'); clearTimeout(pressTimer);
+    pressTimer=setTimeout(function(){ showTip(r); }, 400);
+  });
+  ['pointerup','pointercancel'].forEach(function(t){
+    res.addEventListener(t, function(e){ if(e.pointerType!=='mouse') clearTimeout(pressTimer); });
+  });
+  res.addEventListener('contextmenu', function(e){ if(e.target.closest('.cres')) e.preventDefault(); });
+  // klaviatūra (Tab) — tik kai fokusas matomas, kad bakstelėjimas telefone nerodytų iškart
+  res.addEventListener('focusin', function(e){ if(e.target.matches(':focus-visible')) showTip(e.target.closest('.cres')); });
+  res.addEventListener('focusout', hideTip);
+  document.addEventListener('pointerdown', function(e){
+    if(tipRow && !(e.target instanceof Element && e.target.closest('#cRes'))) hideTip();
+  });
+  window.addEventListener('scroll', hideTip, {passive:true});
+
+  Array.prototype.forEach.call(document.querySelectorAll('#cMode button'), function(b){
+    b.addEventListener('click', function(){
+      mode=b.getAttribute('data-m');
+      document.querySelectorAll('#cMode button').forEach(function(x){ x.classList.toggle('on', x===b); });
+      render();
+    });
+  });
+  ['cIlgis','cPlotis','cKantas','cNom','cSumba','cTanga','cStoris'].forEach(function(id){
+    $(id).addEventListener('input',render); $(id).addEventListener('change',render);
+  });
+  render();
+})();
 </script>
 
 <script>
