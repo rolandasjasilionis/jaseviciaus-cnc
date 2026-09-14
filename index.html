@@ -330,6 +330,19 @@ h2.times-h2{display:flex;align-items:center;justify-content:space-between;gap:10
 .ctip b{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8FA3B5;margin-bottom:3px}
 .ctip code{display:block;font:700 16px 'IBM Plex Mono',monospace;color:var(--slot);margin-top:3px;white-space:normal}
 .chint{font-size:12.5px;color:var(--ink-soft);margin:-4px 2px 14px}
+.pods{margin-bottom:4px}
+.pods+.pods{border-top:1px solid var(--line);margin-top:14px;padding-top:14px}
+.podhead{font-weight:700;font-size:16px;margin-bottom:2px}
+.podsub{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft);margin-bottom:9px}
+.podchips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.podchip{background:var(--ink);color:#fff;border-radius:8px;padding:6px 10px;font:700 16px 'IBM Plex Mono',monospace}
+.podchip.red{background:var(--alert);color:#fff}
+.podchip.orange{background:#fff;color:#C0621A;box-shadow:inset 0 0 0 2px #E67E22}
+.podsvg{width:100%;height:auto;display:block;background:#F3EFE8;border-radius:8px}
+.podwarn{color:var(--alert);font-weight:700;margin-top:9px;line-height:1.35}
+.podnote{font-size:13px;color:var(--ink-soft);margin-top:7px;line-height:1.4}
+.podok{display:inline-flex;align-items:center;gap:8px;margin-top:6px;font-weight:600;cursor:pointer}
+.podok input{width:20px;height:20px;accent-color:var(--ink)}
 
 /* ===================== STALAI (padukų dėlionė) — izoliuota nuo likusio puslapio ===================== */
 #tablesView{
@@ -385,7 +398,7 @@ h2.times-h2{display:flex;align-items:center;justify-content:space-between;gap:10
     <button data-view="setup">Nustatymai</button>
     <button data-view="prod">Gamyba</button>
     <button data-view="calc">Stalų skaičiuoklė</button>
-    <button data-view="tables">Stalai</button>
+    <button data-view="tables">Vakuuminiai padukai</button>
   </div>
   <div id="setupbar">
   <div class="toprow">
@@ -412,9 +425,13 @@ h2.times-h2{display:flex;align-items:center;justify-content:space-between;gap:10
 
   <div class="pcard">
     <div class="fld2">
-      <div class="fld"><label for="cIlgis">Stalo ilgis</label>
+      <label class="chk"><input type="checkbox" id="cApv" checked><span>Apvalus</span></label>
+      <label class="chk"><input type="checkbox" id="cStac"><span>Stačiakampis</span></label>
+    </div>
+    <div class="fld2">
+      <div class="fld"><label for="cIlgis" id="cIlgisLab">Stalo ilgis</label>
         <input id="cIlgis" type="number" inputmode="numeric" step="1" value="1200"></div>
-      <div class="fld"><label for="cPlotis">Stalo plotis</label>
+      <div class="fld" id="cPlotisWrap"><label for="cPlotis">Stalo plotis</label>
         <input id="cPlotis" type="number" inputmode="numeric" step="1" value="1200"></div>
       <div class="fld"><label for="cKantas">Kanto Nr</label>
         <select id="cKantas">
@@ -429,8 +446,12 @@ h2.times-h2{display:flex;align-items:center;justify-content:space-between;gap:10
           <option value="25">Nr 25 (40)</option>
           <option value="30">Nr 30 (32)</option>
         </select></div>
-      <div class="fld" id="cNomWrap"><label for="cNom">Intarpo nominalus</label>
-        <input id="cNom" type="number" inputmode="numeric" step="1" value="500"></div>
+      <div class="fld" id="cNomWrap"><label for="cNom">Intarpas</label>
+        <select id="cNom">
+          <option value="400">400</option>
+          <option value="500" selected>500</option>
+          <option value="600">600</option>
+        </select></div>
     </div>
     <label class="chk"><input type="checkbox" id="cSumba"><span>Sumba (kanto neatimam)</span></label>
     <label class="chk" id="cTangaWrap" hidden><input type="checkbox" id="cTanga"><span>Tanga stalas (Nr 24 → 40 mm)</span></label>
@@ -441,6 +462,9 @@ h2.times-h2{display:flex;align-items:center;justify-content:space-between;gap:10
   <div class="pcard" id="cRes"></div>
   <p class="chint">Kaip suskaičiuota: užvesk pelę ant eilutės (telefone — palaikyk pirštą).</p>
   <div class="ctip" id="cTip" role="tooltip" hidden></div>
+
+  <div class="section-lab">Vakuuminiai padukai</div>
+  <div class="pcard" id="cPods"></div>
 
   <div class="section-lab">Fiksuoti offsetai</div>
   <div class="pcard">
@@ -453,16 +477,27 @@ h2.times-h2{display:flex;align-items:center;justify-content:space-between;gap:10
 </main>
 
 <button id="versionBtn" class="version-btn" type="button" aria-haspopup="dialog" aria-controls="versionModal">
-  <b>v1.7.0</b> · 2026-09-13
+  <b>v1.8.0</b> · 2026-09-14
 </button>
 <div id="versionModal" class="version-modal" role="dialog" aria-modal="true" aria-labelledby="versionTitle" hidden>
   <div class="version-panel">
     <div class="version-head">
       <div>
         <h2 id="versionTitle">Pakeitimų istorija</h2>
-        <p id="versionCurrent">v1.7.0 · 2026-09-13 20:45</p>
+        <p id="versionCurrent">v1.8.0 · 2026-09-14 11:09</p>
       </div>
       <button id="versionClose" class="version-close" type="button" aria-label="Uždaryti pakeitimų istoriją">&times;</button>
+    </div>
+    <div class="release">
+      <div class="release-top"><b>v1.8.0</b><time datetime="2026-09-14T11:09">2026-09-14 11:09</time></div>
+      <ul>
+        <li>Stalų skaičiuoklėje pasirenkama forma „Apvalus“ (įvedamas skersmuo) arba „Stačiakampis“ (ilgis ir plotis, tinka ir kvadratui).</li>
+        <li>Apvalus su intarpu — rodomas pusėlės spindulys (R), apvalus be intarpo — ruošinio skersmuo (Ø).</li>
+        <li>Stačiakampiui su intarpu rodomas ir pusėlės plotis.</li>
+        <li>Intarpas pasirenkamas iš sąrašo: 400 / 500 / 600.</li>
+        <li>Automatinis vakuuminių padukų išdėstymas pusėlei, intarpui ar vientisam ruošiniui: koordinatės (pvz. K2x3 ↑), stalo brėžinėlis, prioritetai: kiekis (jei kurioje pusėje kabo daugiau nei 1/4 ruošinio — +1 padukas) → kraštiniai padukai kuo arčiau kraštų (atsarga ≥ 100 mm) → varžtas paduko kampe (iki 30 mm atsitraukimo) → simetrija ir vienodi tarpai; intarpams visada 3 padukai (2 galuose žemiau, 1 per vidurį aukščiau) (mažiems ruošiniams mažinama iki 40 mm; 46–60 mm — koordinatė oranžinė, 40–45 mm — raudona). 4 padukai — 2 apačioje ir 2 viršuje; ruošiniui per du stalus pora ant D dedama su mažesne atsarga, o jei netelpa — padukai tik ant K.</li>
+        <li>Meniu punktas „Stalai“ pervadintas į „Vakuuminiai padukai“.</li>
+      </ul>
     </div>
     <div class="release">
       <div class="release-top"><b>v1.7.0</b><time datetime="2026-09-13T20:45">2026-09-13 20:45</time></div>
@@ -1222,7 +1257,7 @@ function setView(v){
   app.hidden = (v==='tables' || v==='calc');
   tablesView.hidden = (v!=='tables');
   calcView.hidden = (v!=='calc');
-  titleEl.textContent = v==='prod' ? 'Gamyba' : v==='tables' ? 'Stalai' : v==='calc' ? 'Stalų skaičiuoklė' : 'CNC nustatymai';
+  titleEl.textContent = v==='prod' ? 'Gamyba' : v==='tables' ? 'Vakuuminiai padukai' : v==='calc' ? 'Stalų skaičiuoklė' : 'CNC nustatymai';
   backBtn.hidden = true;
   menu.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.view===v));
   if(v==='prod'){ pview='orders'; renderProd(); }
@@ -1470,15 +1505,28 @@ loadGaminiai();
     $('cNomWrap').style.visibility = mode==='intarpas' ? '' : 'hidden';
     $('cTangaWrap').hidden = (nr!==24 || sumba);
     $('cStorisWrap').hidden = (nr!==30 || sumba);
-    var ilgis=+$('cIlgis').value||0, plotis=+$('cPlotis').value||0, k=kantas(nr), html='';
-    var kS = n1(k);
+    /* Forma: apvalus — vienas matmuo (skersmuo); stačiakampis (ir kvadratas) — ilgis ir plotis */
+    var apv=$('cApv').checked;
+    $('cPlotisWrap').hidden = apv;
+    $('cIlgisLab').textContent = apv ? 'Stalo skersmuo' : 'Stalo ilgis';
+    var ilgis=+$('cIlgis').value||0, plotis=apv ? ilgis : (+$('cPlotis').value||0), k=kantas(nr), html='';
+    var kS = n1(k), mS = 'stalo skersmuo';
     if(mode==='be'){
-      html += row('Ruošinio ilgis', mm(ilgis-k), ['stalo ilgis − kantas', n1(ilgis)+' − '+kS+' = '+n1(ilgis-k)]);
-      html += row('Ruošinio plotis', mm(plotis-k), ['stalo plotis − kantas', n1(plotis)+' − '+kS+' = '+n1(plotis-k)]);
+      if(apv){
+        html += row('Ruošinio skersmuo', 'Ø '+mm(ilgis-k), [mS+' − kantas', n1(ilgis)+' − '+kS+' = '+n1(ilgis-k)]);
+      } else {
+        html += row('Ruošinio ilgis', mm(ilgis-k), ['stalo ilgis − kantas', n1(ilgis)+' − '+kS+' = '+n1(ilgis-k)]);
+        html += row('Ruošinio plotis', mm(plotis-k), ['stalo plotis − kantas', n1(plotis)+' − '+kS+' = '+n1(plotis-k)]);
+      }
     } else {
       var nom=+$('cNom').value||0;
-      html += row('Pusėlės ilgis', mm((ilgis-k)/2), ['(stalo ilgis − kantas) ÷ 2', '('+n1(ilgis)+' − '+kS+') ÷ 2 = '+n1((ilgis-k)/2)]);
-      html += row('Intarpo ilgis', mm((plotis-k)+1), ['(stalo plotis − kantas) + 1', '('+n1(plotis)+' − '+kS+') + 1 = '+n1((plotis-k)+1)]);
+      if(apv){
+        html += row('Pusėlės spindulys', 'R '+mm((ilgis-k)/2), ['('+mS+' − kantas) ÷ 2', '('+n1(ilgis)+' − '+kS+') ÷ 2 = '+n1((ilgis-k)/2)]);
+      } else {
+        html += row('Pusėlės ilgis', mm((ilgis-k)/2), ['(stalo ilgis − kantas) ÷ 2', '('+n1(ilgis)+' − '+kS+') ÷ 2 = '+n1((ilgis-k)/2)]);
+        html += row('Pusėlės plotis', mm(plotis-k), ['stalo plotis − kantas', n1(plotis)+' − '+kS+' = '+n1(plotis-k)]);
+      }
+      html += row('Intarpo ilgis', mm((plotis-k)+1), ['('+(apv?mS:'stalo plotis')+' − kantas) + 1', '('+n1(plotis)+' − '+kS+') + 1 = '+n1((plotis-k)+1)]);
       html += row('Intarpo plotis', mm(nom-6), ['intarpo nominalus − 6', n1(nom)+' − 6 = '+n1(nom-6)]);
     }
     var kf;
@@ -1488,6 +1536,294 @@ loadGaminiai();
     else kf=['Iš kantų lentelės', 'Nr '+nr+' → '+kS+' mm'];
     html += row(sumba ? 'Sumba' : 'Kanto Nr '+nr+' plotis', sumba ? 'kanto neatimam' : k+' mm', kf, true);
     $('cRes').innerHTML = html;
+
+    /* ruošiniai padukų išdėstymui (ilgoji kraštinė — išilgai X, link dešiniojo stalo) */
+    var parts=[];
+    if(ilgis>k && plotis>k){
+      if(mode==='be'){
+        if(apv) parts.push({kind:'circle', R:(ilgis-k)/2, name:'Ruošinys Ø '+n1(ilgis-k)});
+        else parts.push(rectPart(ilgis-k, plotis-k, 'Ruošinys'));
+      } else {
+        var pus = apv ? {kind:'half', R:(ilgis-k)/2, name:'Pusėlė R '+n1((ilgis-k)/2)}
+                      : rectPart((ilgis-k)/2, plotis-k, 'Pusėlė');
+        pus.pusele=true; parts.push(pus);
+        if(nom>6){ var ip=rectPart((plotis-k)+1, nom-6, 'Intarpas'); ip.intarpas=true; parts.push(ip); }
+      }
+    }
+    schedulePods(parts);
+  }
+  function rectPart(a,b,name){
+    var W=Math.max(a,b), H=Math.min(a,b);
+    return {kind:'rect', W:W, H:H, name:name+' '+n1(W)+' × '+n1(H)};
+  }
+
+  /* ===================== VAKUUMINIAI PADUKAI — automatinis išdėstymas =====================
+     Koordinatės mm nuo kairiojo stalo apatinio kairio kampo (Y į viršų).
+     Stalai 1200×1200, tarpas 255, varžtai kas 150 (pirmas 75 nuo krašto), ~30 mm riva be griovelių.
+     Padukas: pagrindas 157×157 (centras — kvadratėlio centre, juda kas 30 mm, ant rivos neužlipa),
+     siurbimo viršus 160×95 prigludęs prie vieno pagrindo krašto — rodyklė rodo į tą pusę.
+     Atsarga matuojama nuo pjūvio linijos iki siurbimo viršaus krašto. */
+  var TW=1200, TH=1200, DX0=1200+255, EDGE=30+75, BH=78.5, TOPW=80, TOPD=95;
+  var ARROW=['↑','→','↓','←'];
+  // atsarga nuo pjūvio: kraštiniai padukai stumiami kuo arčiau krašto, kol atsarga ≥ 100 mm;
+  // jei netelpa — mažinama kas 10 mm iki griežto minimumo 40 mm (tikroji atsarga — bet koks skaičius)
+  var LEVELS=[100,90,80,70,60,50,40];
+  var OVERHANG=0.25;               // jei kurioje nors pusėje kabo daugiau nei 1/4 ruošinio — pridedamas padukas
+  // atsargos spalva: iki 45 mm — raudona, 46–60 mm — oranžinė, daugiau — įprasta
+  function marginClass(d){ return d<46 ? 'red' : d<61 ? 'orange' : ''; }
+  var MARGIN_FILL={red:'#C42B1C', orange:'#E67E22', '':'#E8B004'};
+  /* Prioritetai: 1) kiekis pagal kabantį kraštą, 2) padukai kuo arčiau ruošinio kraštų,
+     3) varžtas paduko kampe — jei tam reikia pasitraukti ne daugiau kaip 30 mm (taškais 1 ≈ 1 mm),
+     4) simetrija / vienodi tarpai */
+  var W_CORNER=35, W_SPREAD=1;
+  var holderOff=false, podTimer=null;
+
+  function topRect(cx,cy,r){
+    if(r===0) return [cx-TOPW, cy+BH-TOPD, cx+TOPW, cy+BH];
+    if(r===2) return [cx-TOPW, cy-BH, cx+TOPW, cy-BH+TOPD];
+    if(r===1) return [cx+BH-TOPD, cy-TOPW, cx+BH, cy+TOPW];
+    return [cx-BH, cy-TOPW, cx-BH+TOPD, cy+TOPW];
+  }
+  // atstumas nuo taško iki ruošinio krašto (teigiamas — viduje)
+  function partDist(p,x,y){
+    if(p.kind==='circle') return p.R-Math.hypot(x-p.R, y-p.R);
+    if(p.kind==='half') return Math.min(p.R-Math.hypot(x-p.R, y), y);
+    return Math.min(x, p.W-x, y, p.H-y);
+  }
+  // iškilioms formoms artimiausias krašto taškas — viename iš stačiakampio kampų
+  function rectDist(p,q){
+    return Math.min(partDist(p,q[0],q[1]), partDist(p,q[2],q[1]), partDist(p,q[0],q[3]), partDist(p,q[2],q[3]));
+  }
+  var overlap=function(a,b){ return Math.abs(a.x-b.x)<157 && Math.abs(a.y-b.y)<157; };
+
+  /* Visos galimos paduko vietos (kvadratėlių centrai, ne ant rivos). Kiekvienai — geriausias posūkis
+     (siurbimo viršus toliausiai nuo pjūvio) ir ar varžtas atsiduria paduko kampe. */
+  function buildGrid(p){
+    var T=[{},{}];
+    [0,DX0].forEach(function(x0,ti){
+      for(var y=EDGE; y<=TH-EDGE; y+=30){
+        var rowCells=[];
+        for(var x=x0+EDGE; x<=x0+TW-EDGE; x+=30){
+          if(partDist(p,x,y)<=0) continue;
+          var dr=[], best=-1e9, br=0;
+          for(var r=0;r<4;r++){ var d=rectDist(p, topRect(x,y,r)); dr.push(d); if(d>best+1e-6){ best=d; br=r; } }
+          if(best<=0) continue;
+          var col=Math.round((x-x0-75)/150)+1, row=Math.round((y-75)/150)+1;
+          var ox=x-x0-75-150*(col-1), oy=y-75-150*(row-1);
+          rowCells.push({x:x, y:y, t:ti, r:br, d:best, dr:dr, col:col, row:row,
+            corner: Math.abs(ox)===60 && Math.abs(oy)===60});
+        }
+        if(rowCells.length) T[ti][y]=rowCells;
+      }
+    });
+    return T;
+  }
+  function okAt(c,m){ return c.d>=m; }
+  function rowsOf(G,ti,m){
+    var out={};
+    Object.keys(G[ti]).forEach(function(y){
+      var cs=G[ti][y].filter(function(c){ return okAt(c,m); });
+      if(cs.length) out[y]=cs;
+    });
+    return out;
+  }
+  var ysOf=function(rows){ return Object.keys(rows).map(Number).sort(function(a,b){ return a-b; }); };
+  function cellScore(c,ctr){ return (c.corner?W_CORNER:0) + W_SPREAD*Math.hypot(c.x-ctr[0], c.y-ctr[1]); }
+
+  // geriausios poros vienoje eilėje: simetriškos pagal kontūrą (vienoda atsarga kairėje ir dešinėje)
+  function rowPairs(cs,ctr,forceRight,keep){
+    var out=[], xmax=forceRight ? cs[cs.length-1].x : null;
+    for(var i=0;i<cs.length;i++) for(var j=i+1;j<cs.length;j++){
+      var a=cs[i], b=cs[j];
+      if(b.x-a.x<157 || (forceRight && b.x!==xmax)) continue;
+      out.push({a:a, b:b, s:cellScore(a,ctr)+cellScore(b,ctr)-(forceRight?0:Math.abs(a.d-b.d))});
+    }
+    out.sort(function(u,v){ return v.s-u.s; });
+    return out.slice(0,keep||10);
+  }
+  function layout1(rows){
+    var best=null;
+    ysOf(rows).forEach(function(y){ rows[y].forEach(function(c){ if(!best || c.d>best.d) best=c; }); });
+    return best ? [best] : null;
+  }
+  function layout2(rows,ctr){
+    var best=null, bs=-1e9;
+    ysOf(rows).forEach(function(y){
+      var pr=rowPairs(rows[y],ctr,false,1)[0];
+      if(pr && pr.s>bs){ bs=pr.s; best=[pr.a,pr.b]; }
+    });
+    return best;
+  }
+  // 3 padukai: pora vienoje eilėje + vienas kitoje, per poros vidurį
+  // midUp — intarpams: pora galuose žemiau, vienas per vidurį aukščiau
+  function layout3(rows,ctr,midUp){
+    var ys=ysOf(rows), best=null, bs=-1e9;
+    ys.forEach(function(yA){
+      rowPairs(rows[yA],ctr).forEach(function(pr){
+        var mid=(pr.a.x+pr.b.x)/2, md=(pr.a.d+pr.b.d)/2;
+        ys.forEach(function(yB){
+          if(yB===yA || (midUp && yB<=yA)) return;
+          rows[yB].forEach(function(c){
+            if(overlap(c,pr.a) || overlap(c,pr.b)) return;
+            var s=pr.s+cellScore(c,ctr)-Math.abs(c.x-mid)-Math.abs(c.d-md)+Math.sqrt((pr.b.x-pr.a.x)*Math.abs(yB-yA)/2);
+            if(s>bs){ bs=s; best=[pr.a,pr.b,c]; }
+          });
+        });
+      });
+    });
+    return best;
+  }
+  // 4 padukai: 2 apačioje + 2 viršuje
+  function layout4(rows,ctr,forceRight){
+    var ys=ysOf(rows), P={}, best=null, bs=-1e9;
+    ys.forEach(function(y){ P[y]=rowPairs(rows[y],ctr,forceRight); });
+    for(var i=0;i<ys.length;i++) for(var j=i+1;j<ys.length;j++){
+      P[ys[i]].forEach(function(p1){
+        P[ys[j]].forEach(function(p2){
+          if(overlap(p1.a,p2.a)||overlap(p1.a,p2.b)||overlap(p1.b,p2.a)||overlap(p1.b,p2.b)) return;
+          var s=p1.s+p2.s-Math.abs((p1.a.d+p1.b.d)/2-(p2.a.d+p2.b.d)/2)
+            +Math.sqrt(((p1.b.x-p1.a.x)+(p2.b.x-p2.a.x))/2*(ys[j]-ys[i]))   // apimamas plotas — 2 apačioje, 2 viršuje
+            -Math.abs((ys[i]+ys[j])/2-ctr[1]);                              // eilės simetriškos ruošinio vidurio atžvilgiu
+          if(s>bs){ bs=s; best=[p1.a,p1.b,p2.a,p2.b]; }
+        });
+      });
+    }
+    return best;
+  }
+  // 6 padukai per du stalus: 2 eilės × 3 stulpeliai (2 ant K, 1 ant D), stulpeliai kuo vienodesniais tarpais
+  function layout6(G,mK,mD,ctr){
+    var RK=rowsOf(G,0,mK), RD=rowsOf(G,1,mD), ys=ysOf(RK), best=null, bs=-1e9;
+    function cols(R,y1,y2){
+      var at2={}; (R[y2]||[]).forEach(function(c){ at2[c.x]=c; });
+      return (R[y1]||[]).filter(function(c){ return at2[c.x]; }).map(function(c){ return [c,at2[c.x]]; });
+    }
+    for(var i=0;i<ys.length;i++) for(var j=i+1;j<ys.length;j++){
+      var y1=ys[i], y2=ys[j];
+      if(y2-y1<157) continue;
+      var dc=cols(RD,y1,y2); if(!dc.length) continue;
+      var kc=cols(RK,y1,y2); if(kc.length<2) continue;
+      kc.slice(0,4).forEach(function(c1){
+        dc.slice(-4).forEach(function(c3){
+          var mid=(c1[0].x+c3[0].x)/2;
+          kc.filter(function(c){ return c[0].x-c1[0].x>=157 && c3[0].x-c[0].x>=157; })
+            .sort(function(u,v){ return Math.abs(u[0].x-mid)-Math.abs(v[0].x-mid); })
+            .slice(0,4).forEach(function(c2){
+              var sel=[c1[0],c2[0],c3[0],c1[1],c2[1],c3[1]], s=0;
+              sel.forEach(function(c){ s+=cellScore(c,ctr); });
+              s-=Math.abs((c2[0].x-c1[0].x)-(c3[0].x-c2[0].x));
+              s-=Math.abs((c1[0].d+c2[0].d+c3[0].d)-(c1[1].d+c2[1].d+c3[1].d))/3;
+              s+=Math.sqrt((c3[0].x-c1[0].x)*(y2-y1))-Math.abs((y1+y2)/2-ctr[1]);
+              if(s>bs){ bs=s; best=sel; }
+            });
+        });
+      });
+    }
+    return best;
+  }
+
+  // didžiausia kabanti dalis (nuo kraštinio siurbimo viršaus iki ruošinio krašto) — dalimis nuo ruošinio ilgio toje kryptyje
+  function overhang(pods,W,H){
+    var q=pods.map(function(c){ return topRect(c.x,c.y,c.r); });
+    var minX=Math.min.apply(0,q.map(function(r){ return r[0]; })), maxX=Math.max.apply(0,q.map(function(r){ return r[2]; }));
+    var minY=Math.min.apply(0,q.map(function(r){ return r[1]; })), maxY=Math.max.apply(0,q.map(function(r){ return r[3]; }));
+    return Math.max(minX/W, (W-maxX)/W, minY/H, (H-maxY)/H);
+  }
+  function planPods(p){
+    var W = p.kind==='rect' ? p.W : 2*p.R;
+    var H = p.kind==='rect' ? p.H : (p.kind==='half' ? p.R : 2*p.R);
+    // ruošinio vidurys simetrijai; pusėlei — ploto centras (4R/3π nuo tiesiosios pusės)
+    var ctr=[W/2, p.kind==='half' ? 4*p.R/(3*Math.PI) : H/2], G=buildGrid(p), N, pods=null, forceRight=false;
+    function onK(n){   // n padukų ant kairiojo stalo: kuo didesnė atsarga (nuo 100 iki 40 mm)
+      for(var i=0; i<LEVELS.length; i++){
+        var rows=rowsOf(G,0,LEVELS[i]);
+        var L = n===4 ? layout4(rows,ctr,forceRight) : n===3 ? layout3(rows,ctr,p.intarpas) : n===2 ? layout2(rows,ctr) : layout1(rows);
+        if(L) return L;
+      }
+      return null;
+    }
+    if(p.intarpas){
+      N=3;   // intarpai — visada 3 padukai: 2 galuose žemiau, 1 per vidurį aukščiau
+    } else if(W>TW){
+      // K stalui — kuo didesnė atsarga; porai ant D — „mažo stalo“ atsarga
+      var dLevels=LEVELS.filter(function(m){ return ysOf(rowsOf(G,1,m)).length>=2; });
+      for(var a=0; a<LEVELS.length && !pods && dLevels.length; a++)
+        for(var b=0; b<dLevels.length && !pods; b++) pods=layout6(G,LEVELS[a],dLevels[b],ctr);
+      if(!pods){ N=4; forceRight=true; }   // ant D netelpa — 4 ant K, dešinysis stulpelis prie K stalo krašto
+    } else {
+      var share=W*H/(TW*TH);
+      N = share>2/3 ? 4 : share>1/3 ? 3 : 2;
+      if(p.pusele && share>1/3) N=4;   // pusėlei — 2 apačioje ir 2 viršuje
+    }
+    if(!pods){
+      for(var n=N; n>=1 && !pods; n--) pods=onK(n);
+      // kabantis kraštas: jei kurioje nors pusėje kabo > 1/4 ruošinio — bandome pridėti paduką (jei telpa)
+      // (ne daugiau kaip vienas papildomas — trikampis mažam apvaliam iš prigimties kiek kabo šonuose)
+      var cnt=pods ? pods.length : 0;
+      if(pods && !p.intarpas && cnt<4 && overhang(pods,W,H)>OVERHANG){
+        var more=onK(cnt+1);
+        if(more && more.length>cnt) pods=more;
+      }
+    }
+    pods=pods||[];
+    pods.sort(function(a,b){ return a.t-b.t || b.y-a.y || a.x-b.x; });
+    var minD=pods.reduce(function(m,c){ return Math.min(m,c.d); }, Infinity);
+    return {pods:pods, margin:Math.floor(minD), W:W, H:H};
+  }
+
+  function podSVG(p,plan){
+    var both = plan.W>TW || plan.pods.some(function(c){ return c.t===1; });
+    var vw = both ? DX0+TW : TW, Y=function(y){ return TH-y; }, s='';
+    [0,DX0].slice(0, both?2:1).forEach(function(x0,ti){
+      s+='<rect x="'+x0+'" y="0" width="'+TW+'" height="'+TH+'" rx="10" fill="#D8C7AE" stroke="#B59A76" stroke-width="6"/>';
+      s+='<rect x="'+(x0+30)+'" y="30" width="'+(TW-60)+'" height="'+(TH-60)+'" fill="#E9DDC9"/>';
+      s+='<text x="'+(x0+TW/2)+'" y="'+(TH/2+60)+'" font-size="180" font-weight="800" fill="#D5C3A8" text-anchor="middle">'+(ti?'D':'K')+'</text>';
+      for(var i=0;i<8;i++) for(var j=0;j<8;j++)
+        s+='<circle cx="'+(x0+75+150*i)+'" cy="'+(75+150*j)+'" r="12" fill="#B59A76"/>';
+    });
+    var st='fill="rgba(46,125,83,.10)" stroke="#2E7D53" stroke-width="14"';
+    if(p.kind==='circle') s+='<circle cx="'+p.R+'" cy="'+Y(p.R)+'" r="'+p.R+'" '+st+'/>';
+    else if(p.kind==='half') s+='<path d="M0 '+TH+' L'+(2*p.R)+' '+TH+' A'+p.R+' '+p.R+' 0 0 0 0 '+TH+' Z" '+st+'/>';
+    else s+='<rect x="0" y="'+Y(p.H)+'" width="'+p.W+'" height="'+p.H+'" '+st+'/>';
+    plan.pods.forEach(function(c){
+      var q=topRect(c.x,c.y,c.r);
+      s+='<rect x="'+(c.x-BH)+'" y="'+Y(c.y+BH)+'" width="157" height="157" fill="rgba(22,32,43,.10)" stroke="#16202B" stroke-width="4" stroke-dasharray="14 10"/>';
+      s+='<rect x="'+q[0]+'" y="'+Y(q[3])+'" width="'+(q[2]-q[0])+'" height="'+(q[3]-q[1])+'" fill="'+MARGIN_FILL[marginClass(c.d)]+'" stroke="#16202B" stroke-width="5"/>';
+      s+='<circle cx="'+((c.t?DX0:0)+75+150*(c.col-1))+'" cy="'+Y(75+150*(c.row-1))+'" r="20" fill="#fff" stroke="#16202B" stroke-width="4"/>';
+    });
+    return '<svg class="podsvg" viewBox="-20 -20 '+(vw+40)+' '+(TH+40)+'" role="img" aria-label="Padukų išdėstymas">'+s+'</svg>';
+  }
+
+  function renderPods(parts){
+    var box=$('cPods'); if(!box) return;
+    if(!parts.length){ box.innerHTML='<div class="podnote">Įveskite stalo matmenis.</div>'; return; }
+    var holderNeeded=false, html='';
+    parts.forEach(function(p){
+      var plan=planPods(p), pods=plan.pods;
+      html+='<div class="pods"><div class="podhead">'+p.name+'</div>';
+      if(!pods.length){
+        html+='<div class="podwarn">Padukų saugiai išdėstyti nepavyko — dėlioti rankomis.</div></div>';
+        return;
+      }
+      html+='<div class="podsub">'+pods.length+(pods.length===1?' padukas':' padukai')+' · mažiausia atsarga '+plan.margin+' mm</div>';
+      html+='<div class="podchips">'+pods.map(function(c){
+        return '<span class="podchip '+marginClass(c.d)+'">'+(c.t?'D':'K')+c.col+'x'+c.row+' '+ARROW[c.r]+'</span>';
+      }).join('')+'</div>';
+      html+=podSVG(p,plan);
+      html+='</div>';
+      if(pods.some(function(c){ return c.t===1 && c.col>4; })) holderNeeded=true;
+    });
+    if(holderNeeded){
+      html+=(holderOff?'':'<div class="podwarn">DĖMESIO – nuimti tekinimo įrenginio laikiklį (dešiniajame stale daugiau nei 4 portai X ašimi)</div>')+
+        '<label class="podok"><input type="checkbox" id="cHolderOff"'+(holderOff?' checked':'')+'> Nuimta</label>';
+    } else holderOff=false;   // sąlyga dingo — kitą kartą klausiama iš naujo
+    html+='<div class="podnote">Rodyklė rodo, į kurią pusę atsuktas siurbimo viršus. Baltas taškas — atsukamas varžtas. Oranžinė koordinatė — atsarga 46–60 mm, raudona — 40–45 mm.</div>';
+    box.innerHTML=html;
+    var ho=$('cHolderOff');
+    if(ho) ho.addEventListener('change', function(){ holderOff=this.checked; renderPods(parts); });
+  }
+  function schedulePods(parts){
+    clearTimeout(podTimer);
+    podTimer=setTimeout(function(){ renderPods(parts); }, 60);
   }
 
   /* --- iššokantis skaičiavimo paaiškinimas: pelė — užvedus, telefonas — palaikius pirštą --- */
@@ -1538,7 +1874,10 @@ loadGaminiai();
       render();
     });
   });
-  ['cIlgis','cPlotis','cKantas','cNom','cSumba','cTanga','cStoris'].forEach(function(id){
+  // Apvalus / Stačiakampis — visada pažymėta lygiai viena (kaip jungiklis)
+  $('cApv').addEventListener('change', function(){ $('cStac').checked = !this.checked; });
+  $('cStac').addEventListener('change', function(){ $('cApv').checked = !this.checked; });
+  ['cApv','cStac','cIlgis','cPlotis','cKantas','cNom','cSumba','cTanga','cStoris'].forEach(function(id){
     $(id).addEventListener('input',render); $(id).addEventListener('change',render);
   });
   render();
