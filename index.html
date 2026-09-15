@@ -477,16 +477,20 @@ h2.times-h2{display:flex;align-items:center;justify-content:space-between;gap:10
 </main>
 
 <button id="versionBtn" class="version-btn" type="button" aria-haspopup="dialog" aria-controls="versionModal">
-  <b>v1.8.0</b> · 2026-09-14
+  <b>v1.8.1</b> · 2026-09-15
 </button>
 <div id="versionModal" class="version-modal" role="dialog" aria-modal="true" aria-labelledby="versionTitle" hidden>
   <div class="version-panel">
     <div class="version-head">
       <div>
         <h2 id="versionTitle">Pakeitimų istorija</h2>
-        <p id="versionCurrent">v1.8.0 · 2026-09-14 11:09</p>
+        <p id="versionCurrent">v1.8.1 · 2026-09-15 19:30</p>
       </div>
       <button id="versionClose" class="version-close" type="button" aria-label="Uždaryti pakeitimų istoriją">&times;</button>
+    </div>
+    <div class="release">
+      <div class="release-top"><b>v1.8.1</b><time datetime="2026-09-15T19:30">2026-09-15 19:30</time></div>
+      <ul><li>Apvalaus stalo pusėlė rodoma skersmeniu (Ø), kaip programos failo pavadinime — ne spinduliu.</li></ul>
     </div>
     <div class="release">
       <div class="release-top"><b>v1.8.0</b><time datetime="2026-09-14T11:09">2026-09-14 11:09</time></div>
@@ -1521,7 +1525,8 @@ loadGaminiai();
     } else {
       var nom=+$('cNom').value||0;
       if(apv){
-        html += row('Pusėlės spindulys', 'R '+mm((ilgis-k)/2), ['('+mS+' − kantas) ÷ 2', '('+n1(ilgis)+' − '+kS+') ÷ 2 = '+n1((ilgis-k)/2)]);
+        // pusėlė rodoma diametru — jis įrašytas programos failo pavadinime (pvz. 001_1160_p_U)
+        html += row('Pusėlė','Ø '+mm(ilgis-k), [mS+' − kantas', n1(ilgis)+' − '+kS+' = '+n1(ilgis-k)]);
       } else {
         html += row('Pusėlės ilgis', mm((ilgis-k)/2), ['(stalo ilgis − kantas) ÷ 2', '('+n1(ilgis)+' − '+kS+') ÷ 2 = '+n1((ilgis-k)/2)]);
         html += row('Pusėlės plotis', mm(plotis-k), ['stalo plotis − kantas', n1(plotis)+' − '+kS+' = '+n1(plotis-k)]);
@@ -1544,7 +1549,7 @@ loadGaminiai();
         if(apv) parts.push({kind:'circle', R:(ilgis-k)/2, name:'Ruošinys Ø '+n1(ilgis-k)});
         else parts.push(rectPart(ilgis-k, plotis-k, 'Ruošinys'));
       } else {
-        var pus = apv ? {kind:'half', R:(ilgis-k)/2, name:'Pusėlė R '+n1((ilgis-k)/2)}
+        var pus = apv ? {kind:'half', R:(ilgis-k)/2, name:'Pusėlė Ø '+n1(ilgis-k)}
                       : rectPart((ilgis-k)/2, plotis-k, 'Pusėlė');
         pus.pusele=true; parts.push(pus);
         if(nom>6){ var ip=rectPart((plotis-k)+1, nom-6, 'Intarpas'); ip.intarpas=true; parts.push(ip); }
