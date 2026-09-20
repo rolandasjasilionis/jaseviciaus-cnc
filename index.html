@@ -556,7 +556,7 @@ body.scrolled #calcView .calcbar .chk{padding:6px 6px;font-size:14px}
         <li>Šauktuku (!) pažymėti stalai, kuriems trūksta informacijos: 12 pusėlių, kurių brėžinyje tiesioji briauna nupiešta dešinėje (neaišku, kaip guli ant staklių), ir 9 failai, kurių pavadinimo matmenys nesutampa su brėžiniu.</li>
         <li>Viršutinė juosta (meniu, paieška, skaičiuoklės ir katalogo pasirinkimai) lieka matoma slenkant — slenkant žemyn ji susitraukia perpus.</li>
         <li>Naujas padukų išdėstymo principas: ruošinys dalijamas į tiek teritorijų, kiek padukų, ir kiekvienas padukas savarankiškai eina prie savo krašto, kol atsarga dar laikosi normoje. Nebeliko eilių ir porų derinimo, dėl kurio padukai susispausdavo į ruošinio vidurį: susispaudusių stalų sumažėjo nuo 56 iki 2, o per abu stalus dirbančių su 6 padukais padaugėjo nuo 120 iki 171.</li>
-        <li>Jei Tanga ar Ferini stalo EasyWOOD failo dar nėra, padukai suskaičiuojami pagal modelio formos taisyklę (Tanga — stačiakampis su R130 kampais, Ferini — pusapvaliai galai) ir pažymimi prierašu „Trūksta .ewd failo — paskaičiuota pagal formulę“.</li>
+        <li>Jei EasyWOOD failo dar nėra, padukai suskaičiuojami pagal modelio formą ir pažymimi prierašu „Trūksta .ewd failo“. Tiksli forma: Tanga (stačiakampis, kampai R130), Ferini (pusapvaliai galai), Elipsė ir Aimete (elipsė). Atsargi forma (rodoma atsarga mažesnė už tikrąją): Vilnis, GrifasX, Grifas, Sahara — gabaritas, sumažintas per kraštinių bangos gylį.</li>
       </ul>
     </div>
     <div class="release">
@@ -1681,7 +1681,24 @@ window.FIG_STALAI = [["Aimete","Aimete 1952x852","001_aimeTE_1952x852",1952,852,
   /* Kai EasyWOOD failo nėra: forma sudaroma pagal modelio taisyklę.
      Tanga — stačiakampis, visi kampai R130. Ferini — pusapvaliai galai (R = pusė kraštinės).
      Pusėlei pjūvio (tiesioji) briauna eina per plotį; ruošinys guldomas ilgąja puse pagal X. */
-  var FIG_FORMULE={Tanga:130, Ferini:0};
+  /* Modelių formos, kai EasyWOOD failo nėra (patikrinta su visais esamais failais):
+       Tanga    — stačiakampis, kampai R130                     (tiksli)
+       Ferini   — pusapvaliai galai, R = pusė kraštinės          (tiksli)
+       Elipsė, Aimete — elipsė, sumažinta 10 mm                  (tiksli)
+       Vilnis   — gabaritas, sumažintas 70 mm                    (atsargi: banguotos kraštinės)
+       GrifasX, Sahara, Grifas, Ferini spec — gabaritas −55 mm   (atsargi)
+     Pusėlei tiesioji pjūvio briauna nemažinama — ji tiksli. */
+  var FIG_FORMULE={
+    'Tanga':{f:'rrect', r:130, txt:'Tanga: stačiakampis, kampai R130'},
+    'Ferini':{f:'stadionas', txt:'Ferini: pusapvaliai galai'},
+    'Elipsė':{f:'elipse', t:10, txt:'Elipsė'},
+    'Aimete':{f:'elipse', t:10, txt:'Aimete: elipsė'},
+    'Vilnis':{f:'gabaritas', t:70, atsargi:1, txt:'Vilnis: gabaritas, sumažintas 70 mm'},
+    'GrifasX':{f:'gabaritas', t:55, atsargi:1, txt:'GrifasX: gabaritas, sumažintas 55 mm'},
+    'Grifas':{f:'gabaritas', t:55, atsargi:1, txt:'Grifas: gabaritas, sumažintas 55 mm'},
+    'Sahara':{f:'gabaritas', t:55, atsargi:1, txt:'Sahara: gabaritas, sumažintas 55 mm'},
+    'Ferini spec':{f:'gabaritas', t:55, atsargi:1, txt:'gabaritas, sumažintas 55 mm'}
+  };
   function rrectPts(W,H,rs,n){
     n=n||16; var pts=[];
     function arc(cx,cy,r,a0){
@@ -1693,20 +1710,47 @@ window.FIG_STALAI = [["Aimete","Aimete 1952x852","001_aimeTE_1952x852",1952,852,
                    arc(W-rs[2],H-rs[2],rs[2],0), arc(rs[3],H-rs[3],rs[3],90));
     return pts.map(function(q){ return [Math.round(q[0]*10)/10, Math.round(q[1]*10)/10]; });
   }
-  function figFormule(p){
-    if(!(p.model in FIG_FORMULE)) return null;
-    var a=p.a, b=p.b, W, H, rs, R;
-    if(p.pus){
-      if(a>=b){ W=a; H=b; R=p.model==='Tanga' ? 130 : Math.min(H/2, W); rs=[0,R,R,0]; }   // pjūvis kairėje
-      else    { W=b; H=a; R=p.model==='Tanga' ? 130 : Math.min(W/2, H); rs=[0,0,R,R]; }   // pjūvis apačioje
+  function ellPts(W,H,t,cut){        // cut: '' — visa elipsė, 'kairė' arba 'apačia' — tiesioji briauna
+    var pts=[], n=64, i, a;
+    if(!cut){
+      for(i=0;i<n;i++){ a=2*Math.PI*i/n; pts.push([W/2+(W/2-t)*Math.cos(a), H/2+(H/2-t)*Math.sin(a)]); }
+    } else if(cut==='apačia'){
+      pts.push([t,0],[W-t,0]);
+      for(i=0;i<=n;i++){ a=Math.PI*i/n; pts.push([W/2+(W/2-t)*Math.cos(a), (H-t)*Math.sin(a)]); }
     } else {
-      W=Math.max(a,b); H=Math.min(a,b);
-      R=p.model==='Tanga' ? 130 : H/2;
-      rs=[R,R,R,R];
+      pts.push([0,H-t],[0,t]);
+      for(i=0;i<=n;i++){ a=Math.PI*(i/n)-Math.PI/2; pts.push([(W-t)*Math.cos(a), H/2+(H/2-t)*Math.sin(a)]); }
     }
-    if(W<200 || H<200 || R<1) return null;
-    return {kind:'rrect', W:W, H:H, rs:rs, pts:rrectPts(W,H,rs), pusele:p.pus,
-            name:p.name, formule:true};
+    return pts.map(function(q){ return [Math.round(q[0]*10)/10, Math.round(q[1]*10)/10]; });
+  }
+  function figFormule(p){
+    var F=FIG_FORMULE[p.model];
+    if(!F) return null;
+    var a=p.a, b=p.b, W, H, cut='', part=null;
+    if(p.pus){ if(a>=b){ W=a; H=b; cut='kairė'; } else { W=b; H=a; cut='apačia'; } }
+    else { W=Math.max(a,b); H=Math.min(a,b); }
+    if(W<250 || H<250) return null;
+    if(F.f==='elipse'){
+      part={kind:'poly', pts:ellPts(W,H,F.t,cut), W:W, H:H};
+    } else {
+      var R, rs;
+      if(F.f==='rrect') R=F.r;
+      else if(F.f==='stadionas') R=(cut==='kairė') ? Math.min(H/2,W) : (cut==='apačia') ? Math.min(W/2,H) : Math.min(W,H)/2;
+      else R=0;
+      if(F.f==='gabaritas'){        // sumažintas gabaritas; pjūvio briauna nemažinama
+        var t=F.t, x0=(cut==='kairė')?0:t, y0=(cut==='apačia')?0:t;
+        var w=W-x0-t, h=H-y0-t;
+        if(w<250 || h<250) return null;
+        R=Math.min(2*t, w/2, h/2);
+        var pts=rrectPts(w,h,[R,R,R,R]).map(function(q){ return [q[0]+x0, q[1]+y0]; });
+        part={kind:'poly', pts:pts, W:W, H:H};
+      } else {
+        rs = cut==='kairė' ? [0,R,R,0] : cut==='apačia' ? [0,0,R,R] : [R,R,R,R];
+        part={kind:'rrect', W:W, H:H, rs:rs, pts:rrectPts(W,H,rs)};
+      }
+    }
+    part.pusele=p.pus; part.name=p.name; part.formule=F;
+    return part;
   }
   function figPlan(r){
     var pts=[], W=0, H=0;
@@ -1774,6 +1818,7 @@ window.FIG_STALAI = [["Aimete","Aimete 1952x852","001_aimeTE_1952x852",1952,852,
   function partDist(p,x,y){
     if(p.kind==='circle') return p.R-Math.hypot(x-p.R, y-p.R);
     if(p.kind==='half') return Math.min(p.R-Math.hypot(x-p.R, y), y);
+    if(p.kind==='poly') return polyDist(p.pts,x,y);
     if(p.kind==='rrect'){
       var W=p.W, H=p.H, R=p.rs;   // rs = [kairys apatinis, dešinys apatinis, dešinys viršutinis, kairys viršutinis]
       if(x<R[0] && y<R[0]) return R[0]-Math.hypot(x-R[0], y-R[0]);
@@ -1783,6 +1828,19 @@ window.FIG_STALAI = [["Aimete","Aimete 1952x852","001_aimeTE_1952x852",1952,852,
       return Math.min(x, W-x, y, H-y);
     }
     return Math.min(x, p.W-x, y, p.H-y);
+  }
+  // ženklinis atstumas iki daugiakampio krašto (teigiamas — viduje)
+  function polyDist(pts,x,y){
+    var n=pts.length, best=1e18, inside=false;
+    for(var i=0,j=n-1;i<n;j=i++){
+      var xi=pts[i][0], yi=pts[i][1], xj=pts[j][0], yj=pts[j][1];
+      if((yi>y)!==(yj>y) && x<(xj-xi)*(y-yi)/(yj-yi)+xi) inside=!inside;
+      var dx=xj-xi, dy=yj-yi, l2=dx*dx+dy*dy;
+      var t=l2 ? Math.max(0,Math.min(1,((x-xi)*dx+(y-yi)*dy)/l2)) : 0;
+      var d=Math.hypot(x-(xi+t*dx), y-(yi+t*dy));
+      if(d<best) best=d;
+    }
+    return inside ? best : -best;
   }
   // iškilioms formoms artimiausias krašto taškas — viename iš stačiakampio kampų
   function rectDist(p,q){
@@ -1917,8 +1975,8 @@ window.FIG_STALAI = [["Aimete","Aimete 1952x852","001_aimeTE_1952x852",1952,852,
     return Math.max(minX/W, (W-maxX)/W, minY/H, (H-maxY)/H);
   }
   function planPods(p){
-    var W = (p.kind==='rect'||p.kind==='rrect') ? p.W : 2*p.R;
-    var H = (p.kind==='rect'||p.kind==='rrect') ? p.H : (p.kind==='half' ? p.R : 2*p.R);
+    var W = (p.kind==='rect'||p.kind==='rrect'||p.kind==='poly') ? p.W : 2*p.R;
+    var H = (p.kind==='rect'||p.kind==='rrect'||p.kind==='poly') ? p.H : (p.kind==='half' ? p.R : 2*p.R);
     var cells=allCells(buildGrid(p)), N;
     if(p.intarpas) N=3;                      // intarpai — 2 galuose žemiau, 1 per vidurį aukščiau
     else if(W>TW) N=6;                       // platesnis nei stalas — trys stulpeliai per abu stalus
@@ -1976,9 +2034,11 @@ window.FIG_STALAI = [["Aimete","Aimete 1952x852","001_aimeTE_1952x852",1952,852,
               ' <span class="warnb">!</span> <span class="podst">'+(plan.pods.some(function(c){ return c.t===1; })?'KD':'K')+'</span></div>'+
               '<div class="podfile">be .ewd failo · '+Math.round(fm.W)+'×'+Math.round(fm.H)+' mm</div>'+
               '<div class="podsub">'+plan.pods.length+(plan.pods.length===1?' padukas':' padukai')+' · mažiausia atsarga '+plan.margin+' mm</div>'+
-              '<div class="warnnote"><b>!</b> Trūksta .ewd failo — paskaičiuota pagal formulę ('+
-              (p.model==='Tanga' ? 'Tanga: stačiakampis, kampai R130' : 'Ferini: pusapvaliai galai')+
-              '). Prieš gaminant patikrinti pagal brėžinį.</div>'+
+              '<div class="warnnote"><b>!</b> Trūksta .ewd failo — paskaičiuota pagal '+
+              (fm.formule.atsargi
+                ? 'atsargųjį modelį ('+fm.formule.txt+'): tikroji atsarga bus didesnė, nei rodoma.'
+                : 'formulę ('+fm.formule.txt+').')+
+              ' Prieš gaminant patikrinti pagal brėžinį.</div>'+
               podChips(plan.pods)+podSVG(fm,plan)+'</div>';
             if(plan.pods.some(function(c){ return c.t===1 && c.col>4; })) holderNeeded=true;
           } else {
