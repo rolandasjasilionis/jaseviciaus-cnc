@@ -2009,7 +2009,7 @@ window.FIG_STALAI = [["Aimete","Aimete 1952x852","001_aimeTE_1952x852",1952,852,
     var st='fill="rgba(46,125,83,.10)" stroke="#2E7D53" stroke-width="14"';
     if(p.kind==='circle') s+='<circle cx="'+p.R+'" cy="'+Y(p.R)+'" r="'+p.R+'" '+st+'/>';
     else if(p.kind==='half') s+='<path d="M0 '+TH+' L'+(2*p.R)+' '+TH+' A'+p.R+' '+p.R+' 0 0 0 0 '+TH+' Z" '+st+'/>';
-    else if(p.kind==='poly' || p.kind==='rrect') s+='<polygon points="'+p.pts.map(function(q){ return q[0]+','+Y(q[1]); }).join(' ')+'" '+st+' stroke-linejoin="round"/>';
+    else if(p.kind==='poly' || p.kind==='rrect') s+='<polygon points="'+p.pts.map(function(q){ return q[0]+','+Y(q[1]); }).join(' ')+'" '+st+' stroke-linejoin="miter" stroke-miterlimit="8"/>';
     else s+='<rect x="0" y="'+Y(p.H)+'" width="'+p.W+'" height="'+p.H+'" '+st+'/>';
     plan.pods.forEach(function(c){
       var q=topRect(c.x,c.y,c.r);
