@@ -77,6 +77,7 @@ header{position:sticky;top:0;z-index:20;background:var(--ink);
   padding:12px;font:600 15px 'Archivo',sans-serif;color:var(--ink-soft);cursor:pointer;margin-top:10px}
 .expbtn:active{background:#F2F5F7}
 .sfilter{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.sfilter[hidden]{display:none}
 .sfilter button{flex:1 1 auto;min-width:78px;border:1px solid var(--line);background:#fff;border-radius:9px;
   padding:10px 6px;font:700 13.5px 'Archivo',sans-serif;color:var(--ink-soft);cursor:pointer}
 .sfilter button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
@@ -489,7 +490,12 @@ body.scrolled #calcView .calcbar .chk{padding:6px 6px;font-size:14px}
     <div class="fld" id="cModelWrap" hidden><label for="cModel">Modelis</label>
       <select id="cModel"></select></div>
     <div class="fld2">
-      <div class="fld"><label for="cIlgis" id="cIlgisLab">Stalo ilgis</label>
+      <div class="fld" id="cDydisWrap" hidden><label for="cDydis">Stalo dydis</label>
+        <select id="cDydis">
+          <option value="1158x920">Didelė (1158 × 920)</option>
+          <option value="1058x820">Maža (1058 × 820)</option>
+        </select></div>
+      <div class="fld" id="cIlgisWrap"><label for="cIlgis" id="cIlgisLab">Stalo ilgis</label>
         <input id="cIlgis" type="number" inputmode="numeric" step="1" value="1200"></div>
       <div class="fld" id="cPlotisWrap"><label for="cPlotis">Stalo plotis</label>
         <input id="cPlotis" type="number" inputmode="numeric" step="1" value="1200"></div>
@@ -536,16 +542,22 @@ body.scrolled #calcView .calcbar .chk{padding:6px 6px;font-size:14px}
 </main>
 
 <button id="versionBtn" class="version-btn" type="button" aria-haspopup="dialog" aria-controls="versionModal">
-  <b>v1.9.2</b> · 2026-09-28
+  <b>v1.9.3</b> · 2026-09-28
 </button>
 <div id="versionModal" class="version-modal" role="dialog" aria-modal="true" aria-labelledby="versionTitle" hidden>
   <div class="version-panel">
     <div class="version-head">
       <div>
         <h2 id="versionTitle">Pakeitimų istorija</h2>
-        <p id="versionCurrent">v1.9.2 · 2026-09-28 09:30</p>
+        <p id="versionCurrent">v1.9.3 · 2026-09-28 10:15</p>
       </div>
       <button id="versionClose" class="version-close" type="button" aria-label="Uždaryti pakeitimų istoriją">&times;</button>
+    </div>
+    <div class="release">
+      <div class="release-top"><b>v1.9.3</b><time datetime="2026-09-28T10:15">2026-09-28 10:15</time></div>
+      <ul>
+        <li>Sumba stalai visada vientisi ir tik dviejų dydžių, todėl vietoj matmenų laukų rodomas pasirinkimas <b>Didelė (1158 × 920)</b> arba <b>Maža (1058 × 820)</b>. Pasirinkus Sumba, dingsta ir „Su intarpu / Be intarpo“ juosta, ir kanto laukas — nėra ko įvesti.</li>
+      </ul>
     </div>
     <div class="release">
       <div class="release-top"><b>v1.9.2</b><time datetime="2026-09-28T09:30">2026-09-28 09:30</time></div>
@@ -1625,12 +1637,20 @@ window.FIG_STALAI = [["Aimete","Aimete 1952x852","001_aimeTE_1952x852",1952,852,
     $('cTangaWrap').hidden = (nr!==24 || sumba);
     $('cStorisWrap').hidden = (nr!==30 || sumba);
     $('cKantasWrap').hidden = sumba;   // Sumbai kantas nereikalingas
+    // Sumba: tik du fiksuoti dydžiai ir niekada su intarpu
+    $('cDydisWrap').hidden = !sumba;
+    $('cIlgisWrap').hidden = sumba;
+    $('cMode').hidden = sumba;
+    if(sumba && mode!=='be'){ mode='be'; $('cMode').querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b.dataset.m==='be'); }); }
     /* Forma: apvalus — vienas matmuo (skersmuo); stačiakampis (ir kvadratas) — ilgis ir plotis */
     var apv=$('cApv').checked, fig=$('cFig').checked;
-    $('cPlotisWrap').hidden = apv;
+    $('cPlotisWrap').hidden = apv || isSumba();
     $('cModelWrap').hidden = !fig;
     $('cIlgisLab').textContent = apv ? 'Stalo skersmuo' : 'Stalo ilgis';
-    var ilgis=+$('cIlgis').value||0, plotis=apv ? ilgis : (+$('cPlotis').value||0), k=kantas(nr), html='';
+    var sumbaDydis = sumba ? $('cDydis').value.split('x').map(Number) : null;
+    var ilgis = sumba ? sumbaDydis[0] : (+$('cIlgis').value||0);
+    var plotis = sumba ? sumbaDydis[1] : (apv ? ilgis : (+$('cPlotis').value||0));
+    var k=kantas(nr), html='';
     var kS = n1(k), mS = 'stalo skersmuo';
     if(mode==='be'){
       if(apv){
@@ -2231,7 +2251,7 @@ window.FIG_STALAI = [["Aimete","Aimete 1952x852","001_aimeTE_1952x852",1952,852,
   }
   window.CncCatalog={show:function(){ catInit(); catRender(); }};
 
-  ['cApv','cStac','cFig','cModel','cIlgis','cPlotis','cKantas','cNom','cTanga','cStoris'].forEach(function(id){
+  ['cApv','cStac','cFig','cModel','cDydis','cIlgis','cPlotis','cKantas','cNom','cTanga','cStoris'].forEach(function(id){
     $(id).addEventListener('input',render); $(id).addEventListener('change',render);
   });
   render();
