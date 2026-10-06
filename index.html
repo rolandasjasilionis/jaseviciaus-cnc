@@ -252,6 +252,9 @@ h2{margin:0 0 10px;font-size:11px;font-weight:800;letter-spacing:.16em;text-tran
 .ocell.empty{background:#FFFDF4;border-style:dashed;border-color:#E3CE86}
 .ocell.empty .val{color:#C4B27A}
 .tnote{font-size:13px;color:var(--ink-soft);padding-top:4px}
+.brez summary{cursor:pointer;font-weight:700;padding:6px 0}
+.brez img{display:block;width:100%;height:auto;margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:var(--r)}
+.brez a{display:block}
 
 /* kai offset'e yra atskiros K ir D stalo reik\u0161m\u0117s (pvz. "K>-255" / "D>+1200"),
    rodoma dviem stulpeliais \u2014 vienas stalui K, vienas stalui D \u2014 vietoj sugrusto teksto viename langelyje */
@@ -542,16 +545,22 @@ body.scrolled #calcView .calcbar .chk{padding:6px 6px;font-size:14px}
 </main>
 
 <button id="versionBtn" class="version-btn" type="button" aria-haspopup="dialog" aria-controls="versionModal">
-  <b>v1.9.3</b> · 2026-09-28
+  <b>v1.9.4</b> · 2026-10-06
 </button>
 <div id="versionModal" class="version-modal" role="dialog" aria-modal="true" aria-labelledby="versionTitle" hidden>
   <div class="version-panel">
     <div class="version-head">
       <div>
         <h2 id="versionTitle">Pakeitimų istorija</h2>
-        <p id="versionCurrent">v1.9.3 · 2026-09-28 10:15</p>
+        <p id="versionCurrent">v1.9.4 · 2026-10-06 20:45</p>
       </div>
       <button id="versionClose" class="version-close" type="button" aria-label="Uždaryti pakeitimų istoriją">&times;</button>
+    </div>
+    <div class="release">
+      <div class="release-top"><b>v1.9.4</b><time datetime="2026-10-06T20:45">2026-10-06 20:45</time></div>
+      <ul>
+        <li>Gaminio kortelėje atsirado skiltis <b>Brėžinys</b> (SVG su matmenimis). Bandymui — tik <b>Tanga kojos</b> (tanga K koja).</li>
+      </ul>
     </div>
     <div class="release">
       <div class="release-top"><b>v1.9.3</b><time datetime="2026-09-28T10:15">2026-09-28 10:15</time></div>
@@ -1214,6 +1223,11 @@ function list(){
   bind();
 }
 
+/* Gaminių brėžiniai (SVG, aplanke brezinial/): gaminio pavadinimas → failas */
+const BREZINIAI = {
+  'Tanga kojos': { src:'brezinial/tanga_K.svg', cap:'Tanga koja K – matmenys', note:'Apskaičiuota iš programos' }
+};
+
 function open(name){
   const d = DATA.find(x => x.n === name); if(!d) return;
   pushRecent(name);
@@ -1289,6 +1303,13 @@ function open(name){
   }).join('');
   const offSection = off ? `<section><h2>Offsetai</h2>${off}</section>` : '';
 
+  const brezData = BREZINIAI[d.n];
+  const brezSection = brezData ? `<section><h2>Brėžinys</h2>
+    <details class="brez"><summary>${esc(brezData.cap)}</summary>
+      <a href="${esc(brezData.src)}" target="_blank" rel="noopener"><img src="${esc(brezData.src)}" alt="${esc(brezData.cap)}" loading="lazy"></a>
+      <div class="tnote">${esc(brezData.note)}</div>
+    </details></section>` : '';
+
   const timesSection = `<section class="times-sec">
     <h2 class="times-h2">Laikai
       <button class="tglbtn" data-times-toggle="${esc(d.n)}" aria-expanded="false">Detaliau <span class="car">&#9662;</span></button>
@@ -1307,6 +1328,7 @@ function open(name){
       ${tools ? `<section><h2>\u012Erankiai</h2>${tools}</section>` : ''}
       ${offSection}
       ${d.notes ? `<section><h2>Pastabos</h2>${d.notes.map(n=>`<div class="note">\u2022 ${esc(n)}</div>`).join('')}</section>` : ''}
+      ${brezSection}
       ${timesSection}
     </article>`;
   bind();
