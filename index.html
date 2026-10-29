@@ -72,6 +72,16 @@ header{position:sticky;top:0;z-index:20;background:var(--ink);
   font:500 15.5px 'Archivo',sans-serif;color:var(--ink);background:#fff;resize:vertical;min-height:72px}
 .supnote:focus{outline:3px solid var(--slot);outline-offset:1px}
 .filerow{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}
+/* --- fotoaparatas puslapyje --- */
+#cam{position:fixed;inset:0;z-index:110;background:#000;display:flex;flex-direction:column}
+#cam[hidden]{display:none}
+#camVid{flex:1;min-height:0;width:100%;object-fit:contain;background:#000}
+.camrow{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:16px 18px calc(18px + env(safe-area-inset-bottom,0))}
+.camshot{width:68px;height:68px;border-radius:50%;border:5px solid #fff;background:rgba(255,255,255,.25);cursor:pointer}
+.camshot:active{background:#fff}
+.camsec{border:0;background:transparent;color:#fff;font:600 15px 'Archivo',sans-serif;
+  padding:10px 4px;cursor:pointer;min-width:84px}
 .filebtn{display:block;border:1px dashed var(--line);border-radius:var(--r);background:#fff;
   padding:13px 14px;font:600 15px 'Archivo',sans-serif;color:var(--ink-soft);cursor:pointer;text-align:center}
 .filebtn input{display:none}
@@ -574,21 +584,29 @@ body.scrolled #calcView .calcbar .chk{padding:6px 6px;font-size:14px}
     <textarea id="supNote" class="supnote" maxlength="500"
               placeholder="Pvz. skubu, baigiasi sandėlyje, pakeisti dvi"></textarea>
     <div class="filerow">
-      <!-- Atskiri mygtukai sąmoningai: kai viename lauke leidžiama ir nuotrauka,
-           ir PDF, telefonas siūlo tik failų naršyklę, be fotoaparato. -->
-      <label class="filebtn" id="supCamLab">
-        Fotografuoti
-        <input id="supCam" type="file" accept="image/*" capture="environment">
-      </label>
+      <!-- Fotoaparatas atidaromas pačiame puslapyje: dalis naršyklių (pvz. Comet)
+           nepaiso input capture="environment" ir vis tiek rodo galeriją.
+           Jei kamera neprieinama, mygtukas grįžta prie įprasto failo lauko. -->
+      <button type="button" class="filebtn" id="supCamBtn">Fotografuoti</button>
       <label class="filebtn" id="supFileLab">
         Pasirinkti failą
         <input id="supFile" type="file" accept="image/*,application/pdf">
       </label>
+      <input id="supCam" type="file" accept="image/*" capture="environment" hidden>
     </div>
     <button id="supSend" class="sendbtn" type="button" disabled>Siųsti užsakymą</button>
     <p class="supmsg" id="supMsg" hidden></p>
   </div>
 </main>
+
+<div id="cam" hidden>
+  <video id="camVid" playsinline autoplay muted></video>
+  <div class="camrow">
+    <button type="button" class="camsec" id="camX">Atšaukti</button>
+    <button type="button" class="camshot" id="camShot" aria-label="Fotografuoti"></button>
+    <button type="button" class="camsec" id="camFlip">Apversti</button>
+  </div>
+</div>
 
 <main id="catView" hidden>
   <div class="catbar">
@@ -1785,7 +1803,9 @@ setView('setup');
   const fileEl = document.getElementById('supFile');
   const fileLab = document.getElementById('supFileLab');
   const camEl = document.getElementById('supCam');
-  const camLab = document.getElementById('supCamLab');
+  const camBtn = document.getElementById('supCamBtn');
+  const camBox = document.getElementById('cam');
+  const camVid = document.getElementById('camVid');
   const sendBtn = document.getElementById('supSend');
   const msgEl = document.getElementById('supMsg');
 
@@ -1960,31 +1980,80 @@ setView('setup');
   function valytiPrieda(){
     priedas = null;
     camEl.value = ''; fileEl.value = '';
-    camLab.classList.remove('has'); fileLab.classList.remove('has');
-    camLab.firstChild.textContent = 'Fotografuoti ';
+    camBtn.classList.remove('has'); fileLab.classList.remove('has');
+    camBtn.textContent = 'Fotografuoti';
     fileLab.firstChild.textContent = 'Pasirinkti failą ';
   }
 
+  function priedasNustatytas(p, lab, tekstas){
+    valytiPrieda();
+    priedas = p;
+    lab.classList.add('has');
+    if(lab === camBtn) lab.textContent = tekstas;
+    else lab.firstChild.textContent = tekstas + ' ';
+    msg('');
+  }
+
+  /* ---- fotoaparatas puslapyje ---- */
+  let srautas = null, kamera = 'environment';
+
+  async function kameraIjungti(){
+    kameraIsjungti();
+    srautas = await navigator.mediaDevices.getUserMedia({
+      video: {facingMode: {ideal: kamera}, width: {ideal: 1920}}, audio: false});
+    camVid.srcObject = srautas;
+    camBox.hidden = false;
+  }
+  function kameraIsjungti(){
+    if(srautas) srautas.getTracks().forEach(t => t.stop());
+    srautas = null;
+  }
+  function kameraUzdaryti(){ kameraIsjungti(); camBox.hidden = true; }
+
+  camBtn.addEventListener('click', async () => {
+    /* Kamera veikia tik saugiu ryšiu (https arba localhost). */
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ camEl.click(); return; }
+    try{ await kameraIjungti(); }
+    catch(err){
+      /* Neleido arba kameros nėra — grįžtam prie įprasto failo lauko. */
+      camEl.click();
+    }
+  });
+  document.getElementById('camX').addEventListener('click', kameraUzdaryti);
+  document.getElementById('camFlip').addEventListener('click', async () => {
+    kamera = (kamera === 'environment') ? 'user' : 'environment';
+    try{ await kameraIjungti(); }catch(err){ kameraUzdaryti(); msg('Nepavyko perjungti kameros.', true); }
+  });
+  document.getElementById('camShot').addEventListener('click', () => {
+    const k = Math.min(1, 1600 / Math.max(camVid.videoWidth, camVid.videoHeight));
+    const c = document.createElement('canvas');
+    c.width = Math.round(camVid.videoWidth * k); c.height = Math.round(camVid.videoHeight * k);
+    c.getContext('2d').drawImage(camVid, 0, 0, c.width, c.height);
+    const d = new Date();
+    const laikas = d.toLocaleDateString('lt') + ' ' +
+                   String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+    kameraUzdaryti();
+    priedasNustatytas({vardas: 'nuotrauka.jpg', mime: 'image/jpeg',
+                       base64: c.toDataURL('image/jpeg', 0.82).split(',')[1]},
+                      camBtn, 'Nuotrauka ' + laikas);
+  });
+
   /* Priedas visada vienas: pasirinkus kitą, ankstesnis pakeičiamas. */
-  function priedoPasirinkimas(inp, lab, vardas){
+  function priedoPasirinkimas(inp, lab){
     inp.addEventListener('change', async () => {
       const f = inp.files[0];
       if(!f){ valytiPrieda(); return; }
       try{
         const p = await paruostiFaila(f);
-        valytiPrieda();
-        priedas = p;
-        lab.classList.add('has');
-        lab.firstChild.textContent = (f.name.length > 22 ? f.name.slice(0,20) + '…' : f.name) + ' ';
-        msg('');
+        priedasNustatytas(p, lab, f.name.length > 22 ? f.name.slice(0,20) + '…' : f.name);
       }catch(err){
         valytiPrieda();
         msg(err.message, true);
       }
     });
   }
-  priedoPasirinkimas(camEl, camLab, 'Fotografuoti');
-  priedoPasirinkimas(fileEl, fileLab, 'Pasirinkti failą');
+  priedoPasirinkimas(camEl, camBtn);
+  priedoPasirinkimas(fileEl, fileLab);
 
   sendBtn.addEventListener('click', async () => {
     if(!cart.length) return;
