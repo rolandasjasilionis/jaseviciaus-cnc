@@ -36,6 +36,75 @@ header{position:sticky;top:0;z-index:20;background:var(--ink);
   padding:14px 15px;font:600 16px 'Archivo',sans-serif;cursor:pointer}
 .menu button:active{background:#3B4E62}
 .menu button.on{background:var(--slot);color:var(--ink)}
+.menu .who{padding:11px 15px;font:600 11.5px 'IBM Plex Mono',monospace;color:#8FA3B5;
+  letter-spacing:.06em;border-top:1px solid #3B4E62}
+
+/* --- tiekimas --- */
+#supView .step{margin-bottom:16px}
+#supView .step[hidden]{display:none}
+#supView .steplab{font:600 11.5px 'IBM Plex Mono',monospace;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-soft);margin:0 2px 7px}
+#supView .supq{width:100%;margin-bottom:16px;border:1px solid var(--line);border-radius:var(--r);
+  padding:13px 14px;font:600 17px 'Archivo',sans-serif;color:var(--ink);background:#fff}
+#supView .supq:focus{outline:3px solid var(--slot);outline-offset:1px}
+.pick{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:16px}
+.pick .nm{font-weight:700;font-size:18px;letter-spacing:-.01em}
+.pick .kod{font:700 15px 'IBM Plex Mono',monospace;margin-top:3px}
+.pick .kod.none{color:var(--alert);font-weight:600;font-size:14px}
+.pick .spec{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft);margin-top:3px}
+.pick .row{display:flex;align-items:center;gap:9px;margin-top:13px}
+.qty{display:flex;align-items:center;gap:0;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.qty button{border:0;background:#fff;color:var(--ink);width:42px;height:42px;font:700 20px 'Archivo',sans-serif;cursor:pointer}
+.qty button:active{background:#F2F5F7}
+.qty input{width:52px;height:42px;border:0;border-left:1px solid var(--line);border-right:1px solid var(--line);
+  text-align:center;font:700 17px 'IBM Plex Mono',monospace;color:var(--ink);background:#fff}
+.addbtn{flex:1;border:0;border-radius:9px;background:var(--ink);color:#fff;height:42px;
+  font:700 15px 'Archivo',sans-serif;cursor:pointer}
+.addbtn:disabled{opacity:.5;cursor:default}
+.cartrow{display:flex;align-items:center;gap:10px;padding:11px 2px;border-bottom:1px solid var(--line)}
+.cartrow:last-child{border-bottom:0}
+.cartrow .cn{flex:1;min-width:0}
+.cartrow .cn b{display:block;font-size:15.5px;font-weight:700}
+.cartrow .cn span{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft)}
+.cartrow .cq{font:700 16px 'IBM Plex Mono',monospace;white-space:nowrap}
+.cartrow .cx{border:0;background:transparent;color:var(--ink-soft);font-size:20px;cursor:pointer;padding:0 4px}
+.supnote{width:100%;border:1px solid var(--line);border-radius:var(--r);padding:12px 13px;
+  font:500 15.5px 'Archivo',sans-serif;color:var(--ink);background:#fff;resize:vertical;min-height:72px}
+.supnote:focus{outline:3px solid var(--slot);outline-offset:1px}
+.filebtn{display:block;border:1px dashed var(--line);border-radius:var(--r);background:#fff;
+  padding:13px 14px;margin:12px 0;font:600 15px 'Archivo',sans-serif;color:var(--ink-soft);cursor:pointer;text-align:center}
+.filebtn input{display:none}
+.filebtn.has{border-style:solid;color:var(--ink)}
+.sendbtn{width:100%;border:0;border-radius:var(--r);background:var(--slot);color:var(--ink);
+  padding:15px;font:800 17px 'Archivo',sans-serif;cursor:pointer}
+.sendbtn:disabled{opacity:.55;cursor:default}
+.supmsg{margin:13px 0 0;padding:11px 13px;border-radius:var(--r);font-size:15px}
+.supmsg[hidden]{display:none}
+.supmsg.ok{background:#F0F8F2;color:#1F6B3B}
+.supmsg.err{background:var(--alert-bg);color:var(--alert)}
+.emptyhint{color:var(--ink-soft);font-size:15px;margin:2px 2px 14px}
+.emptyhint[hidden]{display:none}
+/* .times-h2 yra display:flex, todėl be šito „hidden“ jo nepaslėptų. */
+h2.times-h2[hidden]{display:none}
+
+/* --- prisijungimas --- */
+#gate{position:fixed;inset:0;z-index:100;background:var(--ink);
+  display:flex;align-items:center;justify-content:center;padding:24px}
+#gate[hidden]{display:none}
+.gate-card{background:var(--card);border-radius:var(--r);padding:22px 20px;width:100%;max-width:340px}
+.gate-card h1{margin:0 0 5px;font-size:15px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.gate-card p{margin:0 0 18px;font-size:14px;color:var(--ink-soft)}
+.gate-card label{display:block;margin:0 0 5px;font:600 11.5px 'IBM Plex Mono',monospace;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.gate-card input{width:100%;margin-bottom:14px;border:1px solid var(--line);border-radius:var(--r);
+  padding:13px 14px;font:600 17px 'Archivo',sans-serif;color:var(--ink);background:#fff}
+.gate-card input:focus{outline:3px solid var(--slot);outline-offset:1px}
+.gate-btn{width:100%;border:0;border-radius:var(--r);background:var(--ink);color:#fff;
+  padding:14px;font:700 16px 'Archivo',sans-serif;cursor:pointer}
+.gate-btn:disabled{opacity:.55;cursor:default}
+.gate-err{margin:13px 0 0;padding:10px 12px;border-radius:var(--r);
+  background:var(--alert-bg);color:var(--alert);font-size:14.5px}
+.gate-err[hidden]{display:none}
 
 /* --- gamybos langas --- */
 .pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
@@ -448,6 +517,9 @@ body.scrolled #calcView .calcbar .chk{padding:6px 6px;font-size:14px}
     <button data-view="calc">Stalų skaičiuoklė</button>
     <button data-view="catalog">Stalų katalogas</button>
     <button data-view="tables">Vakuuminiai padukai</button>
+    <button data-view="supply">Tiekimas</button>
+    <div class="who" id="who" hidden></div>
+    <button id="logout" type="button">Atsijungti</button>
   </div>
   <div id="setupbar">
   <div class="toprow">
@@ -464,7 +536,50 @@ body.scrolled #calcView .calcbar .chk{padding:6px 6px;font-size:14px}
   </div>
 </header>
 
+<div id="gate" hidden>
+  <form class="gate-card" id="gateForm">
+    <h1>CNC nustatymai</h1>
+    <p>Prisijunk savo vardu ir PIN.</p>
+    <label for="gateVardas">Vardas</label>
+    <input id="gateVardas" type="text" autocomplete="username" autocapitalize="none"
+           autocorrect="off" spellcheck="false" required>
+    <label for="gatePin">PIN</label>
+    <input id="gatePin" type="password" inputmode="numeric" autocomplete="current-password" required>
+    <button id="gateBtn" class="gate-btn" type="submit">Prisijungti</button>
+    <p class="gate-err" id="gateErr" hidden></p>
+  </form>
+</div>
+
 <main id="app"></main>
+
+<main id="supView" hidden>
+  <input id="supQ" class="supq" type="search" placeholder="Ieškoti: freza 12, grąžtas, 195…"
+         autocomplete="off" spellcheck="false">
+  <p class="emptyhint" id="supInfo" hidden></p>
+  <div class="step" id="stGrupe"><p class="steplab">Kas reikia?</p><div class="sfilter"></div></div>
+  <div class="step" id="stTipas" hidden><p class="steplab">Kokia freza?</p><div class="sfilter"></div></div>
+  <div class="step" id="stD" hidden><p class="steplab">Diametras, mm</p><div class="sfilter"></div></div>
+  <div class="step" id="stRusis" hidden><p class="steplab">Rūšis</p><div class="sfilter"></div></div>
+  <div class="step" id="stSukimas" hidden><p class="steplab">Sukimasis</p><div class="sfilter"></div></div>
+  <div class="step" id="stR" hidden><p class="steplab">Spindulys</p><div class="sfilter"></div></div>
+
+  <div class="pick" id="supPick" hidden></div>
+
+  <h2 class="times-h2" id="cartH" hidden>Užsakymas</h2>
+  <div class="pcard" id="supCart" hidden></div>
+
+  <div class="step">
+    <p class="steplab">Komentaras (nebūtina)</p>
+    <textarea id="supNote" class="supnote" maxlength="500"
+              placeholder="Pvz. skubu, baigiasi sandėlyje, pakeisti dvi"></textarea>
+    <label class="filebtn" id="supFileLab">
+      Pridėti nuotrauką ar failą
+      <input id="supFile" type="file" accept="image/*,application/pdf">
+    </label>
+    <button id="supSend" class="sendbtn" type="button" disabled>Siųsti užsakymą</button>
+    <p class="supmsg" id="supMsg" hidden></p>
+  </div>
+</main>
 
 <main id="catView" hidden>
   <div class="catbar">
@@ -545,16 +660,28 @@ body.scrolled #calcView .calcbar .chk{padding:6px 6px;font-size:14px}
 </main>
 
 <button id="versionBtn" class="version-btn" type="button" aria-haspopup="dialog" aria-controls="versionModal">
-  <b>v1.9.4</b> · 2026-10-06
+  <b>v1.10.0</b> · 2026-10-27
 </button>
 <div id="versionModal" class="version-modal" role="dialog" aria-modal="true" aria-labelledby="versionTitle" hidden>
   <div class="version-panel">
     <div class="version-head">
       <div>
         <h2 id="versionTitle">Pakeitimų istorija</h2>
-        <p id="versionCurrent">v1.9.4 · 2026-10-06 20:45</p>
+        <p id="versionCurrent">v1.10.0 · 2026-10-27 21:15</p>
       </div>
       <button id="versionClose" class="version-close" type="button" aria-label="Uždaryti pakeitimų istoriją">&times;</button>
+    </div>
+    <div class="release">
+      <div class="release-top"><b>v1.10.0</b><time datetime="2026-10-27T21:15">2026-10-27 21:15</time></div>
+      <ul>
+        <li><b>Prisijungimas.</b> Svetainė atsidaro tik įvedus vardą ir PIN. Duomenys imami per Google Apps Script, kuris pirma patikrina, kas prašo — anksčiau lentelę galėjo atsisiųsti bet kas, žinantis jos adresą.</li>
+        <li>Prisijungimas galioja 12 valandų (viena pamaina). Meniu apačioje matyti, kas prisijungęs, ir yra mygtukas <b>Atsijungti</b>.</li>
+        <li>Vartotojus valdo administratorius pačioje lentelėje: meniu <b>CNC → Pridėti vartotoją / Pakeisti PIN / Išjungti vartotoją</b>.</li>
+        <li><b>Nauja skiltis „Tiekimas“.</b> Įrankis renkamas pakopomis: freza ar grąžtas → kokia freza → diametras → rūšis ir sukimasis. Kodas atsiranda pats; kur jo dar nežinome, parašoma atvirai ir užsakymas išeina su nuotrauka.</li>
+        <li>Užsakyme gali būti keli įrankiai su kiekiais, komentaras ir nuotrauka — telefone galima fotografuoti iš karto. Nuotrauka prieš siunčiant sumažinama, kad laiškas visada praeitų.</li>
+        <li>Paspaudus <b>Siųsti</b> užsakymas iškeliauja laišku tiekimo vadybininkui ir lieka lentelės lape <b>Užsakymai</b> su numeriu, laiku ir vardu.</li>
+        <li>Įrankių sąrašas imamas iš lapo <b>Įrankiai</b> — įrašius naują eilutę lentelėje, įrankis atsiranda ir svetainėje.</li>
+      </ul>
     </div>
     <div class="release">
       <div class="release-top"><b>v1.9.4</b><time datetime="2026-10-06T20:45">2026-10-06 20:45</time></div>
@@ -950,31 +1077,65 @@ async function loadGaminiai(){
   dataLoading = true; dataError = false;
   if(view==='setup') list();
   try{
-    const r = await fetch(GAMINIAI_CSV_URL, {cache:'no-store'});
-    if(!r.ok) throw new Error('http '+r.status);
-    const text = await r.text();
-    const rows = parseCSV(text);
-    DATA = rowsToGaminiai(rows);
+    const d = await fetchDuomenys(true);
+    DATA = rowsToGaminiai(d.gaminiai);
     dataLoading = false;
     enrichData();
   }catch(e){
     console.error('Nepavyko užkrauti gaminių:', e);
     dataLoading = false;
     dataError = true;
+    if(e.neprisijungta) gateShow('Prisijungimas baigėsi — prisijunk iš naujo.');
   }
   if(view==='setup') list();
 }
 
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-/* --- laikai (rankiniu budu pildoma g-sheets lentele, tik skaitymui) --- */
-/* Duomenys imami TIESIOGIAI iš Google Sheets CSV eksporto — jokio
-   backend'o/serverio nereikia. Sheet turi likti "Anyone with the link –
-   Viewer" (peržiūrai), kad šis eksportas veiktų. Jei pakeisi lentelę
-   (naują lapą, kitą ID), atnaujink šiuos du URL. */
-const SHEET_ID = '1FOstpyQYfAShdJLFqAOPmGFGUsrpwGlspYWVD4-Rj2c';
-const TIMES_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
-const GAMINIAI_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=464032603`;
+/* --- prisijungimas ir duomenys per Apps Script „durininką“ --- */
+/* Anksčiau duomenys buvo imami tiesiai iš viešo Google Sheets CSV eksporto —
+   tai reiškė, kad lentelę galėjo atsisiųsti bet kas, žinantis jos ID (o ID
+   matosi šiame faile). Dabar jų prašoma skripto, kuris pirma patikrina vardą
+   ir PIN, todėl lentelė gali būti uždaryta („Ribota“).
+   Skriptas: lentelė → Plėtiniai → Apps Script (kodas ir instrukcija —
+   OneDrive\Documents\CNC-Claude_Code\prisijungimas\). Pakeitus skripto kodą
+   reikia Deploy → Manage deployments → New version; adresas nesikeičia. */
+const GATE_URL = 'https://script.google.com/macros/s/AKfycbzGxPjJnQMo8wrq9QiQwxe6Bx02-IYX7jULbPZuy0FmjUg_ovON_NM0fb1lR1rV_LXQcw/exec';
+const AUTH_KEY = 'cnc_prisijungimas';
+
+let auth = null;
+try{ auth = JSON.parse(localStorage.getItem(AUTH_KEY) || 'null'); }catch(e){ auth = null; }
+if(auth && (!auth.zetonas || !(auth.galioja > Date.now()))) auth = null;
+
+function authSave(a){ auth = a; try{ localStorage.setItem(AUTH_KEY, JSON.stringify(a)); }catch(e){} }
+function authClear(){ auth = null; try{ localStorage.removeItem(AUTH_KEY); }catch(e){} }
+
+/* Siunčiame be papildomų antraščių (Content-Type lieka text/plain) — kitaip
+   naršyklė pareikalautų CORS patikros, kurios Apps Script neatlieka. */
+async function gate(veiksmas, payload){
+  const body = Object.assign({veiksmas, zetonas: auth ? auth.zetonas : ''}, payload || {});
+  const r = await fetch(GATE_URL, {method:'POST', body: JSON.stringify(body)});
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  const d = await r.json();
+  if(!d.ok){
+    const e = new Error(d.klaida || 'Nepavyko');
+    /* Leidimas baigėsi arba vartotojas išjungtas — reikia prisijungti iš naujo. */
+    e.neprisijungta = /neprisijung|baig|išjungt/i.test(d.klaida || '');
+    throw e;
+  }
+  return d;
+}
+
+/* Abu lapai parsiunčiami viena užklausa ir laikomi atmintyje. */
+let gateData = null, gatePromise = null;
+function fetchDuomenys(force){
+  if(gateData && !force) return Promise.resolve(gateData);
+  if(gatePromise && !force) return gatePromise;
+  gatePromise = gate('duomenys')
+    .then(d => { gateData = d; gatePromise = null; return d; })
+    .catch(err => { gatePromise = null; throw err; });
+  return gatePromise;
+}
 const TIME_GROUPS = [
   {lab:'Pasiruo\u0161imas', items:[
     {k:'\u012Eranki\u0173 keitimas', l:'\u012Eranki\u0173 keitimas'},
@@ -988,33 +1149,14 @@ const TIME_GROUPS = [
     {k:'Serijos keitimas', l:'Serijos keitimas'}
   ]}
 ];
-let timesMap = null, timesPromise = null;
+let timesMap = null;
 
-function parseCSV(text){
-  const rows=[]; let row=[]; let field=''; let inQ=false;
-  for(let i=0;i<text.length;i++){
-    const c=text[i];
-    if(inQ){
-      if(c==='"'){ if(text[i+1]==='"'){ field+='"'; i++; } else inQ=false; }
-      else field+=c;
-    } else {
-      if(c==='"') inQ=true;
-      else if(c===','){ row.push(field); field=''; }
-      else if(c==='\r'){ /* ignoruojama */ }
-      else if(c==='\n'){ row.push(field); rows.push(row); row=[]; field=''; }
-      else field+=c;
-    }
-  }
-  if(field!=='' || row.length){ row.push(field); rows.push(row); }
-  return rows.filter(r => r.some(v => v!==''));
-}
 /* Google Sheets antrasciu langeliuose kartais yra vidiniai eilutes luziai/keli tarpai
    (pvz. "\u012Erankiu \n keitimas"). Sutraukiame juos i viena tarpa, kad raktai
    sutaptu su TIME_GROUPS apibrezimais nepaisant to, kaip tekstas suskaidytas lenteleje. */
 const normHeader = h => (h||'').replace(/\s+/g, ' ').trim();
 
-function buildTimesMap(text){
-  const rows = parseCSV(text);
+function buildTimesMap(rows){
   const map = {};
   if(!rows.length) return map;
   const header = rows[0].map(normHeader);
@@ -1028,12 +1170,7 @@ function buildTimesMap(text){
 }
 function ensureTimes(force){
   if(timesMap && !force) return Promise.resolve(timesMap);
-  if(timesPromise && !force) return timesPromise;
-  timesPromise = fetch(TIMES_CSV_URL, {cache:'no-store'})
-    .then(r => { if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })
-    .then(text => { timesMap = buildTimesMap(text); timesPromise = null; return timesMap; })
-    .catch(err => { timesPromise = null; throw err; });
-  return timesPromise;
+  return fetchDuomenys(force).then(d => { timesMap = buildTimesMap(d.laikas); return timesMap; });
 }
 /* G-sheets lentelėje laikas įvedamas rankiniu būdu kaip "min,sek" trumpuoju formatu:
    - iki kablelio: minutės (sveikasis skaičius, gali būti tuščias, t.y. 0)
@@ -1346,6 +1483,7 @@ const setupbar=document.getElementById('setupbar'), titleEl=document.getElementB
 const tablesView=document.getElementById('tablesView');
 const calcView=document.getElementById('calcView');
 const catView=document.getElementById('catView');
+const supView=document.getElementById('supView');
 let view='setup';          /* setup | prod | calc | tables */
 let pview='orders';        /* orders | order | new */
 let curId=null;
@@ -1378,26 +1516,28 @@ function bar(o){
 function setView(v){
   view=v; menu.hidden=true; menuBtn.setAttribute('aria-expanded','false');
   setupbar.hidden = (v!=='setup');
-  app.hidden = (v==='tables' || v==='calc' || v==='catalog');
+  app.hidden = (v==='tables' || v==='calc' || v==='catalog' || v==='supply');
   catView.hidden = (v!=='catalog');
   tablesView.hidden = (v!=='tables');
   calcView.hidden = (v!=='calc');
-  titleEl.textContent = v==='prod' ? 'Gamyba' : v==='tables' ? 'Vakuuminiai padukai' : v==='calc' ? 'Stalų skaičiuoklė' : v==='catalog' ? 'Stalų katalogas' : 'CNC nustatymai';
+  supView.hidden = (v!=='supply');
+  titleEl.textContent = v==='prod' ? 'Gamyba' : v==='tables' ? 'Vakuuminiai padukai' : v==='calc' ? 'Stalų skaičiuoklė' : v==='catalog' ? 'Stalų katalogas' : v==='supply' ? 'Tiekimas' : 'CNC nustatymai';
   backBtn.hidden = true;
-  menu.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.view===v));
+  menu.querySelectorAll('button[data-view]').forEach(b => b.classList.toggle('on', b.dataset.view===v));
   if(v==='prod'){ pview='orders'; renderProd(); }
   else if(v==='calc'){ countEl.textContent=''; }
   else if(v==='catalog'){ countEl.textContent=''; if(window.CncCatalog) window.CncCatalog.show(); }
   else if(v==='tables'){ countEl.textContent=''; if(window.StaluSkaiciavimas) window.StaluSkaiciavimas.refresh(); }
+  else if(v==='supply'){ countEl.textContent=''; if(window.CncTiekimas) window.CncTiekimas.show(); }
   else list();
   window.scrollTo(0,0);
 }
 menuBtn.addEventListener('click', () => {
   menu.hidden = !menu.hidden;
   menuBtn.setAttribute('aria-expanded', String(!menu.hidden));
-  menu.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.view===view));
+  menu.querySelectorAll('button[data-view]').forEach(b => b.classList.toggle('on', b.dataset.view===view));
 });
-menu.querySelectorAll('button').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+menu.querySelectorAll('button[data-view]').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
 
 /* ---------- fiksuota viršūnė: po ja klijuojamos juostos + susitraukimas slenkant ---------- */
 (function(){
@@ -1612,7 +1752,311 @@ clearBtn.addEventListener('click', () => { q.value=''; clearBtn.classList.remove
 fTool.addEventListener('change', list);
 fType.addEventListener('change', list);
 setView('setup');
-loadGaminiai();
+
+/* ---------- tiekimas: įrankių užsakymas ---------- */
+/* Mygtukai dėliojami iš lapo „Įrankiai“ stulpelių, o ne iš kodo — įrašius
+   naują eilutę lentelėje, įrankis atsiranda ir čia. Kodas rodomas tik tada,
+   kai jis lentelėje įrašytas; kitaip užsakymas siunčiamas be kodo, su
+   nuotrauka. Spėti kodo negalima. */
+(function(){
+  const steps = {
+    grupe:   document.getElementById('stGrupe'),
+    tipas:   document.getElementById('stTipas'),
+    d:       document.getElementById('stD'),
+    rusis:   document.getElementById('stRusis'),
+    sukimas: document.getElementById('stSukimas'),
+    r:       document.getElementById('stR')
+  };
+  const qEl = document.getElementById('supQ');
+  const infoEl = document.getElementById('supInfo');
+  const pickEl = document.getElementById('supPick');
+  const cartEl = document.getElementById('supCart');
+  const cartH = document.getElementById('cartH');
+  const noteEl = document.getElementById('supNote');
+  const fileEl = document.getElementById('supFile');
+  const fileLab = document.getElementById('supFileLab');
+  const sendBtn = document.getElementById('supSend');
+  const msgEl = document.getElementById('supMsg');
+
+  const ORDER = ['grupe','tipas','d','rusis','sukimas','r'];
+  const SUKIMAI = ['dešininė','kairinė'];
+  let TOOLS = null, loading = false;
+  let sel = {}, kiekis = 1, cart = [], priedas = null;
+
+  function msg(tekstas, blogai){
+    msgEl.hidden = !tekstas;
+    msgEl.textContent = tekstas || '';
+    msgEl.className = 'supmsg ' + (blogai ? 'err' : 'ok');
+  }
+
+  /* Įrankio pavadinimas žmogui — iš to, kas lentelėje užpildyta. */
+  function label(x){
+    const dalys = [];
+    if(x.tipas) dalys.push(x.tipas + (x.grupe==='Freza' ? ' freza' : ''));
+    else dalys.push(x.grupe);
+    if(x.d) dalys.push(x.d + ' mm');
+    if(x.r) dalys.push(x.r);
+    let s = dalys.join(' ');
+    const priedai = [];
+    if(x.rusis) priedai.push(x.rusis);
+    if(x.sukimas === 'kairinė') priedai.push('kairinė');
+    if(priedai.length) s += ', ' + priedai.join(', ');
+    return s;
+  }
+
+  /* Eilutės, tinkančios tam, kas jau pasirinkta. */
+  function match(iki){
+    const laukai = iki === undefined ? ORDER : ORDER.slice(0, iki);
+    return (TOOLS||[]).filter(x => laukai.every(k => !sel[k] || String(x[k]) === sel[k]));
+  }
+
+  function values(laukas){
+    const i = ORDER.indexOf(laukas);
+    const sar = [];
+    match(i).forEach(x => {
+      const v = String(x[laukas] || '');
+      if(v && sar.indexOf(v) < 0) sar.push(v);
+    });
+    /* Diametrai rikiuojami kaip skaičiai, ne kaip tekstas. */
+    if(laukas === 'd') sar.sort((a,b) => parseFloat(a) - parseFloat(b));
+    return sar;
+  }
+
+  function drawStep(laukas, sar){
+    const box = steps[laukas].querySelector('.sfilter');
+    steps[laukas].hidden = sar.length < 1;
+    box.innerHTML = sar.map(v =>
+      `<button type="button" data-v="${esc(v)}"${sel[laukas]===v?' class="on"':''}>${esc(v)}</button>`).join('');
+    box.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+      sel[laukas] = (sel[laukas] === b.dataset.v) ? '' : b.dataset.v;
+      /* Pakeitus ankstesnį žingsnį, vėlesni nebegalioja. */
+      ORDER.slice(ORDER.indexOf(laukas) + 1).forEach(k => sel[k] = '');
+      draw();
+    }));
+  }
+
+  function draw(){
+    drawStep('grupe', values('grupe'));
+    drawStep('tipas', sel.grupe ? values('tipas') : []);
+    drawStep('d', sel.grupe ? values('d') : []);
+    drawStep('rusis', sel.grupe ? values('rusis') : []);
+    /* Sukimosi kryptis prasminga tik frezoms — ir kairinė galima bet kuriai. */
+    drawStep('sukimas', (sel.grupe === 'Freza' && sel.tipas) ? SUKIMAI : []);
+    drawStep('r', sel.grupe ? values('r') : []);
+    drawPick();
+  }
+
+  function drawPick(){
+    /* Reikia bent grupės ir, jei jų yra, diametro arba spindulio. */
+    const yraD = values('d').length, yraR = values('r').length, yraRusis = values('rusis').length;
+    const pasirinkta = sel.grupe && (!yraD || sel.d) && (!yraR || sel.r) && (!yraRusis || sel.rusis);
+    if(!pasirinkta){ pickEl.hidden = true; return; }
+
+    const kand = match();
+    /* Kodas rodomas tik tada, kai jis tikrai įrašytas prie šio derinio. */
+    const su = kand.filter(x => x.kodas);
+    const x = su[0] || kand[0] || Object.assign({}, sel);
+    const pav = label(Object.assign({}, x, {sukimas: sel.sukimas || x.sukimas}));
+    const kairine = sel.sukimas === 'kairinė';
+    const kodas = kairine ? (su.filter(k => k.sukimas === 'kairinė')[0] || {}).kodas : (su[0]||{}).kodas;
+
+    pickEl.hidden = false;
+    pickEl.innerHTML =
+      `<div class="nm">${esc(pav)}</div>` +
+      (kodas ? `<div class="kod">${esc(kodas)}</div>`
+             : `<div class="kod none">Kodo dar neturim — pridėk nuotrauką</div>`) +
+      (x.spec && !kairine ? `<div class="spec">${esc(x.spec)}</div>` : '') +
+      (x.pastaba ? `<div class="spec">${esc(x.pastaba)}</div>` : '') +
+      `<div class="row">
+         <div class="qty">
+           <button type="button" data-k="-">&minus;</button>
+           <input id="supKiekis" type="number" min="1" max="999" value="${kiekis}" inputmode="numeric">
+           <button type="button" data-k="+">+</button>
+         </div>
+         <button type="button" class="addbtn" id="supAdd">Įdėti į užsakymą</button>
+       </div>`;
+
+    const inp = pickEl.querySelector('#supKiekis');
+    pickEl.querySelectorAll('.qty button').forEach(b => b.addEventListener('click', () => {
+      kiekis = Math.max(1, Math.min(999, (parseInt(inp.value,10)||1) + (b.dataset.k==='+' ? 1 : -1)));
+      inp.value = kiekis;
+    }));
+    inp.addEventListener('input', () => { kiekis = Math.max(1, Math.min(999, parseInt(inp.value,10)||1)); });
+    pickEl.querySelector('#supAdd').addEventListener('click', () => {
+      cart.push({pavadinimas: pav, kodas: kodas || '', kiekis: kiekis});
+      kiekis = 1; sel = {}; qEl.value = '';
+      msg('');
+      draw(); drawCart();
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+  }
+
+  function drawCart(){
+    cartH.hidden = cartEl.hidden = !cart.length;
+    sendBtn.disabled = !cart.length;
+    cartEl.innerHTML = cart.map((x,i) =>
+      `<div class="cartrow">
+         <div class="cn"><b>${esc(x.pavadinimas)}</b><span>${esc(x.kodas || 'kodo nėra')}</span></div>
+         <div class="cq">${x.kiekis} vnt.</div>
+         <button type="button" class="cx" data-i="${i}" aria-label="Išimti">&times;</button>
+       </div>`).join('');
+    cartEl.querySelectorAll('.cx').forEach(b => b.addEventListener('click', () => {
+      cart.splice(parseInt(b.dataset.i,10), 1); drawCart();
+    }));
+  }
+
+  /* Paieška: įrašius tekstą, parenkamas pirmas tinkantis įrankis. */
+  qEl.addEventListener('input', () => {
+    const t = qEl.value.trim().toLowerCase();
+    if(!t) return;
+    const rastas = (TOOLS||[]).filter(x =>
+      (label(x) + ' ' + x.kodas + ' ' + x.spec).toLowerCase().includes(t))[0];
+    if(!rastas) return;
+    sel = {grupe: rastas.grupe, tipas: rastas.tipas, d: String(rastas.d||''),
+           rusis: rastas.rusis, sukimas: rastas.sukimas, r: rastas.r};
+    draw();
+  });
+
+  /* Telefono nuotrauka sveria 3–5 MB, o laiškui to per daug. Todėl prieš
+     siunčiant ji sumažinama iki 1600 px — frezos kodui įskaityti to užtenka
+     su kaupu, o laiškas praeina visada. Kiti failai siunčiami kaip yra. */
+  function paruostiFaila(f){
+    return new Promise((ok, blogai) => {
+      if(!f.type.startsWith('image/')){
+        if(f.size > 5*1024*1024){ blogai(new Error('Failas per didelis — daugiausia 5 MB.')); return; }
+        const fr = new FileReader();
+        fr.onload = () => ok({vardas: f.name, mime: f.type, base64: String(fr.result).split(',')[1]});
+        fr.onerror = () => blogai(new Error('Nepavyko perskaityti failo.'));
+        fr.readAsDataURL(f);
+        return;
+      }
+      const img = new Image();
+      const url = URL.createObjectURL(f);
+      img.onload = () => {
+        const k = Math.min(1, 1600 / Math.max(img.width, img.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        ok({vardas: f.name.replace(/\.[^.]+$/, '') + '.jpg', mime: 'image/jpeg',
+            base64: c.toDataURL('image/jpeg', 0.82).split(',')[1]});
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); blogai(new Error('Nepavyko perskaityti nuotraukos.')); };
+      img.src = url;
+    });
+  }
+
+  fileEl.addEventListener('change', async () => {
+    const f = fileEl.files[0];
+    if(!f){ priedas = null; fileLab.classList.remove('has'); return; }
+    try{
+      priedas = await paruostiFaila(f);
+      fileLab.classList.add('has');
+      fileLab.firstChild.textContent = f.name + ' ';
+      msg('');
+    }catch(err){
+      fileEl.value = ''; priedas = null; fileLab.classList.remove('has');
+      msg(err.message, true);
+    }
+  });
+
+  sendBtn.addEventListener('click', async () => {
+    if(!cart.length) return;
+    sendBtn.disabled = true;
+    msg('Siunčiama…');
+    try{
+      const d = await gate('uzsakymas', {irankiai: cart, komentaras: noteEl.value, priedas: priedas});
+      cart = []; priedas = null; noteEl.value = ''; fileEl.value = '';
+      fileLab.classList.remove('has'); fileLab.firstChild.textContent = 'Pridėti nuotrauką ar failą ';
+      drawCart();
+      msg((d.laiskas ? 'Užsakymas ' + d.nr + ' išsiųstas tiekimo vadybininkui.'
+                     : 'Užsakymas ' + d.nr + ' įrašytas. Laiškas neišsiųstas — lentelėje nenurodytas tiekimo el. paštas.') +
+          (d.priedoKlaida ? ' Nuotrauka į Diską neįkelta, ji keliauja tik laiške.' : ''));
+    }catch(err){
+      msg(err.message || 'Nepavyko išsiųsti', true);
+      if(err.neprisijungta) gateShow('Prisijungimas baigėsi — prisijunk iš naujo.');
+    }
+    sendBtn.disabled = !cart.length;
+  });
+
+  /* Pranešimas rodomas atskirai, ne pakopos viduje — pakopa be mygtukų
+     paslepiama, tad joje įrašytas tekstas būtų nematomas. */
+  function info(tekstas){
+    infoEl.hidden = !tekstas;
+    infoEl.textContent = tekstas || '';
+  }
+
+  async function show(){
+    if(TOOLS || loading) return;
+    loading = true;
+    pickEl.hidden = true;
+    info('Kraunamas įrankių sąrašas…');
+    try{
+      const d = await gate('irankiai');
+      TOOLS = d.irankiai || [];
+      draw();
+      info(TOOLS.length ? '' :
+        'Įrankių sąrašas tuščias. Lentelėje: CNC → Paruošti lapus, tada CNC → Užpildyti įrankių sąrašą. ' +
+        'Jei ką tik keitei skriptą — Apps Script lange dar reikia Deploy → Manage deployments → New version.');
+    }catch(err){
+      info('Nepavyko gauti įrankių sąrašo: ' + (err.message || ''));
+      if(err.neprisijungta) gateShow('Prisijungimas baigėsi — prisijunk iš naujo.');
+    }
+    loading = false;
+  }
+
+  window.CncTiekimas = {show: show};
+})();
+
+/* ---------- prisijungimo langas ---------- */
+const gateEl = document.getElementById('gate');
+const gateForm = document.getElementById('gateForm');
+const gateVardas = document.getElementById('gateVardas');
+const gatePin = document.getElementById('gatePin');
+const gateBtn = document.getElementById('gateBtn');
+const gateErr = document.getElementById('gateErr');
+const whoEl = document.getElementById('who');
+const logoutBtn = document.getElementById('logout');
+
+function gateShow(zinute){
+  gateErr.hidden = !zinute;
+  gateErr.textContent = zinute || '';
+  gateEl.hidden = false;
+  gatePin.value = '';
+  if(!gateVardas.value) gateVardas.focus(); else gatePin.focus();
+}
+function gateHide(){
+  gateEl.hidden = true;
+  gatePin.value = '';
+  whoEl.hidden = !auth;
+  whoEl.textContent = auth ? 'Prisijungęs: ' + auth.vardas : '';
+}
+
+gateForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  gateBtn.disabled = true;
+  gateErr.hidden = true;
+  try{
+    const d = await gate('prisijungti', {vardas: gateVardas.value.trim(), pin: gatePin.value});
+    authSave({zetonas: d.zetonas, vardas: d.vartotojas.vardas, role: d.vartotojas.role, galioja: d.galioja});
+    gateHide();
+    loadGaminiai();
+  }catch(err){
+    gateErr.textContent = err.message || 'Nepavyko prisijungti';
+    gateErr.hidden = false;
+    gatePin.value = '';
+    gatePin.focus();
+  }finally{
+    gateBtn.disabled = false;
+  }
+});
+
+/* Atsijungus perkraunamas puslapis — kad atmintyje neliktų nei duomenų,
+   nei įvestų laukų (svarbu bendram dirbtuvių kompiuteriui). */
+logoutBtn.addEventListener('click', () => { authClear(); location.reload(); });
+
+if(auth){ gateHide(); loadGaminiai(); }
+else gateShow();
 </script>
 
 <script>
