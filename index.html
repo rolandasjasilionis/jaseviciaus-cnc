@@ -82,6 +82,9 @@ header{position:sticky;top:0;z-index:20;background:var(--ink);
 .camshot:active{background:#fff}
 .camsec{border:0;background:transparent;color:#fff;font:600 15px 'Archivo',sans-serif;
   padding:10px 4px;cursor:pointer;min-width:84px}
+.camstat{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);margin:0;
+  padding:0 24px;text-align:center;color:#fff;font:600 16px 'Archivo',sans-serif}
+.camstat[hidden]{display:none}
 .filebtn{display:block;border:1px dashed var(--line);border-radius:var(--r);background:#fff;
   padding:13px 14px;font:600 15px 'Archivo',sans-serif;color:var(--ink-soft);cursor:pointer;text-align:center}
 .filebtn input{display:none}
@@ -600,6 +603,7 @@ body.scrolled #calcView .calcbar .chk{padding:6px 6px;font-size:14px}
 </main>
 
 <div id="cam" hidden>
+  <p class="camstat" id="camStat">Įjungiama kamera…</p>
   <video id="camVid" playsinline autoplay muted></video>
   <div class="camrow">
     <button type="button" class="camsec" id="camX">Atšaukti</button>
@@ -1806,6 +1810,7 @@ setView('setup');
   const camBtn = document.getElementById('supCamBtn');
   const camBox = document.getElementById('cam');
   const camVid = document.getElementById('camVid');
+  const camStat = document.getElementById('camStat');
   const sendBtn = document.getElementById('supSend');
   const msgEl = document.getElementById('supMsg');
 
@@ -1999,10 +2004,16 @@ setView('setup');
 
   async function kameraIjungti(){
     kameraIsjungti();
+    camBox.hidden = false;
+    camStat.hidden = false;
+    camStat.textContent = 'Įjungiama kamera…';
+    /* Nešiojamame kompiuteryje galinės kameros nėra, todėl „ideal“, o ne
+       „exact“ — kitaip visai nieko negautume. */
     srautas = await navigator.mediaDevices.getUserMedia({
       video: {facingMode: {ideal: kamera}, width: {ideal: 1920}}, audio: false});
     camVid.srcObject = srautas;
-    camBox.hidden = false;
+    try{ await camVid.play(); }catch(err){ /* kai kurios naršyklės paleidžia pačios */ }
+    camStat.hidden = true;
   }
   function kameraIsjungti(){
     if(srautas) srautas.getTracks().forEach(t => t.stop());
@@ -2010,21 +2021,35 @@ setView('setup');
   }
   function kameraUzdaryti(){ kameraIsjungti(); camBox.hidden = true; }
 
+  /* Naršyklė gali nei leisti, nei atmesti — tiesiog tylėti. Todėl laukiam
+     ribotą laiką ir pasakom, kas vyksta, o ne paliekam juodą langą. */
+  function suLaikrodziu(p, sek){
+    return Promise.race([p, new Promise((_, blogai) =>
+      setTimeout(() => blogai(new Error('Kamera neatsiliepė')), sek * 1000))]);
+  }
+
+  function kameraNepavyko(err){
+    kameraUzdaryti();
+    const t = String((err && err.name) || '');
+    msg(t === 'NotAllowedError' ? 'Kamerai naudoti neduotas leidimas. Leisk jį naršyklės adreso juostoje arba pasirink nuotrauką mygtuku „Pasirinkti failą“.'
+      : t === 'NotFoundError' ? 'Kameros šiame įrenginyje nerasta — pasirink nuotrauką mygtuku „Pasirinkti failą“.'
+      : t === 'NotReadableError' ? 'Kamerą naudoja kita programa. Uždaryk ją ir bandyk vėl.'
+      : 'Nepavyko įjungti kameros. Pasirink nuotrauką mygtuku „Pasirinkti failą“.', true);
+  }
+
   camBtn.addEventListener('click', async () => {
     /* Kamera veikia tik saugiu ryšiu (https arba localhost). */
     if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ camEl.click(); return; }
-    try{ await kameraIjungti(); }
-    catch(err){
-      /* Neleido arba kameros nėra — grįžtam prie įprasto failo lauko. */
-      camEl.click();
-    }
+    try{ await suLaikrodziu(kameraIjungti(), 12); }
+    catch(err){ kameraNepavyko(err); }
   });
   document.getElementById('camX').addEventListener('click', kameraUzdaryti);
   document.getElementById('camFlip').addEventListener('click', async () => {
     kamera = (kamera === 'environment') ? 'user' : 'environment';
-    try{ await kameraIjungti(); }catch(err){ kameraUzdaryti(); msg('Nepavyko perjungti kameros.', true); }
+    try{ await suLaikrodziu(kameraIjungti(), 12); }catch(err){ kameraNepavyko(err); }
   });
   document.getElementById('camShot').addEventListener('click', () => {
+    if(!camVid.videoWidth){ msg('Kamera dar neįsijungė — palauk sekundę.', true); return; }
     const k = Math.min(1, 1600 / Math.max(camVid.videoWidth, camVid.videoHeight));
     const c = document.createElement('canvas');
     c.width = Math.round(camVid.videoWidth * k); c.height = Math.round(camVid.videoHeight * k);
