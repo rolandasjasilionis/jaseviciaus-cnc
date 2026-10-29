@@ -71,8 +71,9 @@ header{position:sticky;top:0;z-index:20;background:var(--ink);
 .supnote{width:100%;border:1px solid var(--line);border-radius:var(--r);padding:12px 13px;
   font:500 15.5px 'Archivo',sans-serif;color:var(--ink);background:#fff;resize:vertical;min-height:72px}
 .supnote:focus{outline:3px solid var(--slot);outline-offset:1px}
+.filerow{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}
 .filebtn{display:block;border:1px dashed var(--line);border-radius:var(--r);background:#fff;
-  padding:13px 14px;margin:12px 0;font:600 15px 'Archivo',sans-serif;color:var(--ink-soft);cursor:pointer;text-align:center}
+  padding:13px 14px;font:600 15px 'Archivo',sans-serif;color:var(--ink-soft);cursor:pointer;text-align:center}
 .filebtn input{display:none}
 .filebtn.has{border-style:solid;color:var(--ink)}
 .sendbtn{width:100%;border:0;border-radius:var(--r);background:var(--slot);color:var(--ink);
@@ -572,10 +573,18 @@ body.scrolled #calcView .calcbar .chk{padding:6px 6px;font-size:14px}
     <p class="steplab">Komentaras (nebūtina)</p>
     <textarea id="supNote" class="supnote" maxlength="500"
               placeholder="Pvz. skubu, baigiasi sandėlyje, pakeisti dvi"></textarea>
-    <label class="filebtn" id="supFileLab">
-      Pridėti nuotrauką ar failą
-      <input id="supFile" type="file" accept="image/*,application/pdf">
-    </label>
+    <div class="filerow">
+      <!-- Atskiri mygtukai sąmoningai: kai viename lauke leidžiama ir nuotrauka,
+           ir PDF, telefonas siūlo tik failų naršyklę, be fotoaparato. -->
+      <label class="filebtn" id="supCamLab">
+        Fotografuoti
+        <input id="supCam" type="file" accept="image/*" capture="environment">
+      </label>
+      <label class="filebtn" id="supFileLab">
+        Pasirinkti failą
+        <input id="supFile" type="file" accept="image/*,application/pdf">
+      </label>
+    </div>
     <button id="supSend" class="sendbtn" type="button" disabled>Siųsti užsakymą</button>
     <p class="supmsg" id="supMsg" hidden></p>
   </div>
@@ -1775,6 +1784,8 @@ setView('setup');
   const noteEl = document.getElementById('supNote');
   const fileEl = document.getElementById('supFile');
   const fileLab = document.getElementById('supFileLab');
+  const camEl = document.getElementById('supCam');
+  const camLab = document.getElementById('supCamLab');
   const sendBtn = document.getElementById('supSend');
   const msgEl = document.getElementById('supMsg');
 
@@ -1946,19 +1957,34 @@ setView('setup');
     });
   }
 
-  fileEl.addEventListener('change', async () => {
-    const f = fileEl.files[0];
-    if(!f){ priedas = null; fileLab.classList.remove('has'); return; }
-    try{
-      priedas = await paruostiFaila(f);
-      fileLab.classList.add('has');
-      fileLab.firstChild.textContent = f.name + ' ';
-      msg('');
-    }catch(err){
-      fileEl.value = ''; priedas = null; fileLab.classList.remove('has');
-      msg(err.message, true);
-    }
-  });
+  function valytiPrieda(){
+    priedas = null;
+    camEl.value = ''; fileEl.value = '';
+    camLab.classList.remove('has'); fileLab.classList.remove('has');
+    camLab.firstChild.textContent = 'Fotografuoti ';
+    fileLab.firstChild.textContent = 'Pasirinkti failą ';
+  }
+
+  /* Priedas visada vienas: pasirinkus kitą, ankstesnis pakeičiamas. */
+  function priedoPasirinkimas(inp, lab, vardas){
+    inp.addEventListener('change', async () => {
+      const f = inp.files[0];
+      if(!f){ valytiPrieda(); return; }
+      try{
+        const p = await paruostiFaila(f);
+        valytiPrieda();
+        priedas = p;
+        lab.classList.add('has');
+        lab.firstChild.textContent = (f.name.length > 22 ? f.name.slice(0,20) + '…' : f.name) + ' ';
+        msg('');
+      }catch(err){
+        valytiPrieda();
+        msg(err.message, true);
+      }
+    });
+  }
+  priedoPasirinkimas(camEl, camLab, 'Fotografuoti');
+  priedoPasirinkimas(fileEl, fileLab, 'Pasirinkti failą');
 
   sendBtn.addEventListener('click', async () => {
     if(!cart.length) return;
@@ -1966,8 +1992,8 @@ setView('setup');
     msg('Siunčiama…');
     try{
       const d = await gate('uzsakymas', {irankiai: cart, komentaras: noteEl.value, priedas: priedas});
-      cart = []; priedas = null; noteEl.value = ''; fileEl.value = '';
-      fileLab.classList.remove('has'); fileLab.firstChild.textContent = 'Pridėti nuotrauką ar failą ';
+      cart = []; noteEl.value = '';
+      valytiPrieda();
       drawCart();
       msg((d.laiskas ? 'Užsakymas ' + d.nr + ' išsiųstas tiekimo vadybininkui.'
                      : 'Užsakymas ' + d.nr + ' įrašytas. Laiškas neišsiųstas — lentelėje nenurodytas tiekimo el. paštas.') +
