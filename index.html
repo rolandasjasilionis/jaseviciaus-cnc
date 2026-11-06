@@ -474,48 +474,6 @@ body.scrolled #calcView .calcbar .chk{padding:6px 6px;font-size:14px}
 .podnote{font-size:13px;color:var(--ink-soft);margin-top:7px;line-height:1.4}
 .podok{display:inline-flex;align-items:center;gap:8px;margin-top:6px;font-weight:600;cursor:pointer}
 .podok input{width:20px;height:20px;accent-color:var(--ink)}
-
-/* ===================== STALAI (padukų dėlionė) — izoliuota nuo likusio puslapio ===================== */
-#tablesView{
-  --bg:#0f1620; --panel:#182430; --line:#2a3a4a; --ink:#e9eef3; --dim:#93a3b3;
-  --board:#8a5a3a; --board2:#7a4e33; --grid:#6b4228; --gridM:#b07a4e;
-  --port:#d7c4a6; --port-open:#ffcf3f; --part:#39c07a; --part-fill:rgba(57,192,122,.10);
-  --ok:#35d07f; --bad:#ff5a52; --accent:#4aa8ff; --sole:rgba(255,255,255,.16);
-  background:var(--bg); color:var(--ink); padding:10px 10px 40px; min-height:100vh;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-}
-#tablesView[hidden]{display:none}
-#tablesView .wrap{max-width:660px;margin:0 auto}
-#tablesView h1{font-size:16px;margin:4px 2px 2px;letter-spacing:.2px;color:var(--ink)}
-#tablesView .sub{color:var(--dim);font-size:12px;margin:0 2px 10px}
-#tablesView .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px;margin-bottom:10px}
-#tablesView .card h2{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--dim);margin:2px 2px 8px}
-#tablesView svg{width:100%;height:auto;display:block;background:#0b1219;border-radius:8px;touch-action:manipulation}
-#tablesView svg line,#tablesView svg polygon,#tablesView svg circle,#tablesView svg path{vector-effect:non-scaling-stroke}
-#tablesView .toolrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
-#tablesView button{font:inherit;color:var(--ink);background:#22303d;border:1px solid var(--line);
-  border-radius:10px;padding:11px 12px;min-width:44px;min-height:44px;cursor:pointer}
-#tablesView button:active{background:#2c3d4d}
-#tablesView button.primary{background:var(--accent);border-color:var(--accent);color:#04121f;font-weight:600}
-#tablesView button.danger{background:#3a2222;border-color:#5a3030}
-#tablesView .pad{display:grid;grid-template-columns:repeat(3,54px);grid-template-rows:repeat(3,54px);gap:6px}
-#tablesView .pad button{padding:0;font-size:22px}
-#tablesView .pad .sp{visibility:hidden}
-#tablesView .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-#tablesView .field{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--dim)}
-#tablesView .field input,#tablesView .field select{flex:1;min-width:0;background:#0b1219;color:var(--ink);border:1px solid var(--line);
-  border-radius:8px;padding:9px;font:inherit}
-#tablesView .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--dim);margin-top:8px}
-#tablesView .dot{display:inline-block;width:11px;height:11px;border-radius:3px;vertical-align:middle;margin-right:5px}
-#tablesView .read{font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;font-size:13px}
-#tablesView .read .line{padding:7px 8px;border-bottom:1px solid var(--line)}
-#tablesView .read .line:last-child{border-bottom:0}
-#tablesView .badge{font-size:11px;padding:2px 7px;border-radius:999px;font-weight:600}
-#tablesView .badge.ok{background:rgba(53,208,127,.15);color:var(--ok)}
-#tablesView .badge.bad{background:rgba(255,90,82,.15);color:var(--bad)}
-#tablesView .hint{font-size:12px;color:var(--dim);margin:2px 2px 0;line-height:1.45}
-#tablesView .prov{color:#ffcf3f}
-#tablesView .selname{color:var(--accent);font-weight:600}
 </style>
 </head>
 <body>
@@ -530,7 +488,6 @@ body.scrolled #calcView .calcbar .chk{padding:6px 6px;font-size:14px}
     <button data-view="prod">Gamyba</button>
     <button data-view="calc">Stalų skaičiuoklė</button>
     <button data-view="catalog">Stalų katalogas</button>
-    <button data-view="tables">Vakuuminiai padukai</button>
     <button data-view="supply">Tiekimas</button>
     <div class="who" id="who" hidden></div>
     <button id="logout" type="button">Atsijungti</button>
@@ -691,16 +648,23 @@ body.scrolled #calcView .calcbar .chk{padding:6px 6px;font-size:14px}
 </main>
 
 <button id="versionBtn" class="version-btn" type="button" aria-haspopup="dialog" aria-controls="versionModal">
-  <b>v1.10.0</b> · 2026-10-27
+  <b>v1.10.1</b> · 2026-11-06
 </button>
 <div id="versionModal" class="version-modal" role="dialog" aria-modal="true" aria-labelledby="versionTitle" hidden>
   <div class="version-panel">
     <div class="version-head">
       <div>
         <h2 id="versionTitle">Pakeitimų istorija</h2>
-        <p id="versionCurrent">v1.10.0 · 2026-10-27 21:15</p>
+        <p id="versionCurrent">v1.10.1 · 2026-11-06 18:00</p>
       </div>
       <button id="versionClose" class="version-close" type="button" aria-label="Uždaryti pakeitimų istoriją">&times;</button>
+    </div>
+    <div class="release">
+      <div class="release-top"><b>v1.10.1</b><time datetime="2026-11-06T18:00">2026-11-06 18:00</time></div>
+      <ul>
+        <li><b>Išimta senoji skiltis „Vakuuminiai padukai“.</b> Ji skaičiavo su senais matmenimis (tarpas 200, padukas 150×150, viršus 150×70, pirmas varžtas 90), todėl padukai būtų atsidūrę ne savo vietose. Padukus rodo <b>Stalų skaičiuoklė</b>, ji skaičiuoja su tikrais matmenimis.</li>
+        <li>Joje naršyklėje išsaugoti išdėstymai nebeatidaromi. Senoji skilties kopija laikoma archyve.</li>
+      </ul>
     </div>
     <div class="release">
       <div class="release-top"><b>v1.10.0</b><time datetime="2026-10-27T21:15">2026-10-27 21:15</time></div>
@@ -821,104 +785,6 @@ body.scrolled #calcView .calcbar .chk{padding:6px 6px;font-size:14px}
       <ul><li>Gaminiai ir CNC nustatymai kraunami iš „Google Sheets“ lapo „Gaminiai“.</li></ul>
     </div>
   </div>
-</div>
-
-<div id="tablesView" hidden>
-<div class="wrap">
-  <p class="sub">Stalas 120×120&nbsp;cm · varžtai 8×8 (kas 15&nbsp;cm) · poslinkis 3&nbsp;cm · padukas „batas“ 15×15 / viršus 15×7&nbsp;cm.</p>
-
-  <div class="card">
-    <svg id="board" viewBox="-70 -70 2740 1340" role="img" aria-label="Stalo schema"></svg>
-    <p class="hint" style="margin-top:6px">Bakstelėk ant stalo — perkelsi pažymėtą paduką ten. Bakstelėk paduką — jį pažymėsi.</p>
-  </div>
-
-  <div class="card">
-    <h2>Padukai — stūmimas</h2>
-    <div class="toolrow">
-      <button class="primary" id="add">+ Pridėti</button>
-      <button id="rot">⟳ Pasukti 90°</button>
-      <button class="danger" id="del">🗑 Šalinti</button>
-      <span class="hint">Pažymėta: <span class="selname" id="selname">—</span></span>
-    </div>
-    <div class="toolrow" style="margin-top:10px">
-      <div class="pad">
-        <span class="sp"></span><button data-nx="0" data-ny="-1">↑</button><span class="sp"></span>
-        <button data-nx="-1" data-ny="0">←</button><span class="sp"></span><button data-nx="1" data-ny="0">→</button>
-        <span class="sp"></span><button data-nx="0" data-ny="1">↓</button><span class="sp"></span>
-      </div>
-      <div class="hint" style="max-width:200px"><b>Tikslus stūmimas — rodyklėmis</b> ↑↓←→ (po vieną 3&nbsp;cm langelį). Pirštu ant stalo — apytikslis perkėlimas.</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>Gaminys — išsaugojimas</h2>
-    <div class="toolrow">
-      <input id="pname" placeholder="Gaminio pavadinimas" style="flex:1;min-width:130px;background:#0b1219;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit">
-      <button class="primary" id="save">💾 Išsaugoti</button>
-    </div>
-    <div class="toolrow" style="margin-top:8px">
-      <select id="plist" style="flex:1;min-width:130px;background:#0b1219;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit"><option value="">— pasirinkti išsaugotą —</option></select>
-      <button class="danger" id="pdel">🗑</button>
-    </div>
-    <p class="hint" id="pstatus" style="margin-top:6px">Pasirink iš sąrašo — atsistato stalas, ruošinys ir padukai.</p>
-    <details style="margin-top:6px">
-      <summary class="hint" style="cursor:pointer">Atsarginė kopija (eksportas / importas)</summary>
-      <textarea id="pjson" placeholder="Čia atsiras visų gaminių tekstas — jį gali išsaugoti ar perkelti į kitą įrenginį" style="width:100%;height:80px;margin-top:6px;background:#0b1219;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px;font:12px ui-monospace,monospace"></textarea>
-      <div class="toolrow"><button id="pexport">Rodyti visus</button><button id="pimport">Įkelti iš teksto</button></div>
-    </details>
-  </div>
-
-  <div class="card">
-    <h2>Ruošinys</h2>
-    <div class="grid2">
-      <div class="field"><label>Forma</label>
-        <select id="shape">
-          <option value="rect">Stačiakampis</option>
-          <option value="round">Suapvalinti kampai</option>
-          <option value="circle">Apskritimas</option>
-          <option value="ellipse">Elipsė</option>
-          <option value="arch" selected>Arka viršuje</option>
-        </select></div>
-      <div class="field"><label>Kampų R</label><input id="rad" type="number" value="80" step="10"></div>
-      <div class="field"><label>Plotis</label><input id="pw" type="number" value="1000" step="10"></div>
-      <div class="field"><label>Aukštis</label><input id="ph" type="number" value="600" step="10"></div>
-      <div class="field"><label>Arkos petys</label><input id="sh" type="number" value="250" step="10"></div>
-      <div class="field"><label>Frezos Ø</label><input id="tool" type="number" value="20" step="1"></div>
-    </div>
-    <p class="hint" style="margin-top:6px">Ruošinys visada dedamas nuo apatinio kairio kampo, ilgąja puse horizontaliai (link antrojo stalo).</p>
-  </div>
-
-  <div class="card">
-    <h2>Stalas</h2>
-    <div class="grid2">
-      <div class="field"><label>Plotis</label><input id="tw" type="number" value="1200" step="10"></div>
-      <div class="field"><label>Gylis</label><input id="td" type="number" value="1200" step="10"></div>
-      <div class="field"><label>Tarpas</label><input id="gap" type="number" value="200" step="10"></div>
-      <div class="field"><label>Varžtų žingsnis</label><input id="pitch" type="number" value="150" step="10"></div>
-    </div>
-    <p class="hint" style="margin-top:6px">Du vienodi stalai greta. Pakeitus skaičius — dėlionė ir varžtų tinklelis persibraižo.</p>
-  </div>
-
-  <div class="card">
-    <h2>Ką daryti</h2>
-    <div class="read" id="readout"></div>
-    <p class="hint" style="margin-top:6px">Koordinatė (X,Y): X — kelintas varžtas iš kairės, Y — kelintas nuo apačios.</p>
-  </div>
-
-  <div class="card">
-    <h2>Legenda</h2>
-    <div class="legend" style="margin-top:0">
-      <span><span class="dot" style="background:var(--part)"></span>Ruošinys</span>
-      <span><span class="dot" style="background:var(--ok)"></span>Gerai</span>
-      <span><span class="dot" style="background:var(--bad)"></span>Blogai</span>
-      <span><span class="dot" style="background:var(--sole)"></span>„Padas“ (žemiau frezos)</span>
-      <span><span class="dot" style="background:var(--accent)"></span>Pažymėtas padukas (mėlynas punktyras)</span>
-      <span><span class="dot" style="background:var(--port-open)"></span>Atsuktas varžtas</span>
-    </div>
-  </div>
-
-  <p class="hint">Padukas „gerai“, kai visas siurbimo viršus po ruošiniu ir bent <b id="marg">25</b>&nbsp;mm nuo pjūvio linijos, o po pagrindu yra varžtas. „Padas“ yra žemiau — frezos nesiekia.</p>
-</div>
 </div>
 
 <script>
@@ -1511,11 +1377,10 @@ let orders = (load(K_ORD,[])||[]).filter(o => o && o.id && o.n);
 
 const menuBtn=document.getElementById('menuBtn'), menu=document.getElementById('menu');
 const setupbar=document.getElementById('setupbar'), titleEl=document.getElementById('title');
-const tablesView=document.getElementById('tablesView');
 const calcView=document.getElementById('calcView');
 const catView=document.getElementById('catView');
 const supView=document.getElementById('supView');
-let view='setup';          /* setup | prod | calc | tables */
+let view='setup';          /* setup | prod | calc | catalog | supply */
 let pview='orders';        /* orders | order | new */
 let curId=null;
 let ofilter='all';          /* new | active | urgent | done | all */
@@ -1547,18 +1412,16 @@ function bar(o){
 function setView(v){
   view=v; menu.hidden=true; menuBtn.setAttribute('aria-expanded','false');
   setupbar.hidden = (v!=='setup');
-  app.hidden = (v==='tables' || v==='calc' || v==='catalog' || v==='supply');
+  app.hidden = (v==='calc' || v==='catalog' || v==='supply');
   catView.hidden = (v!=='catalog');
-  tablesView.hidden = (v!=='tables');
   calcView.hidden = (v!=='calc');
   supView.hidden = (v!=='supply');
-  titleEl.textContent = v==='prod' ? 'Gamyba' : v==='tables' ? 'Vakuuminiai padukai' : v==='calc' ? 'Stalų skaičiuoklė' : v==='catalog' ? 'Stalų katalogas' : v==='supply' ? 'Tiekimas' : 'CNC nustatymai';
+  titleEl.textContent = v==='prod' ? 'Gamyba' : v==='calc' ? 'Stalų skaičiuoklė' : v==='catalog' ? 'Stalų katalogas' : v==='supply' ? 'Tiekimas' : 'CNC nustatymai';
   backBtn.hidden = true;
   menu.querySelectorAll('button[data-view]').forEach(b => b.classList.toggle('on', b.dataset.view===v));
   if(v==='prod'){ pview='orders'; renderProd(); }
   else if(v==='calc'){ countEl.textContent=''; }
   else if(v==='catalog'){ countEl.textContent=''; if(window.CncCatalog) window.CncCatalog.show(); }
-  else if(v==='tables'){ countEl.textContent=''; if(window.StaluSkaiciavimas) window.StaluSkaiciavimas.refresh(); }
   else if(v==='supply'){ countEl.textContent=''; if(window.CncTiekimas) window.CncTiekimas.show(); }
   else list();
   window.scrollTo(0,0);
@@ -2841,269 +2704,6 @@ window.FIG_STALAI = [["Aimete","Aimete 1952x852","001_aimeTE_1952x852",1952,852,
     $(id).addEventListener('input',render); $(id).addEventListener('change',render);
   });
   render();
-})();
-</script>
-
-<script>
-/* ===================== STALAI (padukų dėlionė) — savarankiškas modulis ===================== */
-(function(){
-  "use strict";
-  var root=document.getElementById('tablesView');
-  if(!root) return;
-  var STEP=30;                  // poslinkis 3 cm
-  var PORT, INSETX, INSETY, TW, TH, GAP, TOTALW, tables, ports=[];
-  function val(id){var e=document.getElementById(id);return e?parseFloat(e.value):NaN;}
-  function insetFor(span,pitch){
-    var n=Math.max(1,Math.round(span/pitch));
-    while(n>1 && (n-1)*pitch > span-2*STEP) n--;
-    return {n:n, inset:Math.round(((span-(n-1)*pitch)/2)/STEP)*STEP};
-  }
-  function rebuild(){
-    TW=val('tw')||1200; TH=val('td')||1200; GAP=val('gap')||200; PORT=val('pitch')||150;
-    tables=[{x0:0,x1:TW},{x0:TW+GAP,x1:TW+GAP+TW}];
-    TOTALW=TW+GAP+TW;
-    var cx=insetFor(TW,PORT), cy=insetFor(TH,PORT);
-    INSETX=cx.inset; INSETY=cy.inset; ports=[];
-    tables.forEach(function(t,ti){
-      for(var ci=0;ci<cx.n;ci++){ var x=t.x0+INSETX+ci*PORT;
-        var col=ti*cx.n+ci+1;                 // kelintas iš kairės (per abu stalus)
-        for(var ri=0;ri<cy.n;ri++){ var y=INSETY+ri*PORT;
-          var row=cy.n-ri;                     // kelintas nuo apačios
-          ports.push({x:x,y:y,open:false,col:col,row:row,lab:col+","+row});
-        }
-      }
-    });
-    if(typeof svg!=='undefined' && svg) svg.setAttribute('viewBox', -70+' '+-70+' '+(TOTALW+140)+' '+(TH+140));
-  }
-
-  var part=[];
-  function buildPart(){
-    var shape=document.getElementById('shape').value;
-    var W=+document.getElementById('pw').value, H=+document.getElementById('ph').value;
-    var r=+document.getElementById('rad').value||0;
-    var X=0, Y=TH-H;   // ruošinys visada nuo apatinio kairio kampo
-    var p=[];
-    function ell(cx,cy,rx,ry,a0,a1){for(var a=a0;a<=a1+0.001;a+=8){var t=a*Math.PI/180; p.push([cx+rx*Math.cos(t), cy+ry*Math.sin(t)]);}}
-    function arc(cx,cy,rr,a0,a1){for(var a=a0;a<=a1+0.001;a+=12){var t=a*Math.PI/180; p.push([cx+rr*Math.cos(t), cy+rr*Math.sin(t)]);}}
-    if(shape==='rect'){
-      p=[[X,Y+H],[X+W,Y+H],[X+W,Y],[X,Y]];
-    } else if(shape==='round'){
-      r=Math.max(0,Math.min(r, Math.min(W,H)/2));
-      var x0=X,x1=X+W,y0=Y,y1=Y+H;
-      arc(x0+r,y0+r,r,180,270); arc(x1-r,y0+r,r,270,360);
-      arc(x1-r,y1-r,r,0,90);    arc(x0+r,y1-r,r,90,180);
-    } else if(shape==='circle'){
-      var d=Math.min(W,H); Y=TH-d; ell(X+d/2,Y+d/2,d/2,d/2,0,360);
-    } else if(shape==='ellipse'){
-      ell(X+W/2,Y+H/2,W/2,H/2,0,360);
-    } else { // arka: tiesios kraštinės apačioje + pusiau-elipsė viršuje
-      var straight=Math.max(0,Math.min(+document.getElementById('sh').value||0, H));
-      var ys=Y+H-straight, ry=H-straight, cx=X+W/2;   // ys = pečių linija
-      p.push([X,Y+H]); p.push([X+W,Y+H]); p.push([X+W,ys]);
-      for(var a=0;a<=180;a+=8){var t=a*Math.PI/180; p.push([cx+(W/2)*Math.cos(t), ys-ry*Math.sin(t)]);}
-      p.push([X,ys]);
-    }
-    part=p;
-  }
-
-  var pods=[]; var sel=-1; var uid=1;
-  pods.push({id:uid++,cx:210,cy:960,rot:0});
-  pods.push({id:uid++,cx:510,cy:960,rot:0});
-  pods.push({id:uid++,cx:810,cy:810,rot:0});
-  sel=0;
-
-  function margin(){ var d=+document.getElementById('tool').value||20; return d/2+15; }
-  function snap(v){ return Math.round(v/STEP)*STEP; }
-  function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
-  var PHALF=75; // paduko pagrindo pusė (150/2)
-  function tableFor(cx){ return cx < (TW+GAP/2) ? tables[0] : tables[1]; }
-  function clampInTable(cx,cy,t){
-    var xmin=Math.ceil((t.x0+PHALF)/STEP)*STEP, xmax=Math.floor((t.x1-PHALF)/STEP)*STEP;
-    var ymin=Math.ceil(PHALF/STEP)*STEP, ymax=Math.floor((TH-PHALF)/STEP)*STEP;
-    return [clamp(cx,xmin,xmax), clamp(cy,ymin,ymax)];
-  }
-
-  function inPoly(x,y,poly){
-    var c=false,n=poly.length,j=n-1;
-    for(var i=0;i<n;i++){var xi=poly[i][0],yi=poly[i][1],xj=poly[j][0],yj=poly[j][1];
-      if(((yi>y)!==(yj>y)) && (x<(xj-xi)*(y-yi)/(yj-yi)+xi)) c=!c; j=i;}
-    return c;
-  }
-  function distSeg(px,py,ax,ay,bx,by){
-    var dx=bx-ax,dy=by-ay,l2=dx*dx+dy*dy;
-    var t=l2?((px-ax)*dx+(py-ay)*dy)/l2:0; t=Math.max(0,Math.min(1,t));
-    return Math.hypot(px-(ax+t*dx),py-(ay+t*dy));
-  }
-  function minEdge(x,y,poly){var m=1e9,n=poly.length;
-    for(var i=0;i<n;i++){var j=(i+1)%n; m=Math.min(m,distSeg(x,y,poly[i][0],poly[i][1],poly[j][0],poly[j][1]));}
-    return m;
-  }
-  // ANCHOR = pagrindo centras (ten, kur varžtas). Viršus (210x120) pastumtas į vieną pusę -> „batas“.
-  function podPolys(p){
-    var ang=p.rot*Math.PI/180,c=Math.cos(ang),s=Math.sin(ang);
-    function R(lx,ly){return [p.cx+lx*c-ly*s, p.cy+lx*s+ly*c];}
-    return {
-      base:[R(-75,-75),R(75,-75),R(75,75),R(-75,75)],         // 150x150
-      top: [R(-75,-75),R(75,-75),R(75,-5),R(-75,-5)],         // 150x70, prigludes prie -y krašto
-      sole:[R(-75,-5),R(75,-5),R(75,75),R(-75,75)]            // atviras „padas“ 150x80
-    };
-  }
-  function portUnderBase(basePoly,cx,cy){
-    var best=null,bd=1e9;
-    ports.forEach(function(pt){ if(inPoly(pt.x,pt.y,basePoly)){var d=Math.hypot(pt.x-cx,pt.y-cy); if(d<bd){bd=d;best=pt;}}});
-    return best;
-  }
-  function evalPod(p){
-    var g=podPolys(p), m=margin(), insideAll=true, topNear=false;
-    g.top.forEach(function(c){ if(!inPoly(c[0],c[1],part)) insideAll=false; if(minEdge(c[0],c[1],part)<m) topNear=true; });
-    var port=portUnderBase(g.base,p.cx,p.cy);
-    var good=insideAll && !topNear && !!port;
-    var why="";
-    if(!insideAll) why="viršus kyšo už ruošinio";
-    else if(topNear) why="viršus per arti pjūvio";
-    else if(!port) why="po paduku nėra varžto";
-    return {good:good,why:why,port:port,polys:g};
-  }
-  function syncPorts(){ ports.forEach(function(pt){pt.open=false;});
-    pods.forEach(function(p){var e=evalPod(p); if(e.port) e.port.open=true;});
-  }
-
-  var svg=document.getElementById('board'), NS="http://www.w3.org/2000/svg";
-  function el(n,a,txt){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;return e;}
-  function pstr(pts){return pts.map(function(c){return c[0].toFixed(1)+","+c[1].toFixed(1);}).join(" ");}
-  function bbox(pts){var xs=pts.map(function(c){return c[0];}),ys=pts.map(function(c){return c[1];});
-    return {x:Math.min.apply(0,xs),y:Math.min.apply(0,ys),w:Math.max.apply(0,xs)-Math.min.apply(0,xs),h:Math.max.apply(0,ys)-Math.min.apply(0,ys)};}
-
-  function draw(){
-    buildPart(); syncPorts();
-    while(svg.firstChild) svg.removeChild(svg.firstChild);
-    tables.forEach(function(t){
-      svg.appendChild(el('rect',{x:t.x0,y:0,width:t.x1-t.x0,height:TH,fill:'var(--board)',stroke:'var(--board2)','stroke-width':4,rx:6}));
-      for(var x=t.x0;x<=t.x1;x+=STEP){var mj=(((x-t.x0-INSETX)%PORT)+PORT)%PORT===0;
-        svg.appendChild(el('line',{x1:x,y1:0,x2:x,y2:TH,stroke:mj?'var(--gridM)':'var(--grid)','stroke-width':mj?2.2:1,opacity:mj?.9:.55}));}
-      for(var y=0;y<=TH;y+=STEP){var mjy=(((y-INSETY)%PORT)+PORT)%PORT===0;
-        svg.appendChild(el('line',{x1:t.x0,y1:y,x2:t.x1,y2:y,stroke:mjy?'var(--gridM)':'var(--grid)','stroke-width':mjy?2.2:1,opacity:mjy?.9:.55}));}
-    });
-    var kerf=+document.getElementById('tool').value||20;
-    svg.appendChild(el('polygon',{points:pstr(part),fill:'var(--part-fill)',stroke:'var(--part)','stroke-width':kerf,'stroke-linejoin':'round',style:'vector-effect:none'}));
-    ports.forEach(function(pt){
-      svg.appendChild(el('circle',{cx:pt.x,cy:pt.y,r:pt.open?16:9,
-        fill:pt.open?'var(--port-open)':'none',stroke:pt.open?'#8a6a10':'var(--port)','stroke-width':pt.open?3:4}));
-    });
-    pods.forEach(function(p,i){
-      var e=evalPod(p), col=e.good?'var(--ok)':'var(--bad)';
-      svg.appendChild(el('polygon',{points:pstr(e.polys.base),fill:'none',
-        stroke:i===sel?'var(--accent)':'rgba(255,255,255,.30)','stroke-width':i===sel?2.5:1.2,'stroke-dasharray':'8 6'}));
-      svg.appendChild(el('polygon',{points:pstr(e.polys.sole),fill:'var(--sole)',stroke:'none'}));
-      svg.appendChild(el('polygon',{points:pstr(e.polys.top),fill:col,'fill-opacity':.4,stroke:col,'stroke-width':2.5}));
-      var bb=bbox(e.polys.base);
-      svg.appendChild(el('rect',{x:bb.x,y:bb.y,width:bb.w,height:bb.h,fill:'transparent','data-pod':i}));
-      svg.appendChild(el('text',{x:p.cx,y:p.cy+12,fill:'#fff','font-size':34,'font-weight':700,'text-anchor':'middle','pointer-events':'none'},e.port?e.port.lab:'—'));
-    });
-    renderRead();
-    document.getElementById('marg').textContent=Math.round(margin());
-    document.getElementById('selname').textContent= sel>=0?("Padukas "+(sel+1)):"—";
-  }
-  function renderRead(){
-    var r=document.getElementById('readout'); r.innerHTML="";
-    if(!pods.length){r.innerHTML='<div class="line">Nėra padukų. Spausk „Pridėti“, tada bakstelėk ant stalo.</div>';return;}
-    pods.forEach(function(p,i){
-      var e=evalPod(p), d=document.createElement('div'); d.className='line';
-      var badge=e.good?'<span class="badge ok">GERAI</span>':'<span class="badge bad">'+e.why+'</span>';
-      d.innerHTML='Varžtas <b>'+(e.port?('('+e.port.lab+')'):'—')+'</b> &nbsp;'+badge;
-      r.appendChild(d);
-    });
-    var open=ports.filter(function(x){return x.open;}).map(function(x){return '('+x.lab+')';});
-    var s=document.createElement('div'); s.className='line';
-    s.innerHTML='<b>Atsukti varžtus:</b> '+(open.length?open.join(', '):'—');
-    r.appendChild(s);
-  }
-
-  function svgPoint(ev){
-    var pt=svg.createSVGPoint(); pt.x=ev.clientX; pt.y=ev.clientY;
-    return pt.matrixTransform(svg.getScreenCTM().inverse());
-  }
-  svg.addEventListener('click',function(ev){
-    var t=ev.target;
-    if(t.hasAttribute('data-pod')){ sel=+t.getAttribute('data-pod'); draw(); return; }
-    if(sel<0) return;
-    var q=svgPoint(ev);
-    var c=clampInTable(snap(q.x),snap(q.y),tableFor(snap(q.x)));
-    pods[sel].cx=c[0]; pods[sel].cy=c[1];
-    draw();
-  });
-  document.getElementById('add').addEventListener('click',function(){pods.push({id:uid++,cx:600,cy:600,rot:0});sel=pods.length-1;draw();});
-  document.getElementById('del').addEventListener('click',function(){if(sel<0)return;pods.splice(sel,1);sel=pods.length?Math.min(sel,pods.length-1):-1;draw();});
-  document.getElementById('rot').addEventListener('click',function(){if(sel<0)return;pods[sel].rot=(pods[sel].rot+90)%360;draw();});
-  Array.prototype.forEach.call(document.querySelectorAll('#tablesView .pad button'),function(b){
-    b.addEventListener('click',function(){if(sel<0)return;var p=pods[sel];
-      var c=clampInTable(p.cx+(+b.dataset.nx)*STEP, p.cy+(+b.dataset.ny)*STEP, tableFor(p.cx));
-      p.cx=c[0]; p.cy=c[1]; draw();});
-  });
-  ['shape','pw','ph','tool','rad','sh'].forEach(function(id){document.getElementById(id).addEventListener('input',draw);});
-  ['tw','td','gap','pitch'].forEach(function(id){var e=document.getElementById(id); if(e) e.addEventListener('input',function(){rebuild();draw();});});
-
-  // --- saugojimas: naudoja localStorage (arba atminties fallback) ---
-  var KEY='cnc_paduku_layouts';
-  var Store=(function(){
-    var mem={};
-    return {
-      get:function(k){ return Promise.resolve((function(){try{return localStorage.getItem(k);}catch(e){return mem[k]==null?null:mem[k];}})()); },
-      set:function(k,v){ return Promise.resolve((function(){try{localStorage.setItem(k,v);return true;}catch(e){mem[k]=v;return true;}})()); }
-    };
-  })();
-  function loadAll(){return Store.get(KEY).then(function(s){try{return s?JSON.parse(s):{};}catch(e){return {};}});}
-  function saveAll(o){return Store.set(KEY,JSON.stringify(o));}
-  function pstat(t){var e=document.getElementById('pstatus'); if(e) e.textContent=t;}
-  function refreshList(){return loadAll().then(function(o){
-    var s=document.getElementById('plist'), cur=s.value;
-    s.innerHTML='<option value="">— pasirinkti išsaugotą —</option>';
-    Object.keys(o).sort().forEach(function(n){var op=document.createElement('option');op.value=n;op.textContent=n;s.appendChild(op);});
-    s.value=cur;
-  });}
-  function curRecord(){return {
-    table:{tw:val('tw'),td:val('td'),gap:val('gap'),pitch:val('pitch')},
-    part:{shape:document.getElementById('shape').value,pw:val('pw'),ph:val('ph'),rad:val('rad'),sh:val('sh'),tool:val('tool')},
-    pods:pods.map(function(p){return {cx:p.cx,cy:p.cy,rot:p.rot};})
-  };}
-  function setV(id,v){var e=document.getElementById(id); if(e&&v!=null&&v!=='') e.value=v;}
-  function applyRecord(r){
-    if(r.table){setV('tw',r.table.tw);setV('td',r.table.td);setV('gap',r.table.gap);setV('pitch',r.table.pitch);}
-    if(r.part){setV('shape',r.part.shape);setV('pw',r.part.pw);setV('ph',r.part.ph);setV('rad',r.part.rad);setV('sh',r.part.sh);setV('tool',r.part.tool);}
-    pods.length=0; (r.pods||[]).forEach(function(p){pods.push({id:uid++,cx:p.cx,cy:p.cy,rot:p.rot});});
-    sel=pods.length?0:-1; rebuild(); draw();
-  }
-  document.getElementById('save').addEventListener('click',function(){
-    var n=(document.getElementById('pname').value||'').trim();
-    if(!n){pstat('Įveski gaminio pavadinimą.');return;}
-    loadAll().then(function(o){o[n]=curRecord();return saveAll(o);}).then(function(ok){
-      pstat(ok?('Išsaugota: '+n):'Nepavyko išsaugoti.');return refreshList();
-    }).then(function(){document.getElementById('plist').value=n;});
-  });
-  document.getElementById('plist').addEventListener('change',function(){
-    var n=this.value; if(!n)return;
-    loadAll().then(function(o){ if(o[n]){document.getElementById('pname').value=n; applyRecord(o[n]); pstat('Įkelta: '+n);} });
-  });
-  document.getElementById('pdel').addEventListener('click',function(){
-    var n=document.getElementById('plist').value||(document.getElementById('pname').value||'').trim();
-    if(!n){pstat('Pasirink gaminį iš sąrašo.');return;}
-    loadAll().then(function(o){delete o[n];return saveAll(o);}).then(function(){pstat('Ištrinta: '+n);return refreshList();});
-  });
-  document.getElementById('pexport').addEventListener('click',function(){
-    loadAll().then(function(o){var ta=document.getElementById('pjson');ta.value=JSON.stringify(o);ta.select();
-      try{document.execCommand('copy');pstat('Nukopijuota į iškarpinę.');}catch(e){pstat('Pažymėta — kopijuok ranka.');}});
-  });
-  document.getElementById('pimport').addEventListener('click',function(){
-    var ta=document.getElementById('pjson');
-    try{var o=JSON.parse(ta.value); saveAll(o).then(function(){pstat('Importuota.');return refreshList();});}
-    catch(e){pstat('Blogas tekstas (turi būti JSON).');}
-  });
-
-  rebuild();
-  draw();
-  refreshList();
-
-  window.StaluSkaiciavimas = { refresh: function(){ rebuild(); draw(); refreshList(); } };
 })();
 </script>
 </body>
