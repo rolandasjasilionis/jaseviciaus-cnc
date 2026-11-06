@@ -169,6 +169,8 @@ h2.times-h2[hidden]{display:none}
   border-radius:9px;background:#fff;cursor:pointer;margin-bottom:12px;font:600 15px 'Archivo',sans-serif;color:var(--ink)}
 .chk input{width:19px;height:19px;accent-color:var(--alert);flex:0 0 auto;cursor:pointer}
 .chk:has(input:checked){background:var(--alert-bg);border-color:#E3A79E}
+#supView .supskubu{margin:12px 0 10px;font-weight:600}
+#supView .supskubu:has(input:checked) span{color:var(--alert)}
 .ubadge{color:var(--alert)}
 .ocard .ubadge{margin-right:1px}
 .ocard{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);
@@ -542,7 +544,7 @@ body.scrolled #calcView .calcbar .chk{padding:6px 6px;font-size:14px}
   <div class="step">
     <p class="steplab">Komentaras (nebūtina)</p>
     <textarea id="supNote" class="supnote" maxlength="500"
-              placeholder="Pvz. skubu, baigiasi sandėlyje, pakeisti dvi"></textarea>
+              placeholder="Pvz. lūžo, baigiasi sandėlyje, pakeisti dvi"></textarea>
     <div class="filerow">
       <!-- Fotoaparatas atidaromas pačiame puslapyje: dalis naršyklių (pvz. Comet)
            nepaiso input capture="environment" ir vis tiek rodo galeriją.
@@ -554,6 +556,9 @@ body.scrolled #calcView .calcbar .chk{padding:6px 6px;font-size:14px}
       </label>
       <input id="supCam" type="file" accept="image/*" capture="environment" hidden>
     </div>
+    <!-- Skubu = staklės stovi. Vadybininkas laiške mato raudoną SKUBU,
+         laiško tema prasideda [SKUBU]. -->
+    <label class="chk supskubu"><input type="checkbox" id="supSkubu"><span>⚠ Skubu</span></label>
     <button id="supSend" class="sendbtn" type="button" disabled>Siųsti užsakymą</button>
     <p class="supmsg" id="supMsg" hidden></p>
   </div>
@@ -648,16 +653,22 @@ body.scrolled #calcView .calcbar .chk{padding:6px 6px;font-size:14px}
 </main>
 
 <button id="versionBtn" class="version-btn" type="button" aria-haspopup="dialog" aria-controls="versionModal">
-  <b>v1.10.1</b> · 2026-11-06
+  <b>v1.10.2</b> · 2026-11-06
 </button>
 <div id="versionModal" class="version-modal" role="dialog" aria-modal="true" aria-labelledby="versionTitle" hidden>
   <div class="version-panel">
     <div class="version-head">
       <div>
         <h2 id="versionTitle">Pakeitimų istorija</h2>
-        <p id="versionCurrent">v1.10.1 · 2026-11-06 18:00</p>
+        <p id="versionCurrent">v1.10.2 · 2026-11-06 19:00</p>
       </div>
       <button id="versionClose" class="version-close" type="button" aria-label="Uždaryti pakeitimų istoriją">&times;</button>
+    </div>
+    <div class="release">
+      <div class="release-top"><b>v1.10.2</b><time datetime="2026-11-06T19:00">2026-11-06 19:00</time></div>
+      <ul>
+        <li><b>Tiekimas: varnelė „Skubu“.</b> Pažymėk, kai staklės stovi. Vadybininko laiško tema prasideda <b>[SKUBU]</b>, laiško viršuje raudonas užrašas SKUBU, o lape <b>Užsakymai</b> stulpelyje „Skubu“ jis matomas raudonai.</li>
+      </ul>
     </div>
     <div class="release">
       <div class="release-top"><b>v1.10.1</b><time datetime="2026-11-06T18:00">2026-11-06 18:00</time></div>
@@ -1675,6 +1686,7 @@ setView('setup');
   const camVid = document.getElementById('camVid');
   const camStat = document.getElementById('camStat');
   const sendBtn = document.getElementById('supSend');
+  const skubuEl = document.getElementById('supSkubu');
   const msgEl = document.getElementById('supMsg');
 
   const ORDER = ['grupe','tipas','d','rusis','sukimas','r'];
@@ -1948,11 +1960,12 @@ setView('setup');
     sendBtn.disabled = true;
     msg('Siunčiama…');
     try{
-      const d = await gate('uzsakymas', {irankiai: cart, komentaras: noteEl.value, priedas: priedas});
-      cart = []; noteEl.value = '';
+      const skubu = skubuEl.checked;
+      const d = await gate('uzsakymas', {irankiai: cart, komentaras: noteEl.value, priedas: priedas, skubu: skubu});
+      cart = []; noteEl.value = ''; skubuEl.checked = false;
       valytiPrieda();
       drawCart();
-      msg((d.laiskas ? 'Užsakymas ' + d.nr + ' išsiųstas tiekimo vadybininkui.'
+      msg((d.laiskas ? (skubu ? 'Skubus užsakymas ' : 'Užsakymas ') + d.nr + ' išsiųstas tiekimo vadybininkui.'
                      : 'Užsakymas ' + d.nr + ' įrašytas. Laiškas neišsiųstas — lentelėje nenurodytas tiekimo el. paštas.') +
           (d.priedoKlaida ? ' Nuotrauka į Diską neįkelta, ji keliauja tik laiške.' : ''));
     }catch(err){
